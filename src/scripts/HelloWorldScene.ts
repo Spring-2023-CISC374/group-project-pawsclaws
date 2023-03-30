@@ -3,7 +3,7 @@ import Phaser from 'phaser'
 export default class HelloWorldScene extends Phaser.Scene {
 	// ! can let take script know that we know that it won't be set for a little bit
 	// ? it miight be undefined
-	private platforms?: Phaser.Physics.Arcade.StaticGroup
+	private paths?: Phaser.Physics.Arcade.StaticGroup
 	private player?: Phaser.Physics.Arcade.Sprite 
 	//private cursors?: Phaser.Types.Input.Keyboard.CursorKeys
 	private balloons?: Phaser.Physics.Arcade.Group
@@ -24,6 +24,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 	preload() {
 		this.load.image('grasslands','/assets/grasslands.png')
+		this.load.image('')
 		//this.load.audio("retro",["/assets/retro.mp3"])
 		//this.load.spritesheet('dude','/assets/pinkguy.png', { frameWidth: 32, frameHeight: 48 })
 	}
