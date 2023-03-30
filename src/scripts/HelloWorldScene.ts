@@ -24,7 +24,9 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 	preload() {
 		this.load.image('grasslands','/assets/grasslands.png')
-		this.load.image('')
+		this.load.image('pathHor1', '/assets/pathHor.png')
+		this.load.image('pathHor2', '/assets/pathHor.png')
+		this.load.image('pathVer', '/assets/pathVer.png')
 		//this.load.audio("retro",["/assets/retro.mp3"])
 		//this.load.spritesheet('dude','/assets/pinkguy.png', { frameWidth: 32, frameHeight: 48 })
 	}
@@ -118,6 +120,10 @@ export default class HelloWorldScene extends Phaser.Scene {
 		if (this.balloons?.){
 
 		}
+	}
+
+	private handleHealth() {
+
 	}
 
 	update() {
