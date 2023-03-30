@@ -1,4 +1,4 @@
-import { CanDie, Enemy } from '../GameObject';
+import { CanDie, Enemy } from './GameObject';
 import { CollisionGroup, default as GameScene } from '../scenes/GameScene';
 import Vector2 = Phaser.Math.Vector2;
 
@@ -13,7 +13,7 @@ export default class Balloon implements Enemy, CanDie {
 
     constructor(scene, v) {
         this.scene = scene
-        this.sprite = this.scene.matter.add.sprite(0, 0, 'green-knight', 0)
+        this.sprite = this.scene.matter.add.sprite(0, 0, 'redballoon', 0)
         const {width: w, height: h} = this.sprite;
         const mainBody = Bodies.rectangle(0, 0, w * 0.6, h, {chamfer: {radius: 10}});
         this.sensors = {
@@ -33,7 +33,7 @@ export default class Balloon implements Enemy, CanDie {
             .setFrictionAir(0)
             .setPosition(v.x, v.y)
             .setCollisionGroup(CollisionGroup.ENEMY)
-        this.sprite.anims.play('') // Balloon
+        this.sprite.anims.play('redballoon') // Balloon
         this.hp = 10
         this.isTouching = {left: false, right: false}
     }
