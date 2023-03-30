@@ -1,6 +1,27 @@
 import { Scene } from 'phaser'
 import { isEmpty, range, take, zip } from 'lodash';
+import Unit, {} from '../componets/units'
+import Balloon from '../componets/balloon'
+import Graphics = Phaser.GameObjects.Graphics;
+import Vector2 = Phaser.Math.Vector2;
+import Tilemap = Phaser.Tilemaps.Tilemap;
+//import StaticTilemapLayer = Phaser.Tilemaps.StaticTilemapLayer;
+import Sprite = Phaser.Physics.Matter.Sprite;
+//import DynamicTilemapLayer = Phaser.Tilemaps.DynamicTilemapLayer;
 
+export enum UnitType {
+    
+}
+
+export type GameTile =
+    Phaser.Tilemaps.Tile
+    & { properties: { collides: boolean, mount: boolean, weapon_type: UnitType, unit_price: number } }
+
+export type placedUnit = { sprite: Unit, tile: { x: number, y: number } }
+
+export enum CollisionGroup {
+    BULLET = -1, ENEMY = -2
+}
 
 export default class GameScene extends Scene {
 	// ! can let take script know that we know that it won't be set for a little bit
@@ -32,7 +53,7 @@ export default class GameScene extends Scene {
 	}
 
     create() {
-        
+
 
 
         this.scoreText = this.add.text(16, 16, 'score: 0', {
