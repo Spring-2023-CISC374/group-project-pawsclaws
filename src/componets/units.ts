@@ -1,6 +1,6 @@
 import { CollisionGroup, default as GameScene } from '../scenes/GameScene';
 import { Enemy } from './GameObject';
-import { Attack, default as RegularBullet, StraightBullet, TrackingBullet } from '../componets/Attack'
+import { Attack, default as RegularAttack, StraightAttack, TrackingAttack } from '../componets/Attack'
 import { range } from 'lodash'
 import Vector2 = Phaser.Math.Vector2;
 
@@ -12,7 +12,7 @@ export default abstract class Unit {
     protected aimingAt: Enemy
     private unitParams: UnitParams
     private coolDown: number
-    public bulletProto: Bullet
+    public attackProto: Attack
 
     abstract generateAttack(dirX: number, dirY: number): void
 
@@ -22,7 +22,7 @@ export default abstract class Unit {
         this.scene = scene
         this.sprite = this.scene.matter.add
             .sprite(v.x + tv.tileWidth / 2, v.y + tv.tileHeight / 2, unitParams.sprite, 0, {isStatic: false})
-            .setCollisionGroup(CollisionGroup.BULLET)
+            .setCollisionGroup(CollisionGroup.ATTACK)
             .setAngle(0)
         this.unitParams = unitParams
         this.coolDown = 0
@@ -66,7 +66,7 @@ export default abstract class Unit {
                         x: Math.cos((450 - spriteAngle360) % 360 / 180 * Math.PI),
                         y: Math.sin((450 - spriteAngle360) % 360 / 180 * Math.PI)
                     }
-                    this.generateBullets(x, y)
+                    this.generateAttacks(x, y)
                     this.coolDown = this.unitParams.coolDown
                 }
                 this.sprite.setAngularVelocity(0)
@@ -92,7 +92,7 @@ export class MachineGun extends Unit {
 
     constructor(scene, v, tv) {
         super(scene, v, tv, {coolDown: 10, sprite: 'machine_gun'})
-        this.bulletProto = StraightBullet.create(this.scene, v, tv, {
+        this.attackProto = StraightAttack.create(this.scene, v, tv, {
             damage: 1,
             scale: {x: 0.7, y: 0.7},
             frictionAir: 0,
@@ -108,10 +108,10 @@ export class MachineGun extends Unit {
         return MachineGun.create(this.scene, v, tv)
     }
 
-    generateBullets(dirX, dirY) {
+    generateAttacks(dirX, dirY) {
         const {x, y} = this.getXY()
         const spriteAngle360 = this.sprite.angle < 0 ? 360 + this.sprite.angle : this.sprite.angle
-        this.scene.spawnBullet(this.bulletProto.clone(
+        this.scene.spawnAttack(this.attackProto.clone(
             {
                 x: x + Math.cos((450 - (spriteAngle360 - 50)) / 180 * Math.PI) * 10,
                 y: y - Math.sin((450 - (spriteAngle360 - 50)) / 180 * Math.PI) * 10,
@@ -121,7 +121,7 @@ export class MachineGun extends Unit {
                 dirY: dirY / 2
             }, this.sprite.angle)
         )
-        this.scene.spawnBullet(this.bulletProto.clone(
+        this.scene.spawnAttack(this.attackProto.clone(
             {
                 x: x + Math.cos((450 - (spriteAngle360 + 50)) / 180 * Math.PI) * 10,
                 y: y - Math.sin((450 - (spriteAngle360 + 50)) / 180 * Math.PI) * 10,
@@ -138,7 +138,7 @@ export class ShotGun extends Unit {
 
     constructor(scene, v, tv) {
         super(scene, v, tv, {coolDown: 100, sprite: 'shotgun'})
-        this.bulletProto = StraightBullet.create(this.scene, v, tv, {
+        this.attackProto = StraightAttack.create(this.scene, v, tv, {
             damage: 20,
             scale: {x: 2, y: 1},
             frictionAir: 0.2,
@@ -154,10 +154,10 @@ export class ShotGun extends Unit {
         return ShotGun.create(this.scene, v, tv)
     }
 
-    generateBullets(dirX, dirY) {
+    generateAttacks(dirX, dirY) {
         const {x, y} = this.getXY()
         const spriteAngle360 = this.sprite.angle < 0 ? 360 + this.sprite.angle : this.sprite.angle
-        return range(6).map(i => this.scene.spawnBullet(this.bulletProto.clone(
+        return range(6).map(i => this.scene.spawnAttack(this.attackProto.clone(
             {
                 x: x + Math.cos((450 - (spriteAngle360 - ((-1) ** i) * Math.ceil(i / 2) * 15)) / 180 * Math.PI) * 50,
                 y: y - Math.sin((450 - (spriteAngle360 - ((-1) ** i) * Math.ceil(i / 2) * 15)) / 180 * Math.PI) * 50,
@@ -172,7 +172,7 @@ export class SingleRocketLauncher extends Unit {
 
     constructor(scene, v, tv) {
         super(scene, v, tv, {coolDown: 100, sprite: 'single_rocket'})
-        this.bulletProto = TrackingBullet.create(this.scene, v, tv, {
+        this.attackProto = TrackingAttack.create(this.scene, v, tv, {
             damage: 1,
             scale: {x: 1.2, y: 1.2},
             frictionAir: 0,
@@ -192,13 +192,13 @@ export class SingleRocketLauncher extends Unit {
         const {x, y} = this.getXY()
         const spriteAngle360 = this.sprite.angle < 0 ? 360 + this.sprite.angle : this.sprite.angle
 
-        this.scene.spawnBullet((this.bulletProto.clone(
+        this.scene.spawnAttack((this.attackProto.clone(
             {
                 x: x + Math.cos((450 - (spriteAngle360 - 50)) / 180 * Math.PI) * 10,
                 y: y - Math.sin((450 - (spriteAngle360 - 50)) / 180 * Math.PI) * 10,
             },
             {dirX: dirX / 10, dirY: dirY / 10},
-            this.sprite.angle) as TrackingBullet).setTarget(this.aimingAt)
+            this.sprite.angle) as TrackingAttack).setTarget(this.aimingAt)
         )
     }
 

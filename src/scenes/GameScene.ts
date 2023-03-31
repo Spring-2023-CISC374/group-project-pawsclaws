@@ -3,18 +3,9 @@ import { isEmpty, range, take, zip } from 'lodash';
 import * as buffDoge from '.../assets/buff_doge.png'
 import * as cowboyCat from '.../assets/cowboy_cat.png'
 import * as BalloonImg from '.../assets/redballoon.png'
-/*
-import * as tilesetImg from '../../assets/towerDefense_tilesheet@2_res.png'
-import * as levelFile2 from '../../assets/maps/level2.json'
-import * as greenKnightImg from '../../assets/green-knight.png'
-import * as machineGunImg from '../../assets/machine_gun.png'
-import * as shotgunImg from '../../assets/shotgun.png'
-import * as singleRocketImg from '../../assets/single_rocket.png'
-import * as smallBulletImg from '../../assets/small_bullet.png'
-*/
 import Balloon from '../componets/balloon';
 import Units, { MachineGun, ShotGun, SingleRocketLauncher } from '../componets/units';
-import { Bullet } from '../componets/Attack';
+import { Attack } from '../componets/Attack';
 import { product } from '../scripts/array';
 import { Enemy } from '../componets/GameObject';
 import Graphics = Phaser.GameObjects.Graphics;
@@ -35,7 +26,7 @@ export type GameTile =
 export type InstalledGun = { sprite: Units, tile: { x: number, y: number } }
 
 export enum CollisionGroup {
-    BULLET = -1, ENEMY = -2
+    ATTACK = -1, ENEMY = -2
 }
 
 const nrMap = range(10).reduce((acc, i) => ({...acc, [i]: 277 + i}), {})
@@ -54,32 +45,18 @@ export default class GameScene extends Scene {
     private moneyLayer: DynamicTilemapLayer
     private weaponSelectLayer: DynamicTilemapLayer
     private units: InstalledGun[]
-    private attacks: AutoRemoveList<Bullet>
+    private attacks: AutoRemoveList<Attack>
 
     private attackSubscriptions: (() => void)[]
 
     preload() {
-        //this.load.image('tiles', tilesetImg)
-        //this.load.image('machine_gun', machineGunImg)
-        //this.load.image('shotgun', shotgunImg)
-        //this.load.image('single_rocket', singleRocketImg)
-        //this.load.image('small_bullet', smallBulletImg)
-        // this.load.image('nr_1', nr1Img)
-        // this.load.image('nr_2', nr2Img)
-        // this.load.image('nr_3', nr3Img)
-        // this.load.image('nr_4', nr4Img)
-        // this.load.image('nr_5', nr5Img)
-        // this.load.image('nr_6', nr6Img)
-        // this.load.image('nr_7', nr7Img)
-        // this.load.image('nr_8', nr8Img)
-        // this.load.image('nr_9', nr9Img)
         this.load.spritesheet('../assets/redballoon.png', BalloonImg, {
             frameWidth: 20,
             frameHeight: 29,
             // margin: 2,
             // spacing: 2
         })
-        this.load.tilemapTiledJSON('map', levelFile2);
+        //this.load.tilemapTiledJSON('map', levelFile2);
         this.money = 1000
         this.units = []
         this.attackSubscriptions = []
@@ -144,14 +121,14 @@ export default class GameScene extends Scene {
                     if (!(gameObjectB instanceof Sprite)) {
 
                     } else if (!attack.isDead()){
-                        balloon.getHit(attack.bulletParams.damage)
+                        balloon.getHit(attack.attackParams.damage)
                     }
                 }
             })
         })
     }
 
-    spawnBullet(attack) {
+    spawnAttack(attack) {
         this.attacks.add(attack)
     }
 
@@ -187,7 +164,7 @@ export default class GameScene extends Scene {
 
         const matterTowerLayer = this.matter.world.convertTilemapLayer(this.towerLayer)
         matterTowerLayer.localWorld.bodies.forEach(body => {
-            body.collisionFilter = {...body.collisionFilter, group: CollisionGroup.BULLET}
+            body.collisionFilter = {...body.collisionFilter, group: CollisionGroup.ATTACK}
         })
         this.matter.world.setBounds(0, 0, this.tileMap.widthInPixels, this.tileMap.heightInPixels);
 
@@ -199,7 +176,7 @@ export default class GameScene extends Scene {
         })
 
         this.enemies = new AutoRemoveList<Enemy>()
-        this.attacks = new AutoRemoveList<Bullet>()
+        this.attacks = new AutoRemoveList<Attack>()
         this.spawnBalloons()
 
         this.createMenuMarker()
