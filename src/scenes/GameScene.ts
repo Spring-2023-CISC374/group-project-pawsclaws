@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+// Look at array.ts
 import { isEmpty, range, take, zip } from 'lodash';
 import * as buffDoge from '.../assets/buff_doge.png'
 import * as cowboyCat from '.../assets/cowboy_cat.png'
@@ -6,13 +7,16 @@ import * as BalloonImg from '.../assets/redballoon.png'
 import Balloon from '../componets/balloon';
 import Units, { MachineGun, ShotGun, SingleRocketLauncher } from '../componets/units';
 import { Attack } from '../componets/Attack';
+// Simple Array?
 import { product } from '../scripts/array';
 import { Enemy } from '../componets/GameObject';
 import Graphics = Phaser.GameObjects.Graphics;
 import Vector2 = Phaser.Math.Vector2;
 import Tilemap = Phaser.Tilemaps.Tilemap;
+// https://photonstorm.github.io/phaser3-docs/Phaser.Tilemaps.StaticTilemapLayer.html
 import StaticTilemapLayer = Phaser.Tilemaps.StaticTilemapLayer;
 import Sprite = Phaser.Physics.Matter.Sprite;
+// https://photonstorm.github.io/phaser3-docs/Phaser.Tilemaps.DynamicTilemapLayer.html
 import DynamicTilemapLayer = Phaser.Tilemaps.DynamicTilemapLayer;
 import AutoRemoveList from "../componets/AutoRemoveList";
 

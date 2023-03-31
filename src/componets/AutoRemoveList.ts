@@ -1,3 +1,4 @@
+// Look at array.ts
 import { flatten, partition } from 'lodash';
 import { Enemy, default as GameObject, CanDie } from './GameObject';
 
@@ -10,14 +11,17 @@ export interface List<T> {
 export default class AutoRemoveList<T extends CanDie> implements List<T> {
     public list: T[]
 
+    // What's needed in the constructor???
+    // https://stackoverflow.com/questions/46235436/angular-whats-the-meaning-of-these-three-dots-in-ngrx
     constructor(...es) {
-        this.list = flatten(es)
+        this.list = flatten(...es)
     }
 
     [Symbol.iterator] = function* () {
         yield* this.list
     }
 
+    // Should be similair to the constructor???
     add(...es) {
         this.list = flatten([...es, ...this.list])
         return this

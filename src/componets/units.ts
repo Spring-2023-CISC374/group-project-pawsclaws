@@ -1,6 +1,7 @@
 import { CollisionGroup, default as GameScene } from '../scenes/GameScene';
 import { Enemy } from './GameObject';
 import { Attack, default as RegularAttack, StraightAttack, TrackingAttack } from '../componets/Attack'
+// Look at array.ts
 import { range } from 'lodash'
 import Vector2 = Phaser.Math.Vector2;
 
