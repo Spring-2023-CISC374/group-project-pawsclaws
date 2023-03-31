@@ -1,30 +1,30 @@
 import { CollisionGroup, default as GameScene } from '../scenes/GameScene';
 import { Enemy } from './GameObject';
-import { Attack, default as RegularDart, Punch, Bullet } from './attack'
+import { Attack, default as RegularBullet, StraightBullet, TrackingBullet } from '../componets/Attack'
 import { range } from 'lodash'
 import Vector2 = Phaser.Math.Vector2;
 
-export type AttackParams = { coolDown: number, sprite: string }
+export type UnitParams = { coolDown: number, sprite: string }
 
-export default abstract class Gun {
+export default abstract class Unit {
     protected scene: GameScene
     protected sprite: Phaser.Physics.Matter.Sprite
     protected aimingAt: Enemy
-    private attackParams: AttackParams
+    private unitParams: UnitParams
     private coolDown: number
     public bulletProto: Bullet
 
     abstract generateAttack(dirX: number, dirY: number): void
 
-    abstract clone(v: any, tv: any): Gun
+    abstract clone(v: any, tv: any): Unit
 
-    constructor(scene, v, tv, attackParams) {
+    constructor(scene, v, tv, unitParams) {
         this.scene = scene
         this.sprite = this.scene.matter.add
-            .sprite(v.x + tv.tileWidth / 2, v.y + tv.tileHeight / 2, attackParams.sprite, 0, {isStatic: false})
+            .sprite(v.x + tv.tileWidth / 2, v.y + tv.tileHeight / 2, unitParams.sprite, 0, {isStatic: false})
             .setCollisionGroup(CollisionGroup.BULLET)
             .setAngle(0)
-        this.attackParams = attackParams
+        this.unitParams = unitParams
         this.coolDown = 0
     }
 
@@ -44,10 +44,10 @@ export default abstract class Gun {
             const {x, y} = this.aimingAt.getXY()
             const {velX, velY} = this.aimingAt.getVelXY()
             const dist = (new Vector2(x - this.sprite.x, this.sprite.y - y)).length()
-            const fromGun = new Vector2(x + velX * delta * dist / 500 - this.sprite.x, this.sprite.y - y - velY * delta * dist / 500)
-            const fromGunNormalized = fromGun.normalize()
-            const angle = Math.asin(fromGunNormalized.y) * 180 / Math.PI
-            const translatedAngle = fromGunNormalized.x > 0
+            const fromUnit = new Vector2(x + velX * delta * dist / 500 - this.sprite.x, this.sprite.y - y - velY * delta * dist / 500)
+            const fromUnitNormalized = fromUnit.normalize()
+            const angle = Math.asin(fromUnitNormalized.y) * 180 / Math.PI
+            const translatedAngle = fromUnitNormalized.x > 0
                 ? 90 - angle
                 : angle - 90
             const angleDiff = this.sprite.angle - translatedAngle
@@ -67,7 +67,7 @@ export default abstract class Gun {
                         y: Math.sin((450 - spriteAngle360) % 360 / 180 * Math.PI)
                     }
                     this.generateBullets(x, y)
-                    this.coolDown = this.gunParams.coolDown
+                    this.coolDown = this.unitParams.coolDown
                 }
                 this.sprite.setAngularVelocity(0)
             }
@@ -88,7 +88,7 @@ export default abstract class Gun {
     }
 }
 
-export class MachineGun extends Gun {
+export class MachineGun extends Unit {
 
     constructor(scene, v, tv) {
         super(scene, v, tv, {coolDown: 10, sprite: 'machine_gun'})
@@ -134,7 +134,7 @@ export class MachineGun extends Gun {
 
 }
 
-export class ShotGun extends Gun {
+export class ShotGun extends Unit {
 
     constructor(scene, v, tv) {
         super(scene, v, tv, {coolDown: 100, sprite: 'shotgun'})
@@ -168,7 +168,7 @@ export class ShotGun extends Gun {
 
 }
 
-export class SingleRocketLauncher extends Gun {
+export class SingleRocketLauncher extends Unit {
 
     constructor(scene, v, tv) {
         super(scene, v, tv, {coolDown: 100, sprite: 'single_rocket'})
