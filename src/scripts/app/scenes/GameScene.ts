@@ -1,6 +1,8 @@
 import { Scene } from 'phaser'
 import { isEmpty, range, take, zip } from 'lodash';
-import Unit, {} from '../componets/units'
+import * as buffDoge from '/assets/buff_doge.png'
+import * as cowboyCat from '/assets/cowboy_cat.png'
+import Attack, {  } from '../componets/units'
 import Balloon from '../componets/balloon'
 import Graphics = Phaser.GameObjects.Graphics;
 import Vector2 = Phaser.Math.Vector2;
@@ -27,7 +29,8 @@ export default class GameScene extends Scene {
 	// ! can let take script know that we know that it won't be set for a little bit
 	// ? it miight be undefined
 	private paths?: Phaser.Physics.Arcade.StaticGroup
-	private player?: Phaser.Physics.Arcade.Sprite 
+	private player?: Phaser.Physics.Arcade.Sprite
+	private enemies: AutoRemoveList<Enemy> 
 	//private cursors?: Phaser.Types.Input.Keyboard.CursorKeys
 	private balloons?: Phaser.Physics.Arcade.Group
 
@@ -51,6 +54,20 @@ export default class GameScene extends Scene {
 		//this.load.audio("retro",["/assets/retro.mp3"])
 		//this.load.spritesheet('dude','/assets/pinkguy.png', { frameWidth: 32, frameHeight: 48 })
 	}
+
+	getNearestKnight({x: tileX, y: tileY}) {
+        const [h, ...tail] = this.enemies
+        return isEmpty(tail)
+            ? h
+            : tail.reduce((acc, knight) => {
+                const {x: pX, y: pY} = acc.getXY()
+                const {x, y} = knight.getXY()
+                const pD = Math.sqrt((tileX - pX) ** 2 + (tileY - pY) ** 2)
+                const d = Math.sqrt((tileX - x) ** 2 + (tileY - y) ** 2)
+                return d < pD ? knight : acc
+            }, h)
+    }
+
 
     create() {
 
