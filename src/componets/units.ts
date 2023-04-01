@@ -10,10 +10,10 @@ export type UnitParams = { coolDown: number, sprite: string }
 export default abstract class Unit {
     protected scene: GameScene
     protected sprite: Phaser.Physics.Matter.Sprite
-    protected aimingAt: Enemy
+    protected aimingAt!: Enemy
     private unitParams: UnitParams
     private coolDown: number
-    public attackProto: Attack
+    public attackProto!: Attack
 
     abstract generateAttack(dirX: number, dirY: number): void
 
