@@ -2,6 +2,7 @@ import { CanDie, Enemy } from './GameObject';
 import { CollisionGroup, default as GameScene } from '../scenes/GameScene';
 import Vector2 = Phaser.Math.Vector2;
 
+// How do I fix this?????
 const {Body, Bodies} = Phaser.Physics.Matter.Matter
 
 export default class Balloon implements Enemy, CanDie {
@@ -26,6 +27,7 @@ export default class Balloon implements Enemy, CanDie {
             frictionAir: 0.02,
             friction: 0.1
         });
+        /*
         this.sprite
             .setExistingBody(compoundBody)
             .setVelocityY(4)
@@ -34,6 +36,7 @@ export default class Balloon implements Enemy, CanDie {
             .setPosition(v.x, v.y)
             .setCollisionGroup(CollisionGroup.ENEMY)
         this.sprite.anims.play('redballoon') // Balloon
+        */
         this.hp = 10
         this.isTouching = {left: false, right: false}
     }

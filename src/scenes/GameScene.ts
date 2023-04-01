@@ -1,9 +1,14 @@
+import Phaser from 'phaser'
 import { Scene } from 'phaser';
 // Look at array.ts
 import { isEmpty, range, take, zip } from 'lodash';
 import * as buffDoge from '.../assets/buff_doge.png'
 import * as cowboyCat from '.../assets/cowboy_cat.png'
 import * as BalloonImg from '.../assets/redballoon.png'
+import * as singleRocketImg from '.../assets/single_rocket.png'
+import * as machineGunImg from '.../assets/machine_gun.png'
+import * as shotgunImg from '.../assets/shotgun.png'
+import * as smallBulletImg from '.../assets/small_bullet.png'
 import Balloon from '../componets/balloon';
 import Units, { MachineGun, ShotGun, SingleRocketLauncher } from '../componets/units';
 import { Attack } from '../componets/Attack';
@@ -37,29 +42,39 @@ const nrMap = range(10).reduce((acc, i) => ({...acc, [i]: 277 + i}), {})
 console.log(nrMap)
 
 export default class GameScene extends Scene {
-    private enemies: AutoRemoveList<Enemy>
-    private goal: Vector2[]
-    private gameFieldMarker: Graphics
-    private menuMarker: Graphics
-    private money: number
-    private unitManager: { selected: Units, selectedPrice: number, available: { [key: string]: Units } }
-    private tileMap: Tilemap
+    // ! can let take script know that we know that it won't be set for a little bit
+	// ? it miight be undefined
+    private enemies!: AutoRemoveList<Enemy>
+    private goal!: Vector2[]
+    private gameFieldMarker!: Graphics
+    private menuMarker!: Graphics
+    private money!: number
+    private unitManager!: { selected: Units, selectedPrice: number, available: { [key: string]: Units } }
+    private tileMap!: Tilemap
     private towerLayer: StaticTilemapLayer
     private pathLayer: StaticTilemapLayer
     private moneyLayer: DynamicTilemapLayer
     private weaponSelectLayer: DynamicTilemapLayer
-    private units: InstalledGun[]
-    private attacks: AutoRemoveList<Attack>
+    private units!: InstalledGun[]
+    private attacks!: AutoRemoveList<Attack>
 
-    private attackSubscriptions: (() => void)[]
+    private attackSubscriptions!: (() => void)[]
 
     preload() {
-        this.load.spritesheet('../assets/redballoon.png', BalloonImg, {
+        this.load.image('cowboyCat',cowboyCat)
+        this.load.image('buffDoge',buffDoge)
+        this.load.image('machine_gun', machineGunImg)
+        this.load.image('shotgun', shotgunImg)
+        this.load.image('single_rocket',singleRocketImg)
+        this.load.image('small_bullet', smallBulletImg)
+        this.load.image('balloon-img',BalloonImg)
+        /*this.load.spritesheet('../assets/redballoon.png', BalloonImg, {
             frameWidth: 20,
             frameHeight: 29,
             // margin: 2,
             // spacing: 2
         })
+        */
         //this.load.tilemapTiledJSON('map', levelFile2);
         this.money = 1000
         this.units = []
@@ -143,11 +158,9 @@ export default class GameScene extends Scene {
                 .map(i => Balloon.create(this, {x: spawnX + (-1) ** i * Math.ceil(i / 2) * 15, y: spawnY + Math.floor(i / 4) * 30}))
             this.enemies.add(balloons)
         }, 2000)
-
     }
 
     create() {
-
         this.tileMap = this.make.tilemap({key: 'map'})
         const tileset = this.tileMap.addTilesetImage('tower_defense3', 'tiles')
         const backgroundLayer = this.tileMap.createStaticLayer('Background', tileset, 0, 0)
@@ -235,7 +248,6 @@ export default class GameScene extends Scene {
         }
 
         this.updateSubscriptions()
-
     }
 
     hasReachedGoal(e: Enemy) {

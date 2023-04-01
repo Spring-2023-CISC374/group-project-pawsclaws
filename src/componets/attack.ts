@@ -2,7 +2,7 @@ import { CollisionGroup } from "../scenes/GameScene";
 import { CanDie, Enemy } from "./GameObject";
 import Scene = Phaser.Scene
 import Sprite = Phaser.Physics.Matter.Sprite;
-import Bodies = Phaser.Physics.Matter.Matter.Bodies
+import Bodies = Phaser.Physics.Matter.MatterPhysics // Bodies??
 import Vector2 = Phaser.Math.Vector2;
 
 export interface Attack extends CanDie {
@@ -25,7 +25,7 @@ export default abstract class RegularAttack implements Attack {
 
     protected scene: Scene
     protected sprite: Sprite
-    private collided: boolean
+    private collided!: boolean
 
     public attackParams: AttackParams
 
