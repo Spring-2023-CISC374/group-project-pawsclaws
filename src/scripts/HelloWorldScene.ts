@@ -1,250 +1,254 @@
 import Phaser from 'phaser'
-import Button from 'phaser3-rex-plugins/plugins/button.js'
+
+const ENEMY_SPEED = 1 / 10000;
+  
+const BULLET_DAMAGE = 50;
+  
+const map: number[][] = [
+	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, -1, -1, -1, -1, -1, -1, -1, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, -1, 0, 0]
+];
+
+class Enemy extends Phaser.GameObjects.Image {
+	follower = { t: 0, vec: new Phaser.Math.Vector2() };
+	hp = 0;
+	path: Phaser.Curves.Path;
+
+	constructor(scene: HelloWorldScene) {
+	  super(scene, 0, 0, 'sprites', 'enemy');
+	  this.path = scene.add.path(96, -32);
+	}
+
+	startOnPath() {
+		this.follower.t = 0;
+		this.hp = 100;
+		
+		this.path.getPoint(this.follower.t, this.follower.vec);
+
+		this.setPosition(this.follower.vec.x, this.follower.vec.y);
+	}
+
+	receiveDamage(damage: number) {
+		this.hp -= damage;
+
+		// if hp drops below 0 we deactivate this enemy
+		if (this.hp <= 0) {
+			this.setActive(false);
+			this.setVisible(false);
+		}
+	}
+
+	update(time: number, delta: number) {
+		this.follower.t += ENEMY_SPEED * delta;
+		this.path.getPoint(this.follower.t, this.follower.vec);
+
+		this.setPosition(this.follower.vec.x, this.follower.vec.y);
+
+		if (this.follower.t >= 1) {
+			this.setActive(false);
+			this.setVisible(false);
+		}
+	}
+}
+
+class Turret extends Phaser.GameObjects.Image {
+	private nextTic = 0;
+	private enemies: Phaser.GameObjects.Group;
+	private bullets: Phaser.GameObjects.Group;
+
+	constructor(scene: HelloWorldScene, enemies: Phaser.GameObjects.Group, bullets: Phaser.GameObjects.Group) {
+		  super(scene, 0, 0, 'sprites', 'turret');
+		  this.enemies = enemies;
+		  this.bullets = bullets;
+	}
+
+	place(i: number, j: number): void {
+		  this.y = i * 64 + 64 / 2;
+		  this.x = j * 64 + 64 / 2;
+		  map[i][j] = 1;
+	}
+
+	fire(): void {
+		  const enemy = this.getEnemy(this.x, this.y, 200);
+		  if (enemy) {
+			const angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+			this.addBullet(this.x, this.y, angle);
+			this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+		  }
+	}
+
+	update(time: number, delta: number): void {
+		  if (time > this.nextTic) {
+			this.fire();
+			this.nextTic = time + 1000;
+		  }
+	}
+
+	private getEnemy(x: number, y: number, distance: number) {
+		const enemyUnits = this.enemies.getChildren();
+		for (let i = 0; i < enemyUnits.length; i++) {
+	  		const enemy = enemyUnits[i] as Enemy;
+	  		if (enemy.active && Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y) < distance) {
+				return enemy;
+	  		}
+		}
+		return false;
+	}
+	private addBullet(x: number, y: number, angle: number): void {
+    	const bullet = this.bullets.get();
+    	if (bullet)
+    	{
+        	bullet.fire(x, y, angle);
+    	}
+	}
+}
+
+class Bullet extends Phaser.GameObjects.Image {
+	private incX = 0;
+	private incY = 0;
+	private lifespan = 0;
+	private speed = Phaser.Math.GetSpeed(600, 1);
+	private dx = 0;
+	private dy = 0;
+
+	constructor(scene: HelloWorldScene) {
+		  super(scene, 0, 0, 'bullet');
+	}
+
+	fire(x: number, y: number, angle: number): void {
+		  this.setActive(true);
+		  this.setVisible(true);
+		  // Bullets fire from the middle of the screen to the given x/y
+		  this.setPosition(x, y);
+
+		  // we don't need to rotate the bullets as they are round
+		  // this.setRotation(angle);
+
+		  this.dx = Math.cos(angle);
+		  this.dy = Math.sin(angle);
+
+		  this.lifespan = 1000;
+		}
+
+	update(time: number, delta: number): void {
+		  this.lifespan -= delta;
+
+		  this.x += this.dx * (this.speed * delta);
+		  this.y += this.dy * (this.speed * delta);
+
+		  if (this.lifespan <= 0) {
+			this.setActive(false);
+			this.setVisible(false);
+		  }
+	}
+}
 
 export default class HelloWorldScene extends Phaser.Scene {
-	// ! can let take script know that we know that it won't be set for a little bit
-	// ? it miight be undefined
-	private platforms?: Phaser.Physics.Arcade.StaticGroup
-	private player?: Phaser.Physics.Arcade.Sprite 
-	private cursors?: Phaser.Types.Input.Keyboard.CursorKeys
-	private stars?: Phaser.Physics.Arcade.Group
-	private balloonFollow?: Phaser.GameObjects.PathFollower
-	//private path?: {t: number, vec: any}//Phaser.Curves.Path
-	private curve?: Phaser.Curves.Path
 
-	private score = 0
-	private scoreText?: Phaser.GameObjects.Text
-
-	private bombs?: Phaser.Physics.Arcade.Group
-
-	private gameOver = false
-	private gameOverText?: Phaser.GameObjects.Text
-
-	//private music?: Phaser.Game
+	nextEnemy: number;
+	path!: Phaser.Curves.Path;
+	turrets!: Phaser.GameObjects.Group;
+	enemies!: Phaser.GameObjects.Group;
+	bullets!: Phaser.GameObjects.Group;
 	
 	constructor() {
 		super('hello-world')
+		this.nextEnemy = 0;
 	}
 
-	preload() {
-		this.load.image('red_balloon', '/assets/images/balloon-red.png')
-		this.load.image('start_wave', '/assets/images/start.png')
-		this.load.image('sky','/assets/images/nightsky.png') 
-		this.load.image('ground','/assets/images/platform.png')
-		this.load.image('ground2','/assets/images/platform2.png')
-		this.load.image('star','/assets/images/oreo.png') 
-		this.load.image('bomb','/assets/images/bomb.png')
-		this.load.image('wall','/assets/images/wall.png')
-		this.load.audio("retro",["/assets/images/retro.mp3"])
-		this.load.spritesheet('dude','/assets/images/pinkguy.png', { frameWidth: 32, frameHeight: 48 })
+  
+  
+	preload(this: HelloWorldScene) {
+		this.load.atlas('sprites', 'assets/spritesheet.png', 'assets/spritesheet.json');
+		this.load.image('bullet', 'assets/bullet.png');
+	}
+  
+	create(this: HelloWorldScene/*Phaser.Scene*/)  {
+		const graphics = this.add.graphics();
+		this.drawLines(graphics);
+		this.path = this.add.path(96, -32);
+		this.path.lineTo(96, 164);
+		this.path.lineTo(480, 164);
+		this.path.lineTo(480, 544);
+  
+		graphics.lineStyle(2, 0xffffff, 1);
+		this.path.draw(graphics);
+  
+		this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
+  
+		this.turrets = this.add.group({ classType: Turret, runChildUpdate: true });
+  
+		this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
+  
+		this.nextEnemy = 0;
+  
+		this.physics.add.overlap(this.enemies, this.bullets, () => this.damageEnemy);
+  
+		this.input.on('pointerdown', this.placeTurret);
+}
+  
+	private damageEnemy(enemy: Enemy, bullet: Bullet): void {
+		// only if both enemy and bullet are alive
+		if (enemy.active === true && bullet.active === true) {
+	 		// we remove the bullet right away
+	  		bullet.setActive(false);
+	  		bullet.setVisible(false);
+  
+	  		// decrease the enemy hp with BULLET_DAMAGE
+	  		enemy.receiveDamage(BULLET_DAMAGE);
+		}
 	}
 
-	create() {
-		this.add.image(400, 225, 'sky')
-		//this.add.image(400, 300, 'star')
-
-		var musicConfig = {
-			mute: false,
-			volume: 1,
-			rate: 1,
-			detune: 0,
-			seek: 0,
-			loop: false,
-			delay: 0
-		}
-
-		this.platforms = this.physics.add.staticGroup()
-		const ground = this.platforms.create(400, 568, 'ground') as Phaser.Physics.Arcade.Sprite
-		
-		ground
-			.setScale(2)
-			.refreshBody()
-
-		//this.platforms.create(775, 425, 'ground') // first platform from the bottom, right side
-		//this.platforms.create(50, 250, 'ground') //
-		//this.platforms.create(831, 120, 'ground') // secound platform from the bottom, right side
-		//this.platforms.create(313, 425, 'ground2')
-		//this.platforms.create(486.5, 275, 'ground2')
-		//this.platforms.create(400, 360, 'wall')
-
-		this.player = this.physics.add.sprite(100, 450, 'dude')
-		this.player.setBounce(0.2)
-		this.player.setCollideWorldBounds
-
-		this.anims.create({
-			key: 'left',
-			frames: this.anims.generateFrameNumbers('dude', {
-				start: 0, end: 3
-			}),
-			frameRate: 10,
-			repeat: -1
-		})
-
-		this.anims.create({
-			key: 'turn',
-			frames: [{key: 'dude', frame: 4}],
-			frameRate: 20
-		})
-
-		this.anims.create({
-			key: 'right',
-			frames: this.anims.generateFrameNumbers('dude',{
-				start: 5, end: 8
-			}),
-			frameRate: 10,
-			repeat: -1
-		})
-
-		this.physics.add.collider(this.player, this.platforms)
-
-		this.cursors = this.input.keyboard.createCursorKeys()
-		/*
-		this.stars = this.physics.add.group({
-			key: 'star',
-			repeat: 11,
-			setXY: { x: 12, y: 0, stepX: 70}
-		})
-		
-
-		this.stars.children.iterate(c => {
-			const child = c as Phaser.Physics.Arcade.Image
-			child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8))
-		})
-
-		this.physics.add.collider(this.stars, this.platforms)
-		this.physics.add.overlap(this.player, this.stars, this.handleCollectStar, undefined, this)
-		*/
-		this.scoreText = this.add.text(16, 16, 'score: 0', {
-			fontSize: '32px',
-			color: '#fff' // fill didn't work
-		})
-
-		this.gameOverText = this.add.text(225, 250,'Game Over', {
-			fontSize: '64px',
-			color: '#fff'
-		})
-		this.gameOverText.visible = false
-
-		this.bombs = this.physics.add.group()
-
-		this.physics.add.collider(this.bombs, this.platforms)
-		this.physics.add.collider(this.player, this.bombs, this.handleHitBomb, undefined, this)
-
-		// where my code starts
-		this.curve = new Phaser.Curves.Path(600, 50);
-    	var points2 = new Phaser.Math.Vector2(100, 50)
-		this.curve.splineTo([ points2]);
-		var points3 = new Phaser.Math.Vector2(100, 350)
-		this.curve.splineTo([ points3]);
-    	var points4 = new Phaser.Math.Vector2(400, 500)
-		this.curve.splineTo([ points4]);
-		var points5 = new Phaser.Math.Vector2(600, 600)
-		this.curve.splineTo([ points5]);
-		
-		var graphics = this.add.graphics()
-		graphics.lineStyle(1, 0xffffff, 1)
-		this.curve.draw(graphics, 64)
-		graphics.fillStyle(0x00ff00, 1)
-
-		var btn = this.add.sprite(300, 300, 'start_wave').setInteractive()
-		btn.on('pointerdown', () => this.handleStart(btn))
-		
-		
-
-		//this.bombFollow = this.physics.add.sprite(600, 50, 'bomb')
-		this.balloonFollow = this.add.follower(this.curve, 600, 50, 'red_balloon')
-		this.balloonFollow.setScale(0.2)
-		this.balloonFollow.startFollow({
-			duration: 10000
-		})
-
-		
-		//this.path = { t: 0, vec: new Phaser.Math.Vector2() };
-		
-
+	private drawLines(graphics: Phaser.GameObjects.Graphics): void {
+    	graphics.lineStyle(1, 0x0000ff, 0.8);
+    	for(let i = 0; i < 8; i++) {
+        	graphics.moveTo(0, i * 64);
+        	graphics.lineTo(640, i * 64);
+    	}
+    	for(let j = 0; j < 10; j++) {
+        	graphics.moveTo(j * 64, 0);
+        	graphics.lineTo(j * 64, 512);
+    	}
+    	graphics.strokePath();
 	}
 
-	private handleHitBomb(player: Phaser.GameObjects.GameObject, b: Phaser.GameObjects.GameObject) {
-		this.physics.pause()
+	update(this: HelloWorldScene, time: number, delta: number): void {  
 
-		this.player?.setTint(0xff0000)
-		this.player?.anims.play('turn')
+    	if (time > this.nextEnemy)
+    	{
+        	const enemy = this.enemies.get();
+        	if (enemy)
+			{
+            	enemy.setActive(true);
+            	enemy.setVisible(true);
+            	enemy.startOnPath();
 
-		this.gameOver = true
-		if(this.gameOverText != null){
-			this.gameOverText.visible = true
-		}
-		//this.gameOverText.visible = true // Giving warning but it works
+            	this.nextEnemy = time + 2000;
+        	}       
+    	}
 	}
 
-	// Moon instead of star
-	private handleCollectStar(player: Phaser.GameObjects.GameObject, s: Phaser.GameObjects.GameObject) {
-		const star = s as Phaser.Physics.Arcade.Image
-		star.disableBody(true,true)
-
-		this.score += 10
-		this.scoreText?.setText(`Score: ${this.score}`)
-
-		if (this.stars?.countActive(true) == 0 ){
-			this.stars.children.iterate(c => {
-				const child = c as Phaser.Physics.Arcade.Image
-				child.enableBody(true, child.x, 0, true, true)
-			})
-
-			if (this.player) {
-				const x = this.player.x < 400 
-					? Phaser.Math.Between(400, 800) 
-					: Phaser.Math.Between(0,400)
-
-				const bomb: Phaser.Physics.Arcade.Image = this.bombs?.create(x, 16, 'bomb')
-				bomb.setBounce(1)
-				bomb.setCollideWorldBounds(true)
-				bomb.setVelocity(Phaser.Math.Between(-200,200), 20)
-			}
-		}
-	}
-	
-	private startBalloonWave(){
-		if(this.curve){
-			this.balloonFollow = this.add.follower(this.curve, 600, 50, 'red_balloon')
-			this.balloonFollow.setScale(0.2)
-			this.balloonFollow.startFollow({
-				duration: 10000
-			})
-		}
-	}
-	private handleStart(btn: any){
-		btn.on('pointerup', () => this.startBalloonWave())
+	private canPlaceTurret(i: number, j: number): boolean {
+    	return map[i][j] === 0;
 	}
 
-	update() {
-		if (!this.cursors) {
-			return
-		}
-
-		if (this.cursors.left?.isDown) {
-			this.player?.setVelocityX(-160)
-			this.player?.anims.play('left',true)
-		} else if (this.cursors.right?.isDown) {
-			this.player?.setVelocityX(160)
-			this.player?.anims.play('right',true)
-		} else {
-			this.player?.setVelocityX(0)
-			this.player?.anims.play('turn')
-		}
-
-		if (this.cursors.up?.isDown && this.player?.body.touching.down) {
-			this.player.setVelocityY(-330)
-		}
-
-		// isFollowing() returns true if it is moving, so !isFollowing() will be true
-		// when it reaches the end of the path. Then destroy the object and end the game
-		if(!this.balloonFollow?.isFollowing()){
-			this.balloonFollow?.destroy()
-			this.gameOver = true
-			if(this.gameOverText != null){
-				this.gameOverText.visible = true
-			}
-		}
+	private placeTurret(pointer: Phaser.Input.Pointer): void {
+    	const i = Math.floor(pointer.y/64);
+    	const j = Math.floor(pointer.x/64);
+    	if(this.canPlaceTurret(i, j)) {
+        	const turret = this.turrets.get();
+        	if (turret)
+        	{
+            	turret.setActive(true);
+            	turret.setVisible(true);
+            	turret.place(i, j);
+        	}   
+    	}
 	}
 }
