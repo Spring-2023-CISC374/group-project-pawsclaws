@@ -1,6 +1,5 @@
 import Phaser from 'phaser'
-
-import HelloWorldScene from './HelloWorldScene'
+import { Controller, SceneA, SceneB, SceneC } from './scripts/scenes/SideMenu'
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
@@ -14,7 +13,7 @@ const config: Phaser.Types.Core.GameConfig = {
 			debug: false //Handy for checking physics
 		},
 	},
-	scene: [HelloWorldScene],
+	scene: [Controller, SceneA, SceneB, SceneC],
 }
 
 export default new Phaser.Game(config)
