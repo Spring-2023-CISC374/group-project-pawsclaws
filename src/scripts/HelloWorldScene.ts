@@ -1,3 +1,10 @@
+
+// I GOT THIS CODE FROM 
+
+// https://gamedevacademy.org/how-to-make-tower-defense-game-with-phaser-3/
+
+// */
+
 import Phaser from 'phaser'
 
 const ENEMY_SPEED = 1 / 10000;
@@ -15,14 +22,16 @@ const map: number[][] = [
 	[0, 0, 0, 0, 0, 0, 0, -1, 0, 0]
 ];
 
+
 class Enemy extends Phaser.GameObjects.Image {
 	follower = { t: 0, vec: new Phaser.Math.Vector2() };
 	hp = 0;
 	path: Phaser.Curves.Path;
 
 	constructor(scene: HelloWorldScene) {
-	  super(scene, 0, 0, 'sprites', 'enemy');
-	  this.path = scene.add.path(96, -32);
+		var scenePath = scene.path
+		super(scene, 0, 0, 'sprites', 'enemy');
+		this.path = scenePath
 	}
 
 	startOnPath() {
@@ -62,10 +71,16 @@ class Turret extends Phaser.GameObjects.Image {
 	private enemies: Phaser.GameObjects.Group;
 	private bullets: Phaser.GameObjects.Group;
 
-	constructor(scene: HelloWorldScene, enemies: Phaser.GameObjects.Group, bullets: Phaser.GameObjects.Group) {
-		  super(scene, 0, 0, 'sprites', 'turret');
-		  this.enemies = enemies;
-		  this.bullets = bullets;
+	constructor(scene: HelloWorldScene) {
+		var enemymaybe = scene.enemies
+		var bulletsmaybe = scene.bullets
+		
+		super(scene, 0, 0, 'sprites', 'turret');
+		this.enemies = enemymaybe;
+		this.bullets = bulletsmaybe;
+		console.log("trying scene", typeof(this.scene))
+		console.log("trying enemies", typeof(this.enemies))
+		console.log("trying bullets", typeof(this.bullets))
 	}
 
 	place(i: number, j: number): void {
@@ -117,7 +132,7 @@ class Bullet extends Phaser.GameObjects.Image {
 	private dx = 0;
 	private dy = 0;
 
-	constructor(scene: HelloWorldScene) {
+	constructor(scene: Phaser.Scene) {
 		  super(scene, 0, 0, 'bullet');
 	}
 
@@ -151,7 +166,7 @@ class Bullet extends Phaser.GameObjects.Image {
 
 export default class HelloWorldScene extends Phaser.Scene {
 
-	nextEnemy: number;
+	nextEnemy!: number;
 	path!: Phaser.Curves.Path;
 	turrets!: Phaser.GameObjects.Group;
 	enemies!: Phaser.GameObjects.Group;
@@ -159,17 +174,17 @@ export default class HelloWorldScene extends Phaser.Scene {
 	
 	constructor() {
 		super('hello-world')
-		this.nextEnemy = 0;
+		//this.nextEnemy = 0;
 	}
 
   
   
-	preload(this: HelloWorldScene) {
+	preload() {
 		this.load.atlas('sprites', 'assets/spritesheet.png', 'assets/spritesheet.json');
 		this.load.image('bullet', 'assets/bullet.png');
 	}
   
-	create(this: HelloWorldScene/*Phaser.Scene*/)  {
+	create()  {
 		const graphics = this.add.graphics();
 		this.drawLines(graphics);
 		this.path = this.add.path(96, -32);
@@ -187,14 +202,18 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
   
 		this.nextEnemy = 0;
+
+		// its underlined in red but still works
+		this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
   
-		this.physics.add.overlap(this.enemies, this.bullets, () => this.damageEnemy);
-  
-		this.input.on('pointerdown', this.placeTurret);
+		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+			this.placeTurret(pointer, this.turrets)
+		});
 }
   
 	private damageEnemy(enemy: Enemy, bullet: Bullet): void {
 		// only if both enemy and bullet are alive
+		
 		if (enemy.active === true && bullet.active === true) {
 	 		// we remove the bullet right away
 	  		bullet.setActive(false);
@@ -218,7 +237,7 @@ export default class HelloWorldScene extends Phaser.Scene {
     	graphics.strokePath();
 	}
 
-	update(this: HelloWorldScene, time: number, delta: number): void {  
+	update(time: number, delta: number): void {  
 
     	if (time > this.nextEnemy)
     	{
@@ -238,11 +257,11 @@ export default class HelloWorldScene extends Phaser.Scene {
     	return map[i][j] === 0;
 	}
 
-	private placeTurret(pointer: Phaser.Input.Pointer): void {
+	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group): void {
     	const i = Math.floor(pointer.y/64);
     	const j = Math.floor(pointer.x/64);
     	if(this.canPlaceTurret(i, j)) {
-        	const turret = this.turrets.get();
+        	const turret = turrets.get();
         	if (turret)
         	{
             	turret.setActive(true);
