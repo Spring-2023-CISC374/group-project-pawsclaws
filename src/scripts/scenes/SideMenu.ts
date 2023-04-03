@@ -1,4 +1,6 @@
 import Phaser from "phaser";
+//Created a simple demo tabbing menu by Bryan DelleDonne
+//Used Two Phaser Tutorials on their website as guides (Scene Controller and Change Scene Order) 
 
 export class Controller extends Phaser.Scene {
     private text: Phaser.GameObjects.Text;
