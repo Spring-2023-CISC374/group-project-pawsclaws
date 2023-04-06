@@ -9,7 +9,7 @@ import Phaser from 'phaser'
 
 const ENEMY_SPEED = 1 / 10000;
   
-const BULLET_DAMAGE = 50;
+const BULLET_DAMAGE = 25;
   
 const map: number[][] = [
 	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -50,6 +50,7 @@ class Enemy extends Phaser.GameObjects.Image {
 		if (this.hp <= 0) {
 			this.setActive(false);
 			this.setVisible(false);
+			this.destroy();
 		}
 	}
 
@@ -110,6 +111,8 @@ class Turret extends Phaser.GameObjects.Image {
 		for (let i = 0; i < enemyUnits.length; i++) {
 	  		const enemy = enemyUnits[i] as Enemy;
 	  		if (enemy.active && Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y) < distance) {
+				
+				console.log("enemy found", enemyUnits)
 				return enemy;
 	  		}
 		}
