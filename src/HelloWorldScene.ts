@@ -4,12 +4,11 @@
 // https://gamedevacademy.org/how-to-make-tower-defense-game-with-phaser-3/
 
 // */
-
 import Phaser from 'phaser'
 
 const ENEMY_SPEED = 1 / 10000;
   
-const BULLET_DAMAGE = 50;
+const BULLET_DAMAGE = 25;
   
 const map: number[][] = [
 	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -84,7 +83,7 @@ class Turret extends Phaser.GameObjects.Image {
 	}
 
 	place(i: number, j: number): void {
-		  this.y = i * 64 + 64 / 2;
+		  this.y = i * 64 + 64 / 2; // Please check into this
 		  this.x = j * 64 + 64 / 2;
 		  map[i][j] = 1;
 	}
@@ -177,8 +176,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 		//this.nextEnemy = 0;
 	}
 
-  
-  
 	preload() {
 		this.load.atlas('sprites', 'assets/spritesheet.png', 'assets/spritesheet.json');
 		this.load.image('bullet', 'assets/bullet.png');
@@ -204,7 +201,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.nextEnemy = 0;
 
 		// its underlined in red but still works
-		this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
+		this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy, undefined, this);
   
 		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
 			this.placeTurret(pointer, this.turrets)
