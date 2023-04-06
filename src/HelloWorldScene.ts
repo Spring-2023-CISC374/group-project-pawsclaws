@@ -1,8 +1,5 @@
-
 // I GOT THIS CODE FROM 
-
 // https://gamedevacademy.org/how-to-make-tower-defense-game-with-phaser-3/
-
 // */
 import Phaser from 'phaser'
 
@@ -182,6 +179,9 @@ export default class HelloWorldScene extends Phaser.Scene {
 	preload() {
 		this.load.atlas('sprites', 'assets/spritesheet.png', 'assets/spritesheet.json');
 		this.load.image('bullet', 'assets/bullet.png');
+		this.load.image('map', '../images/grassmeadows.png');
+		this.load.image('enemy', '../images/redballoon.png');
+		this.load.image('turret', '../images/cowboy_cat.png');
 	}
   
 	create()  {
