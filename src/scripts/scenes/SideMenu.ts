@@ -67,6 +67,11 @@ export class SceneB extends Phaser.Scene {
         super({ key: 'SceneB', active: true });
     }
 
+    preload ()
+    {
+       this.load.html("UnitEditor", "assets/html/UnitEditor.html")
+    }
+
     create ()
     {
         let graphics = this.add.graphics();
@@ -77,6 +82,8 @@ export class SceneB extends Phaser.Scene {
         graphics.fillRect(200, 100, 100, 100);
 
         this.add.text(220, 110, 'B', { font: '96px Courier', color: '#000000' });
+
+        this.add.dom(220,300).createFromCache("UnitEditor");
     }
 }
 

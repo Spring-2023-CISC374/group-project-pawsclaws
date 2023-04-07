@@ -6,6 +6,9 @@ const config: Phaser.Types.Core.GameConfig = {
 	parent: 'app',
 	width: 800,
 	height: 600,
+	dom: {
+		createContainer: true
+	},
 	physics: {
 		default: 'arcade',
 		arcade: {
