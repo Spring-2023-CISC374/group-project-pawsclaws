@@ -1,5 +1,8 @@
 import Phaser from 'phaser'
-import { Controller, SceneA, SceneB, SceneC } from './scripts/scenes/SideMenu'
+//import { Controller, SceneA, SceneB, SceneC } from './scripts/scenes/SideMenu'
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
+import { TestScene } from './scripts/scenes/TestScene';
+import { PageScene } from './scripts/scenes/PageScene';
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
@@ -9,6 +12,13 @@ const config: Phaser.Types.Core.GameConfig = {
 	dom: {
 		createContainer: true
 	},
+	plugins: {
+        scene: [{
+            key: 'rexUI',
+            plugin: RexUIPlugin,
+            mapping: 'rexUI'
+        }]
+	},
 	physics: {
 		default: 'arcade',
 		arcade: {
@@ -16,7 +26,7 @@ const config: Phaser.Types.Core.GameConfig = {
 			debug: false //Handy for checking physics
 		},
 	},
-	scene: [Controller, SceneA, SceneB, SceneC],
+	scene: [PageScene],
 }
 
 export default new Phaser.Game(config)
