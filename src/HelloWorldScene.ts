@@ -1,8 +1,5 @@
-
 // I GOT THIS CODE FROM 
-
 // https://gamedevacademy.org/how-to-make-tower-defense-game-with-phaser-3/
-
 // */
 import Phaser from 'phaser'
 
@@ -179,11 +176,15 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
 
 	preload() {
-		this.load.atlas('sprites', 'assets/spritesheet.png', 'assets/spritesheet.json');
-		this.load.image('bullet', 'assets/bullet.png');
+		this.load.image('background', 'assets/grassmeadows.png');
+		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json');
+		this.load.atlas('unitsprites', 'assets/cowboy.png', 'assets/spritesheet.json');
+		this.load.image('bullet','assets/bigbill.png');
 	}
   
 	create()  {
+		this.add.image(200, 200, 'background');
+		
 		const graphics = this.add.graphics();
 		this.drawLines(graphics);
 		this.path = this.add.path(96, -32);
@@ -239,7 +240,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
 
 	private drawLines(graphics: Phaser.GameObjects.Graphics): void {
-    	graphics.lineStyle(1, 0x0000ff, 0.8);
+    	graphics.lineStyle(1, 0x000000, 0.8);
     	for(let i = 0; i < 8; i++) {
         	graphics.moveTo(0, i * 64);
         	graphics.lineTo(640, i * 64);
