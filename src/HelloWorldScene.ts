@@ -72,7 +72,7 @@ class Turret extends Phaser.GameObjects.Image {
 	private bullets: Phaser.GameObjects.Group;
 
 	constructor(scene: HelloWorldScene) {
-		super(scene, 0, 0, 'sprites', 'turret');
+		super(scene, 0, 0, 'unitsprites', 'turret');
 		var enemymaybe = scene.enemies
 		var bulletsmaybe = scene.bullets
 		
