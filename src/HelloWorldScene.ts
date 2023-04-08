@@ -8,7 +8,7 @@ import Phaser from 'phaser'
 
 const ENEMY_SPEED = 1 / 10000;
   
-const BULLET_DAMAGE = 25;
+const BULLET_DAMAGE = 100;
   
 const map: number[][] = [
 	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -26,6 +26,7 @@ class Enemy extends Phaser.GameObjects.Image {
 	follower = { t: 0, vec: new Phaser.Math.Vector2() };
 	hp = 0;
 	path: Phaser.Curves.Path;
+	timeOnPath = 0;
 
 	constructor(scene: HelloWorldScene) {
 		var scenePath = scene.path
@@ -36,6 +37,7 @@ class Enemy extends Phaser.GameObjects.Image {
 	startOnPath() {
 		this.follower.t = 0;
 		this.hp = 100;
+		this.timeOnPath = 0;
 		
 		this.path.getPoint(this.follower.t, this.follower.vec);
 
@@ -56,6 +58,7 @@ class Enemy extends Phaser.GameObjects.Image {
 	update(time: number, delta: number) {
 		this.follower.t += ENEMY_SPEED * delta;
 		this.path.getPoint(this.follower.t, this.follower.vec);
+		this.timeOnPath = this.timeOnPath + delta;
 
 		this.setPosition(this.follower.vec.x, this.follower.vec.y);
 
@@ -72,15 +75,12 @@ class Turret extends Phaser.GameObjects.Image {
 	private bullets: Phaser.GameObjects.Group;
 
 	constructor(scene: HelloWorldScene) {
+		super(scene, 0, 0, 'sprites', 'turret');
 		var enemymaybe = scene.enemies
 		var bulletsmaybe = scene.bullets
 		
-		super(scene, 0, 0, 'sprites', 'turret');
 		this.enemies = enemymaybe;
 		this.bullets = bulletsmaybe;
-		console.log("trying scene", typeof(this.scene))
-		console.log("trying enemies", typeof(this.enemies))
-		console.log("trying bullets", typeof(this.bullets))
 	}
 
 	place(i: number, j: number): void {
@@ -110,8 +110,6 @@ class Turret extends Phaser.GameObjects.Image {
 		for (let i = 0; i < enemyUnits.length; i++) {
 	  		const enemy = enemyUnits[i] as Enemy;
 	  		if (enemy.active && Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y) < distance) {
-				
-				console.log("enemy found", enemyUnits)
 				return enemy;
 	  		}
 		}
@@ -173,9 +171,10 @@ export default class HelloWorldScene extends Phaser.Scene {
 	turrets!: Phaser.GameObjects.Group;
 	enemies!: Phaser.GameObjects.Group;
 	bullets!: Phaser.GameObjects.Group;
+	waveNumber!: number;
 	
 	constructor() {
-		super('hello-world')
+		super('helloworldscene');
 		//this.nextEnemy = 0;
 	}
 
@@ -195,7 +194,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 		graphics.lineStyle(2, 0xffffff, 1);
 		this.path.draw(graphics);
   
-		this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
+		this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true, repeat: 0 });
+		// console.log(this.enemies)
   
 		this.turrets = this.add.group({ classType: Turret, runChildUpdate: true });
   
@@ -204,11 +204,25 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.nextEnemy = 0;
 
 		// its underlined in red but still works
-		this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy, undefined, this);
+		this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy, undefined, this.scene);
   
 		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
 			this.placeTurret(pointer, this.turrets)
 		});
+
+		this.waveNumber = 0
+		var waveText = this.add.text(400, 25, "Wave: " + this.waveNumber)
+		var startWaveButton = this.add.text(400,50, 'Start Next Wave')
+		startWaveButton.setInteractive()
+		startWaveButton.on('pointerdown', () => {
+			//fucntion called start wave
+			if(this.enemies.getLength() == 0){
+				this.waveNumber++
+				waveText.setText("Wave: " + this.waveNumber)
+				this.startWave(this.waveNumber)
+			}
+
+		})
 }
   
 	private damageEnemy(enemy: Enemy, bullet: Bullet): void {
@@ -239,18 +253,18 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 	update(time: number, delta: number): void {  
 
-    	if (time > this.nextEnemy)
-    	{
-        	const enemy = this.enemies.get();
-        	if (enemy)
-			{
-            	enemy.setActive(true);
-            	enemy.setVisible(true);
-            	enemy.startOnPath();
+    	// if (time > this.nextEnemy)
+    	// {
+        // 	const enemy = this.enemies.get();
+        // 	if (enemy)
+		// 	{
+        //     	enemy.setActive(true);
+        //     	enemy.setVisible(true);
+        //     	enemy.startOnPath();
 
-            	this.nextEnemy = time + 2000;
-        	}       
-    	}
+        //     	this.nextEnemy = time + 2000;
+        // 	}       
+    	// }
 	}
 
 	private canPlaceTurret(i: number, j: number): boolean {
@@ -269,5 +283,13 @@ export default class HelloWorldScene extends Phaser.Scene {
             	turret.place(i, j);
         	}   
     	}
+	}
+
+	private startWave(waveNumber: number) {
+		this.enemies.get()
+		waveNumber--;
+		if(waveNumber > 0){
+			setTimeout(() => {this.startWave(waveNumber)}, 1000)
+		}
 	}
 }
