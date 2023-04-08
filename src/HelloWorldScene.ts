@@ -72,7 +72,7 @@ class Turret extends Phaser.GameObjects.Image {
 		var enemymaybe = scene.enemies
 		var bulletsmaybe = scene.bullets
 		
-		super(scene, 0, 0, 'sprites', 'turret');
+		super(scene, 0, 0, 'unitsprites', 'turret');
 		this.enemies = enemymaybe;
 		this.bullets = bulletsmaybe;
 		console.log("trying scene", typeof(this.scene))
@@ -177,14 +177,15 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
 
 	preload() {
-		this.load.atlas('sprites', 'assets/spritesheet.png', 'assets/spritesheet.json');
-		this.load.image('bullet', 'assets/bullet.png');
-		this.load.image('map', '../images/grassmeadows.png');
-		this.load.image('enemy', '../images/redballoon.png');
-		this.load.image('turret', '../images/cowboy_cat.png');
+		this.load.image('background', 'assets/grassmeadows.png');
+		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json');
+		this.load.atlas('unitsprites', 'assets/cowboy.png', 'assets/spritesheet.json');
+		this.load.image('bullet','assets/bigbill.png');
 	}
   
 	create()  {
+		this.add.image(200, 200, 'background');
+		
 		const graphics = this.add.graphics();
 		this.drawLines(graphics);
 		this.path = this.add.path(96, -32);
@@ -225,7 +226,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
 
 	private drawLines(graphics: Phaser.GameObjects.Graphics): void {
-    	graphics.lineStyle(1, 0x0000ff, 0.8);
+    	graphics.lineStyle(1, 0x000000, 0.8);
     	for(let i = 0; i < 8; i++) {
         	graphics.moveTo(0, i * 64);
         	graphics.lineTo(640, i * 64);
@@ -238,7 +239,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
 
 	update(time: number, delta: number): void {  
-
     	if (time > this.nextEnemy)
     	{
         	const enemy = this.enemies.get();
