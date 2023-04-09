@@ -5,7 +5,7 @@ import Phaser from 'phaser'
 
 const ENEMY_SPEED = 1 / 10000;
   
-const BULLET_DAMAGE = 100;
+const BULLET_DAMAGE = 25;
   
 const map: number[][] = [
 	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -216,6 +216,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		var startWaveButton = this.add.text(400,50, 'Start Next Wave')
 		startWaveButton.setInteractive()
 		startWaveButton.on('pointerdown', () => {
+			
 			//fucntion called start wave
 			if(this.enemies.getLength() == 0){
 				this.waveNumber++
