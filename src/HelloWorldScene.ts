@@ -172,7 +172,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	bullets!: Phaser.GameObjects.Group;
 	
 	constructor() {
-		super('hello-world')
+		super('helloworldscene')
 		//this.nextEnemy = 0;
 	}
 

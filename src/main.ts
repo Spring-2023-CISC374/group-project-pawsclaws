@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import startScene from './scenes/startScene'
 import HelloWorldScene from './HelloWorldScene'
 
 const config: Phaser.Types.Core.GameConfig = {
@@ -9,7 +10,7 @@ const config: Phaser.Types.Core.GameConfig = {
 	physics: {
 		default: 'arcade'
 	},
-	scene: [HelloWorldScene]
+	scene: [startScene, HelloWorldScene]
 }
 
 export default new Phaser.Game(config)
