@@ -1,3 +1,4 @@
+
 {
   "compilerOptions": {
     "target": "ESNext",
@@ -16,5 +17,5 @@
     "noImplicitReturns": true,
     "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src","scripts"]
 }
