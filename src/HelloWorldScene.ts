@@ -5,7 +5,7 @@ import Phaser from 'phaser'
 
 const ENEMY_SPEED = 1 / 10000;
   
-const BULLET_DAMAGE = 100;
+const BULLET_DAMAGE = 33;
   
 const map: number[][] = [
 	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -42,7 +42,10 @@ class Enemy extends Phaser.GameObjects.Image {
 	}
 
 	receiveDamage(damage: number) {
+		//console.log(damage)
+		//console.log(this.hp)
 		this.hp -= damage;
+		//console.log(this.hp)
 
 		// if hp drops below 0 we deactivate this enemy
 		if (this.hp <= 0) {
@@ -187,7 +190,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		
 		const graphics = this.add.graphics();
 		this.drawLines(graphics);
-		this.path = this.add.path(96, -32);
+		this.path = this.add.path(96, -20);
 		this.path.lineTo(96, 164);
 		this.path.lineTo(480, 164);
 		this.path.lineTo(480, 544);
@@ -287,7 +290,12 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
 
 	private startWave(waveNumber: number) {
-		this.enemies.get()
+		const enemy = this.enemies.get()
+		if (enemy){
+			enemy.setActive(true)
+			enemy.setVisible(true)
+			enemy.startOnPath()
+		}
 		waveNumber--;
 		if(waveNumber > 0){
 			setTimeout(() => {this.startWave(waveNumber)}, 1000)
