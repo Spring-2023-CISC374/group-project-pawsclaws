@@ -174,7 +174,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	waveNumber!: number;
 	
 	constructor() {
-		super('helloworldscene');
+		super('helloworldscene')
 		//this.nextEnemy = 0;
 	}
 
@@ -219,6 +219,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		var startWaveButton = this.add.text(400,50, 'Start Next Wave')
 		startWaveButton.setInteractive()
 		startWaveButton.on('pointerdown', () => {
+			
 			//fucntion called start wave
 			if(this.enemies.getLength() == 0){
 				this.waveNumber++
