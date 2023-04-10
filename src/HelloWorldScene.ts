@@ -24,14 +24,11 @@ class Enemy extends Phaser.GameObjects.Image {
 	hp = 0;
 	path: Phaser.Curves.Path;
 	timeOnPath = 0;
-	money!: number;
 
 	constructor(scene: HelloWorldScene) {
 		var scenePath = scene.path
-		var sceneMoney = scene.money
 		super(scene, 0, 0, 'sprites', 'enemy');
 		this.path = scenePath
-		this.money = sceneMoney
 	}
 
 	startOnPath() {
@@ -44,20 +41,19 @@ class Enemy extends Phaser.GameObjects.Image {
 		this.setPosition(this.follower.vec.x, this.follower.vec.y);
 	}
 
-	receiveDamage(damage: number) {
+	receiveDamage(damage: number, gameScene: Phaser.Scenes.ScenePlugin) {
 		//console.log(damage)
 		//console.log(this.hp)
 		this.hp -= damage;
 		//console.log(this.hp)
-		console.log(this.money)
-		this.money += 50;
-		console.log(this.money)
 		
 		// if hp drops below 0 we deactivate this enemy
 		if (this.hp <= 0) {
 			this.setActive(false);
 			this.setVisible(false);
 			this.destroy();
+			gameScene.money += 50;
+			
 		}
 	}
 
@@ -185,8 +181,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 	
 	constructor() {
 		super('helloworldscene')
-		//this.money = 300
-		//this.nextEnemy = 0;
 	}
 
 	preload() {
@@ -242,8 +236,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 		this.money = 300
 		this.moneyText = this.add.text(400, 30, "Money: " + this.money)
-}
-  
+	}
+
 	private damageEnemy(enemy: Enemy, bullet: Bullet): void {
 		// only if both enemy and bullet are alive
 		
@@ -253,7 +247,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	  		bullet.setVisible(false);
   
 	  		// decrease the enemy hp with BULLET_DAMAGE
-	  		enemy.receiveDamage(BULLET_DAMAGE);
+	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene);
 		}
 	}
 
@@ -296,7 +290,6 @@ export default class HelloWorldScene extends Phaser.Scene {
     	const j = Math.floor(pointer.x/64);
     	if(this.canPlaceTurret(i, j) && this.money >= 125) {
 			this.money -= 125
-			console.log(this.money)
         	const turret = turrets.get();
         	if (turret)
         	{
