@@ -21,7 +21,6 @@ export default class startscene extends Phaser.Scene {
 
     }
   
-
 	update() {  
 	}
 }

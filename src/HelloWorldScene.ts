@@ -63,6 +63,7 @@ class Enemy extends Phaser.GameObjects.Image {
 		this.setPosition(this.follower.vec.x, this.follower.vec.y);
 
 		if (this.follower.t >= 1) {
+			console.log(this.timeOnPath)
 			this.setActive(false);
 			this.setVisible(false);
 		}
@@ -107,6 +108,7 @@ class Turret extends Phaser.GameObjects.Image {
 
 	private getEnemy(x: number, y: number, distance: number) {
 		const enemyUnits = this.enemies.getChildren();
+		const maybe = enemyUnits.entries()
 		for (let i = 0; i < enemyUnits.length; i++) {
 	  		const enemy = enemyUnits[i] as Enemy;
 	  		if (enemy.active && Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y) < distance) {

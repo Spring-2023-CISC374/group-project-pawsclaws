@@ -10,7 +10,13 @@ const config: Phaser.Types.Core.GameConfig = {
 	physics: {
 		default: 'arcade'
 	},
-	scene: [startScene, HelloWorldScene]
+	scene: [startScene, HelloWorldScene],
+	scale: {
+		// fits the game to the window
+		mode: Phaser.Scale.FIT,
+		// centers both horizontally and vertically if we want to
+		autoCenter: Phaser.Scale.CENTER_BOTH
+	}
 }
 
 export default new Phaser.Game(config)
