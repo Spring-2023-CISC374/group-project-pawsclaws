@@ -24,11 +24,14 @@ class Enemy extends Phaser.GameObjects.Image {
 	hp = 0;
 	path: Phaser.Curves.Path;
 	timeOnPath = 0;
+	money!: number;
 
 	constructor(scene: HelloWorldScene) {
 		var scenePath = scene.path
+		var sceneMoney = scene.money
 		super(scene, 0, 0, 'sprites', 'enemy');
 		this.path = scenePath
+		this.money = sceneMoney
 	}
 
 	startOnPath() {
@@ -46,7 +49,10 @@ class Enemy extends Phaser.GameObjects.Image {
 		//console.log(this.hp)
 		this.hp -= damage;
 		//console.log(this.hp)
-
+		console.log(this.money)
+		this.money += 50;
+		console.log(this.money)
+		
 		// if hp drops below 0 we deactivate this enemy
 		if (this.hp <= 0) {
 			this.setActive(false);
@@ -174,9 +180,12 @@ export default class HelloWorldScene extends Phaser.Scene {
 	enemies!: Phaser.GameObjects.Group;
 	bullets!: Phaser.GameObjects.Group;
 	waveNumber!: number;
+	money!: number;
+	moneyText!: Phaser.GameObjects.Text;
 	
 	constructor() {
 		super('helloworldscene')
+		//this.money = 300
 		//this.nextEnemy = 0;
 	}
 
@@ -217,7 +226,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		});
 
 		this.waveNumber = 0
-		var waveText = this.add.text(400, 25, "Wave: " + this.waveNumber)
+		var waveText = this.add.text(400, 10, "Wave: " + this.waveNumber)
 		var startWaveButton = this.add.text(400,50, 'Start Next Wave')
 		startWaveButton.setInteractive()
 		startWaveButton.on('pointerdown', () => {
@@ -230,6 +239,9 @@ export default class HelloWorldScene extends Phaser.Scene {
 			}
 
 		})
+
+		this.money = 300
+		this.moneyText = this.add.text(400, 30, "Money: " + this.money)
 }
   
 	private damageEnemy(enemy: Enemy, bullet: Bullet): void {
@@ -260,6 +272,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 	update(time: number, delta: number): void {  
 
+		this.moneyText.setText("Money: " + this.money)
     	// if (time > this.nextEnemy)
     	// {
         // 	const enemy = this.enemies.get();
@@ -281,7 +294,9 @@ export default class HelloWorldScene extends Phaser.Scene {
 	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group): void {
     	const i = Math.floor(pointer.y/64);
     	const j = Math.floor(pointer.x/64);
-    	if(this.canPlaceTurret(i, j)) {
+    	if(this.canPlaceTurret(i, j) && this.money >= 125) {
+			this.money -= 125
+			console.log(this.money)
         	const turret = turrets.get();
         	if (turret)
         	{
