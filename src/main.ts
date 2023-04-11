@@ -1,14 +1,13 @@
 import Phaser from 'phaser'
 //import { Controller, SceneA, SceneB, SceneC } from './scripts/scenes/SideMenu'
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
-import { TestScene } from './scripts/scenes/TestScene';
 import { PageScene } from './scripts/scenes/PageScene';
 
-const config: Phaser.Types.Core.GameConfig = {
+const config = {
 	type: Phaser.AUTO,
 	parent: 'app',
 	width: 800,
-	height: 600,
+	height: 1000,
 	dom: {
 		createContainer: true
 	},
