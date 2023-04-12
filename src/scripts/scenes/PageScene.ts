@@ -1,6 +1,6 @@
-import Phaser, { LEFT } from "phaser";
+import Phaser from "phaser";
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
-import { ScrollablePanel, TabPages, Sizer, Tweaker} from 'phaser3-rex-plugins/templates/ui/ui-components'
+import { TabPages, Sizer, } from 'phaser3-rex-plugins/templates/ui/ui-components'
 
 const COLOR_PRIMARY = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
@@ -46,10 +46,10 @@ export class PageScene extends Phaser.Scene {
             space: { left: 5, right: 5, top: 5, bottom: 5, item: 10 }
         
         })
-            .on('tab.focus', function (tab, key) {
+            .on('tab.focus', function (tab) {
                 tab.getElement('background').setStrokeStyle(2, COLOR_LIGHT);
             })
-            .on('tab.blur', function (tab, key) {
+            .on('tab.blur', function (tab) {
                 tab.getElement('background').setStrokeStyle();
             })
 
@@ -128,11 +128,11 @@ ${this.content}
     }
     
     AddEditMenuChild(scene){
-        var name;
-        var horizontal;
-        var vertical;
-        var size;
-        var classType;
+        var name: string;
+        var horizontal: string;
+        var vertical: string;
+        var size: string;
+        var classType: string;
 
         this.numberOfUnits++;
         var title = this.CreateLabel(this,"Unit #" + this.numberOfUnits );
@@ -144,45 +144,64 @@ ${this.content}
         var nameLabel = this.add.text(0,0,'Name:').setFontSize(20);
         var nameField = this.rexUI.add.label({
             orientation: 'x',
-            background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT),
-            text: this.rexUI.add.BBCodeText(0, 0, this.username, { fixedWidth: 300, fixedHeight: 36, halign: 'left' }),
+            background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
+            text: this.rexUI.add.BBCodeText(0, 0, this.username, { fixedWidth: 300, fixedHeight: 18, halign: 'left' }),
             space: { top: 5, bottom: 5, left: 5, right: 5, }
         })
             .setInteractive()
             .on('pointerdown', function () {
-                scene.rexUI.edit(nameField.getElement('text'));
+                var config = {
+                    onTextChanged: function(textObject, text) {
+                        name = text;
+                        textObject.text = text;
+                        console.log(name);
+                    }
+                }
+                scene.rexUI.edit(nameField.getElement('text'), config);
             });
+        
+        // HORIZONTAL PLACEMENT UI
         var horizLabel = this.add.text(0,0,'Horizontal Position:').setFontSize(20);
         var horizField = this.rexUI.add.label({
             orientation: 'x',
-            background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT),
-            text: this.rexUI.add.BBCodeText(0, 0, this.username, { fixedWidth: 300, fixedHeight: 36, halign: 'left' }),
+            background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
+            text: this.rexUI.add.BBCodeText(0, 0, this.username, { fixedWidth: 300, fixedHeight: 18, halign: 'left' }),
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, }
         })
-            .setInteractive()
-            .on('pointerdown', function () {
-                scene.rexUI.edit(horizField.getElement('text'));
-            });
+        .setInteractive()
+        .on('pointerdown', function () {
+            var config = {
+                onTextChanged: function(textObject, text) {
+                    horizontal = text;
+                    textObject.text = text;
+                    console.log(horizontal);
+                }
+            }
+            scene.rexUI.edit(horizField.getElement('text'), config);
+        });
+        
+        // VERTICAL PLACEMENT UI
         var vertLabel = this.add.text(0,0,'Vertical Position:').setFontSize(20);
         var vertField = this.rexUI.add.label({
             orientation: 'x',
-            background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT),
-            text: this.rexUI.add.BBCodeText(0, 0, this.username, { fixedWidth: 300, fixedHeight: 36, halign: 'left' }),
+            background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
+            text: this.rexUI.add.BBCodeText(0, 0, this.username, { fixedWidth: 300, fixedHeight: 18, halign: 'left' }),
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, }
         })
-            .setInteractive()
-            .on('pointerdown', function () {
-                scene.rexUI.edit(vertField.getElement('text'));
-            });
-        var classOptions = [
-            { text: 'Fire', value: 'fire' },
-            { text: 'Ice', value: 'ice' },
-            { text: 'Poison', value: 'poison' },
-            { text: 'Lightning', value: 'lightning' },
-        ]
-        var classLabel = this.add.text(0,0,'Class Type: (5 gp to Unlock)').setFontSize(20);
-        var sizeLabel = this.add.text(0,0,'Size:').setFontSize(20);
+        .setInteractive()
+        .on('pointerdown', function () {
+            var config = {
+                onTextChanged: function(textObject, text) {
+                    vertical = text;
+                    textObject.text = text;
+                    console.log(vertical);
+                }
+            }
+            scene.rexUI.edit(vertField.getElement('text'),config);
+        });
         
+        // SIZE UI
+        var sizeLabel = this.add.text(0,0,'Size:').setFontSize(20);
         var sizeField = this.rexUI.add.buttons({
             x: 400, y: 400,
 
@@ -200,8 +219,8 @@ ${this.content}
             }
 
         })
-            .setOrigin(0.5, 1)
-            .layout()
+        .setOrigin(0.5, 1)
+        .layout()
 
         sizeField.getElement('buttons').forEach(function (button) {
             button.popUp(1000, undefined, 'Back');
@@ -210,11 +229,15 @@ ${this.content}
         sizeField
             .on('button.click', function (button, index, pointer, event) {
                 button.scaleYoyo(500, 1.2);
+                size = button.text;
+                sizeLabel.text = 'Size: ' + size;
+                console.log(size);
             })
 
+        // CLASS TYPE UI
+        var classLabel = this.add.text(0,0,'Class Type: (5 gp to Unlock)').setFontSize(20);
         var classField = this.rexUI.add.buttons({
             x: 400, y: 400,
-
             orientation: 'x',
             background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 20, COLOR_PRIMARY),
             buttons: [
@@ -223,15 +246,13 @@ ${this.content}
                 this.createButton(this, 'Poison').setOrigin(0.5, 1),
                 this.createButton(this, 'Lightning').setOrigin(0.5, 1)
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
             }
-
         })
-            .setOrigin(0.5, 1)
-            .layout()
+        .setOrigin(0.5, 1)
+        .layout()
 
         classField.getElement('buttons').forEach(function (button) {
             button.popUp(1000, undefined, 'Back');
@@ -240,8 +261,12 @@ ${this.content}
         classField
             .on('button.click', function (button, index, pointer, event) {
                 button.scaleYoyo(500, 1.2);
+                classType = button.text;
+                classLabel.text = 'Class: ' + classType;
+                console.log(classType);
             })
-
+        
+        // ADDING ALL COMPONENTS TO FOLDER SIZER
         child.add(nameLabel, {
             align: "left"
         });
@@ -301,7 +326,7 @@ ${this.content}
     createButton(scene, text) {
         return scene.rexUI.add.label({
             width: 60,
-            height: 60,
+            height: 30,
             background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_LIGHT),
             text: scene.add.text(0, 0, text, {
                 fontSize: 18
