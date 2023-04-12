@@ -238,6 +238,11 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.moneyText = this.add.text(400, 30, "Money: " + this.money)
 	}
 
+	update(time: number, delta: number): void {  
+
+		this.moneyText.setText("Money: " + this.money)
+	}
+
 	private damageEnemy(enemy: Enemy, bullet: Bullet): void {
 		// only if both enemy and bullet are alive
 		
@@ -262,23 +267,6 @@ export default class HelloWorldScene extends Phaser.Scene {
         	graphics.lineTo(j * 64, 512);
     	}
     	graphics.strokePath();
-	}
-
-	update(time: number, delta: number): void {  
-
-		this.moneyText.setText("Money: " + this.money)
-    	// if (time > this.nextEnemy)
-    	// {
-        // 	const enemy = this.enemies.get();
-        // 	if (enemy)
-		// 	{
-        //     	enemy.setActive(true);
-        //     	enemy.setVisible(true);
-        //     	enemy.startOnPath();
-
-        //     	this.nextEnemy = time + 2000;
-        // 	}       
-    	// }
 	}
 
 	private canPlaceTurret(i: number, j: number): boolean {
