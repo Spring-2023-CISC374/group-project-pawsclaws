@@ -1,0 +1,26 @@
+{"frames":[{
+    "filename":"enemy",
+    "frame":{"x":0,"y":0,"w":75,"h":75},
+    "rotated":false,
+    "trimmed":false,
+    "image":"./redballoon_up.png",
+    "spriteSourceSize":{"x":0,"y":0,"w":75,"h":75},
+    "sourceSize":{"w":75,"h":75}},
+{
+    "filename":"turret",
+    "frame":{"x":0,"y":0,"w":75,"h":75},
+    "rotated":false,
+    "trimmed":false,
+    "image":"cowboy.png",
+    "spriteSourceSize":{"x":0,"y":0,"w":75,"h":75},
+    "sourceSize":{"w":75,"h":75}},
+{
+    "filename":"start",
+    "frame":{"x":0,"y":0,"w":200,"h":200},
+    "rotated":false,
+    "trimmed":false,
+    "image":"start.png",
+    "spriteSourceSize":{"x":0,"y":0,"w":200,"h":200},
+    "sourceSize":{"w":200,"h":200}
+}
+]}
