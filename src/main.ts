@@ -24,10 +24,6 @@ const config = {
 	},
 	physics: {
 		default: 'arcade',
-		arcade: {
-			gravity: { y: 300 },
-			debug: false //Handy for checking physics
-		},
 	},
 	scene: [startScene, HelloWorldScene,PageScene],
 	scale: {
