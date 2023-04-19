@@ -2,7 +2,6 @@
 // https://gamedevacademy.org/how-to-make-tower-defense-game-with-phaser-3/
 // */
 import Phaser from 'phaser'
-import { PageScene } from './scripts/scenes/PageScene';
 
 const ENEMY_SPEED = 1 / 10000;
   
@@ -192,7 +191,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
   
 	create()  {
-		this.scene.launch("PageScene")
+		this.scene.launch("PageScene") 
 		this.add.image(200, 200, 'background');
 		
 		const graphics = this.add.graphics();
@@ -204,6 +203,7 @@ export default class HelloWorldScene extends Phaser.Scene {
   
 		graphics.lineStyle(2, 0xffffff, 1);
 		this.path.draw(graphics);
+
   
 		this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true, repeat: 0 });
 		// console.log(this.enemies)
@@ -238,6 +238,15 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 		this.money = 300
 		this.moneyText = this.add.text(400, 30, "Money: " + this.money)
+		this.scene.launch("PageScene")
+
+		var instructionsButton = this.add.text(200,650, 'Instructions')
+        instructionsButton.setInteractive()
+        instructionsButton.on('pointerdown',  () => {
+			console.log("clicked button")
+            this.scene.launch("InstructionsScene")
+        }
+        )
 	}
 
 	update(time: number, delta: number): void {  
