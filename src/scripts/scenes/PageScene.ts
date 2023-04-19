@@ -73,6 +73,7 @@ export class PageScene extends Phaser.Scene {
             .swapFirstPage()
 
         this.AddBuyMenuChild(this);
+        this.AddUpgradeMenuChild();
     }
 
     update () 
@@ -89,7 +90,221 @@ export class PageScene extends Phaser.Scene {
     }
 
     AddUpgradeMenuChild(){
-        
+        var fireClassLabel = this.CreateLabel(this, 'Fire Class:')
+        var burnDurationSizer = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x',
+        }).layout();
+        var burnDurationLabel = this.add.text(0,0,'BURN DURATION: 2 sec').setFontSize(20);
+        burnDurationSizer.add(burnDurationLabel);
+        burnDurationSizer.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '+').setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button, index, pointer, event) {
+            button.scaleYoyo(500, 1.2);
+        })).layout;
+        burnDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
+
+        var burnDamageSizer = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x',
+        }).layout();
+        var burnDamageLabel = this.add.text(0,0,'BURN DAMAGE: 10 dmg/sec').setFontSize(20);
+        burnDamageSizer.add(burnDamageLabel);
+        burnDamageSizer.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '+').setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button, index, pointer, event) {
+            button.scaleYoyo(500, 1.2);
+        })).layout;
+        burnDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
+
+        var iceClassLabel = this.CreateLabel(this, 'Ice Class:')
+        var frozenDurationSizer = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x',
+        }).layout();
+        var frozenDurationLabel = this.add.text(0,0,'FROZEN DURATION: 2 sec').setFontSize(20);
+        frozenDurationSizer.add(frozenDurationLabel);
+        frozenDurationSizer.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '+').setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button, index, pointer, event) {
+            button.scaleYoyo(500, 1.2);
+        })).layout;
+        frozenDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
+
+        var lightningClassLabel = this.CreateLabel(this, 'Lightning Class:')
+        var lightningAdditionTargetsSizer = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x',
+        }).layout();
+        var additionalTargetLabel = this.add.text(0,0,'ADDITIONAL TARGETS: 1').setFontSize(20);
+        lightningAdditionTargetsSizer.add(additionalTargetLabel);
+        lightningAdditionTargetsSizer.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '+').setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button, index, pointer, event) {
+            button.scaleYoyo(500, 1.2);
+        })).layout;
+        lightningAdditionTargetsSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
+
+        var lightningDamageSizer = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x',
+        }).layout();
+        var lightningDamageLabel = this.add.text(0,0,'SHOCK DAMAGE: 10 dmg').setFontSize(20);
+        lightningDamageSizer.add(lightningDamageLabel);
+        lightningDamageSizer.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '+').setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button, index, pointer, event) {
+            button.scaleYoyo(500, 1.2);
+        })).layout;
+        lightningDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
+
+        var acidClassLabel = this.CreateLabel(this, 'Acid Class:')
+        var puddleDurationSizer = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x',
+        }).layout();
+        var puddleDurationLabel = this.add.text(0,0,'PUDDLE DURATION: 2 sec').setFontSize(20);
+        puddleDurationSizer.add(puddleDurationLabel);
+        puddleDurationSizer.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '+').setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button, index, pointer, event) {
+            button.scaleYoyo(500, 1.2);
+        })).layout;
+        puddleDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
+
+        var acidDamageSizer = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x',
+        }).layout();
+        var acidDamageLabel = this.add.text(0,0,'ACID DAMAGE: 10 dmg/sec').setFontSize(20);
+        acidDamageSizer.add(acidDamageLabel);
+        acidDamageSizer.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '+').setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button, index, pointer, event) {
+            button.scaleYoyo(500, 1.2);
+        })).layout;
+        acidDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
+    
+        this.upgradeMenuSizer.add(fireClassLabel, {
+            align: "left"
+        }).layout();
+        this.upgradeMenuSizer.add(burnDurationSizer, {
+            align: "left"
+        }).layout();
+        this.upgradeMenuSizer.add(burnDamageSizer, {
+            align: "left"
+        }).layout();
+
+        this.upgradeMenuSizer.add(iceClassLabel, {
+            align: "left"
+        }).layout();
+        this.upgradeMenuSizer.add(frozenDurationSizer, {
+            align: "left"
+        }).layout();
+
+        this.upgradeMenuSizer.add(lightningClassLabel, {
+            align: "left"
+        }).layout();
+        this.upgradeMenuSizer.add(lightningAdditionTargetsSizer, {
+            align: "left"
+        }).layout();
+        this.upgradeMenuSizer.add(lightningDamageSizer, {
+            align: "left"
+        }).layout();
+
+        this.upgradeMenuSizer.add(acidClassLabel, {
+            align: "left"
+        }).layout();
+        this.upgradeMenuSizer.add(puddleDurationSizer, {
+            align: "left"
+        }).layout();
+        this.upgradeMenuSizer.add(acidDamageSizer, {
+            align: "left"
+        }).layout();
     }
 
     AddEditMenuChild(scene){
@@ -352,7 +567,7 @@ export class PageScene extends Phaser.Scene {
     CreateSizers(){
         this.editMenuSizer = this.rexUI.add.sizer({
             width: 200,
-            orientation: 'y'
+            orientation: 'y',
         })
         .layout();
 
