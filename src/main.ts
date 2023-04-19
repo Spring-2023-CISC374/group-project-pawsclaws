@@ -4,13 +4,13 @@ import HelloWorldScene from './HelloWorldScene'
 
 //import { Controller, SceneA, SceneB, SceneC } from './scripts/scenes/SideMenu'
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
-import { PageScene } from './scripts/scenes/PageScene';
+
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
 	parent: 'content',
-	width: 640,
-	height: 512,
+	width: 1280,
+	height: 720,
 	dom: {
 		createContainer: true
 	},
@@ -24,7 +24,7 @@ const config: Phaser.Types.Core.GameConfig = {
 	physics: {
 		default: 'arcade'
 	},
-	scene: [PageScene, startScene, HelloWorldScene],
+	scene: [startScene, HelloWorldScene],
 	scale: {
 		// fits the game to the window
 		mode: Phaser.Scale.FIT,

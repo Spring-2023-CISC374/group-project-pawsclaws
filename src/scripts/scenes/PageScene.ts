@@ -17,7 +17,7 @@ export class PageScene extends Phaser.Scene {
 
     constructor ()
     {
-        super({ key: 'PageScene', active: true });
+    super({ key: 'PageScene', /*active: true */});
     }
 
     preload ()
@@ -28,7 +28,7 @@ export class PageScene extends Phaser.Scene {
     create ()
     {
         this.tabPages = this.rexUI.add.tabPages({
-            x: 400, y: 400,
+            x: 1000, y: 365,
             width: 500, height: 700,
             background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 0, COLOR_DARK),
         

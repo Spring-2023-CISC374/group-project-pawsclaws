@@ -2,6 +2,7 @@
 // https://gamedevacademy.org/how-to-make-tower-defense-game-with-phaser-3/
 // */
 import Phaser from 'phaser'
+import { PageScene } from './scripts/scenes/PageScene';
 
 const ENEMY_SPEED = 1 / 10000;
   
@@ -191,6 +192,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
   
 	create()  {
+		this.scene.launch("PageScene")
 		this.add.image(200, 200, 'background');
 		
 		const graphics = this.add.graphics();
