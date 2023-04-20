@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import PopUp from 'phaser3-rex-plugins/plugins/popup.js';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 
 const COLOR_PRIMARY = 0x4e342e;
@@ -79,7 +78,7 @@ Good luck defending your territory!`;
         
     }
 
-    createTextBox(scene, x, y, config) {
+    createTextBox(scene: any, x: any, y: any, config: any) {
         var wrapWidth = Phaser.Utils.Objects.GetValue(config, 'wrapWidth', 0)
         var fixedWidth = Phaser.Utils.Objects.GetValue(config, 'fixedWidth', 0)
         var fixedHeight = Phaser.Utils.Objects.GetValue(config, 'fixedHeight', 0)
@@ -114,21 +113,23 @@ Good luck defending your territory!`;
         textBox
             .setInteractive()
             .on('pointerdown', function () {
-                var icon = this.getElement('action').setVisible(false);
-                this.resetChildVisibleState(icon);
-                if (this.isTyping) {
-                    this.stop(true);
+                var icon = textBox.getElement('action').setVisible(false);
+                //var icon = this.getElement('action').setVisible(false);
+                textBox.resetChildVisibleState(icon);
+                //this.resetChildVisibleState(icon);
+                if (textBox.isTyping) {
+                    textBox.stop(true);
                 } else {
-                    this.typeNextPage();
+                    textBox.typeNextPage();
                 }
             }, textBox)
             .on('pageend', function () {
-                if (this.isLastPage) {
+                if (textBox.isLastPage) {
                     return;
                 }
     
-                var icon = this.getElement('action').setVisible(true);
-                this.resetChildVisibleState(icon);
+                var icon = textBox.getElement('action').setVisible(true);
+                textBox.resetChildVisibleState(icon);
                 icon.y -= 30;
                 var tween = scene.tweens.add({
                     targets: icon,
@@ -145,7 +146,7 @@ Good luck defending your territory!`;
         return textBox;
     }
     
-    getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight) {
+    getBuiltInText(scene: any, wrapWidth: any, fixedWidth: any, fixedHeight: any) {
         return scene.add.text(0, 0, '', {
                 fontSize: '20px',
                 wordWrap: {
@@ -156,7 +157,7 @@ Good luck defending your territory!`;
             .setFixedSize(fixedWidth, fixedHeight);
     }
     
-    getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight) {
+    getBBcodeText(scene: any, wrapWidth: any, fixedWidth: any, fixedHeight: any) {
         return scene.rexUI.add.BBCodeText(0, 0, '', {
             fixedWidth: fixedWidth,
             fixedHeight: fixedHeight,
