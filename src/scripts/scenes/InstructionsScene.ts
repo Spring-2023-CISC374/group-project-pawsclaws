@@ -59,16 +59,16 @@ Good luck defending your territory!`;
         })
         .start(content, 50);
 
-        // close button, right now just a big red x
-        // var closeBtn = this.add.text(630, 200, "X")
-        // closeBtn.setStyle({fill: "#FF0000", fontSize: '50px'})
-        // closeBtn.setInteractive()
+        //close button, right now just a big red x
+        var closeBtn = this.add.text(600, 40 + 10, "X")
+        closeBtn.setStyle({fill: "#FF0000", fontSize: '50px'})
+        closeBtn.setInteractive()
 
-        // closeBtn.on('pointerdown',  () => {
-		// 	console.log("clicked button")
-        //     this.scene.sleep("InstructionsScene")
-        // }
-        // )
+        closeBtn.on('pointerdown',  () => {
+			console.log("clicked button")
+            this.scene.sleep("InstructionsScene")
+        }
+        )
         
 
         
@@ -84,15 +84,6 @@ Good luck defending your territory!`;
         var fixedWidth = Phaser.Utils.Objects.GetValue(config, 'fixedWidth', 0)
         var fixedHeight = Phaser.Utils.Objects.GetValue(config, 'fixedHeight', 0)
 
-        var closeBtn = this.add.text(x + fixedWidth - 10, y + fixedHeight - 10, "X")
-        closeBtn.setStyle({fill: "#FF0000", fontSize: '50px'})
-        closeBtn.setInteractive()
-
-        closeBtn.on('pointerdown',  () => {
-			console.log("clicked button")
-            this.scene.sleep("InstructionsScene")
-        }
-        )
         
         var textBox = scene.rexUI.add.textBox({
                 x: x,
