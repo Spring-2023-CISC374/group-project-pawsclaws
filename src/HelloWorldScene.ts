@@ -41,7 +41,7 @@ class Enemy extends Phaser.GameObjects.Image {
 		this.setPosition(this.follower.vec.x, this.follower.vec.y);
 	}
 
-	receiveDamage(damage: number, gameScene: Phaser.Scenes.ScenePlugin) {
+	receiveDamage(damage: number, gameScene: any) {
 		//console.log(damage)
 		//console.log(this.hp)
 		this.hp -= damage;
@@ -254,7 +254,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.moneyText.setText("Money: " + this.money)
 	}
 
-	private damageEnemy(enemy: Enemy, bullet: Bullet): void {
+	private damageEnemy(enemy: any, bullet: any): void {
 		// only if both enemy and bullet are alive
 		
 		if (enemy.active === true && bullet.active === true) {
