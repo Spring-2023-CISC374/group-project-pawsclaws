@@ -23,47 +23,52 @@ export class InstructionsScene extends Phaser.Scene {
     create ()
     {
         // first iteration of the instructions menu, looks decent
-        var content = `Paws and Claws is a simple and easy to learn tower defense game. 
+        var content = //Paws and Claws is a simple and easy to learn tower defense game. 
 
-To get started, select a unit to buy in the shop to the right.
+// 
+`
+Gameplay:
 
-There are many different types of units to buy all with different stats.
+1. Buy your first character by selecting it from the menu and placing it on the map.
+2. Press the "Start" button to begin the game.
+3. Balloons will spawn in waves, with more balloons spawning as the waves increase.
+4. Place additional characters on the map by selecting them from the menu and placing them strategically to stop the balloons.
+5. Characters have different abilities and prices, so choose wisely.
+6. Earn money by popping balloons. Use this money to buy more characters or upgrade existing ones.
+7. If a balloon reaches the end of its path, you lose a life. You start with a limited number of lives, so be careful!
+8. If you lose all your lives, the game is over.
 
-Once bought, the unit is now placed on the map.
+Upgrades:
 
-Now, click the "Edit" menu to the right and look for the unit and select it.
+1. Click on a character to see its upgrade options.
+2. Upgrades improve the character's abilities and make them more effective against balloons.
+3. Upgrades cost money, so make sure to save up before purchasing them.
 
-From here, you can change its position, size, and eventually class type.
+Tips:
 
-Now that the unit is where you want it, its time to start.
+1. Experiment with different character combinations to find the most effective defense.
+2. Don't forget to upgrade your characters for maximum effectiveness.
+3. Keep an eye on your lives and don't let too many balloons slip by.
 
-The objective of the game is to not let the balloons reach the end of the the path.
+Good luck defending your territory!`;
 
-As you progress, each wave will be more challenging than the previous.
-This includes more balloons, different types of balloons, and more.
-
-Select "Start Next Wave" and the first wave will begin.
-
-Good luck!
-`;
-
-        var instructionsBox = this.createTextBox(this, 40, 200, {
+        var instructionsBox = this.createTextBox(this, 40, 40, {
             wrapWidth: 500,
             fixedWidth: 500,
-            fixedHeight: 200,
+            fixedHeight: 590,
         })
         .start(content, 50);
 
         // close button, right now just a big red x
-        var closeBtn = this.add.text(630, 200, "X")
-        closeBtn.setStyle({fill: "#FF0000", fontSize: '50px'})
-        closeBtn.setInteractive()
+        // var closeBtn = this.add.text(630, 200, "X")
+        // closeBtn.setStyle({fill: "#FF0000", fontSize: '50px'})
+        // closeBtn.setInteractive()
 
-        closeBtn.on('pointerdown',  () => {
-			console.log("clicked button")
-            this.scene.sleep("InstructionsScene")
-        }
-        )
+        // closeBtn.on('pointerdown',  () => {
+		// 	console.log("clicked button")
+        //     this.scene.sleep("InstructionsScene")
+        // }
+        // )
         
 
         
@@ -78,6 +83,16 @@ Good luck!
         var wrapWidth = Phaser.Utils.Objects.GetValue(config, 'wrapWidth', 0)
         var fixedWidth = Phaser.Utils.Objects.GetValue(config, 'fixedWidth', 0)
         var fixedHeight = Phaser.Utils.Objects.GetValue(config, 'fixedHeight', 0)
+
+        var closeBtn = this.add.text(x + fixedWidth - 10, y + fixedHeight - 10, "X")
+        closeBtn.setStyle({fill: "#FF0000", fontSize: '50px'})
+        closeBtn.setInteractive()
+
+        closeBtn.on('pointerdown',  () => {
+			console.log("clicked button")
+            this.scene.sleep("InstructionsScene")
+        }
+        )
         
         var textBox = scene.rexUI.add.textBox({
                 x: x,
@@ -94,9 +109,9 @@ Good luck!
                 action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
     
                 space: {
-                    left: 20,
-                    right: 20,
-                    top: 20,
+                    left: 10,
+                    right: 10,
+                    top: 10,
                     bottom: 20,
                     icon: 10,
                     text: 10,
@@ -155,12 +170,12 @@ Good luck!
             fixedWidth: fixedWidth,
             fixedHeight: fixedHeight,
     
-            fontSize: '20px',
+            fontSize: '15px',
             wrap: {
                 mode: 'word',
                 width: wrapWidth
             },
-            maxLines: 9
+            maxLines: 100
         })
     }
     

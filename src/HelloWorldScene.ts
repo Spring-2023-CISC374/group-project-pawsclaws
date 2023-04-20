@@ -281,6 +281,9 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
 
 	private canPlaceTurret(i: number, j: number): boolean {
+		if(i > 7 || j > 9){
+			return false
+		}
     	return map[i][j] === 0;
 	}
 
