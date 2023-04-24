@@ -14,7 +14,7 @@ export default class startScene extends Phaser.Scene {
     create() {
         const startButton = this.add.image(320,290, 'startbutton')
         console.log('loaded gif')
-        const gif = this.add.sprite(this.game.canvas.height/2,this.game.canvas.width/2,'gif');
+        const gif = this.add.sprite(0,0,'gif');
         console.log('gif done')
         gif.setScale(this.game.canvas.height/2,this.game.canvas.width/2);
         gif.setInteractive()
@@ -32,4 +32,7 @@ export default class startScene extends Phaser.Scene {
         console.log('done creating animation')
         gif.anims.play('play-gif');
     }
+
+    update() {  
+	}
 }
