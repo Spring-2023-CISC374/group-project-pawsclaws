@@ -20,6 +20,12 @@ const map: number[][] = [
 
 
 class Enemy extends Phaser.GameObjects.Image {
+	onFire = false;
+	frozen = false;
+	frozenTimer = 0;
+	fireTimer = 0;
+	frozenMax = 100;
+	fireMax = 100;
 	follower = { t: 0, vec: new Phaser.Math.Vector2() };
 	hp = 0;
 	path: Phaser.Curves.Path;
@@ -41,11 +47,19 @@ class Enemy extends Phaser.GameObjects.Image {
 		this.setPosition(this.follower.vec.x, this.follower.vec.y);
 	}
 
-	receiveDamage(damage: number, gameScene: Phaser.Scenes.ScenePlugin) {
+	receiveDamage(damage: number, gameScene: Phaser.Scenes.ScenePlugin, fireShot: boolean, iceShot: boolean) {
 		//console.log(damage)
 		//console.log(this.hp)
 		this.hp -= damage;
 		//console.log(this.hp)
+
+		if(fireShot){
+			this.onFire;
+		}
+
+		if(iceShot){
+			this.frozen;
+		}
 		
 		// if hp drops below 0 we deactivate this enemy
 		if (this.hp <= 0) {
@@ -58,7 +72,28 @@ class Enemy extends Phaser.GameObjects.Image {
 	}
 
 	update(time: number, delta: number) {
-		this.follower.t += ENEMY_SPEED * delta;
+		if (this.frozen == false){
+			this.follower.t += ENEMY_SPEED * delta;
+		}
+		else if (this.frozenTimer >= this.frozenMax){
+			this.frozen = false;
+			this.frozenTimer = 0;
+		}
+		else {
+			this.frozenTimer++;
+		}
+
+		if(this.onFire == true && this.fireTimer % 20 == 0 && this.fireTimer < this.fireMax){
+			this.hp -= 5;
+		}
+		else if (this.fireTimer >= this.fireMax){
+			this.onFire = false;
+			this.fireTimer = 0;
+		}
+		else {
+			this.fireTimer++;
+		}
+
 		this.path.getPoint(this.follower.t, this.follower.vec);
 		this.timeOnPath = this.timeOnPath + delta;
 
@@ -247,7 +282,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	  		bullet.setVisible(false);
   
 	  		// decrease the enemy hp with BULLET_DAMAGE
-	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene);
+	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene, false, false);
 		}
 	}
 
