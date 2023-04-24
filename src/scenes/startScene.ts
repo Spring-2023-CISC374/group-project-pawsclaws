@@ -8,7 +8,7 @@ export default class startScene extends Phaser.Scene {
 
     preload() {
         this.load.image('startbutton','assets/pawsclawsupdate.png')
-        this.load.image('gif','public/assets/back.gif');
+        this.load.image('gif','public/assets/back.png');
     }
 
     create() {
