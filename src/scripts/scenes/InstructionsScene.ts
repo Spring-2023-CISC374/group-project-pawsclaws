@@ -37,6 +37,8 @@ Gameplay:
 7. If a balloon reaches the end of its path, you lose a life. You start with a limited number of lives, so be careful!
 8. If you lose all your lives, the game is over.
 
+
+
 Upgrades:
 
 1. Click on a character to see its upgrade options.
@@ -54,7 +56,7 @@ Good luck defending your territory!`;
         var instructionsBox = this.createTextBox(this, 40, 40, {
             wrapWidth: 500,
             fixedWidth: 500,
-            fixedHeight: 590,
+            fixedHeight: 350,
         })
         .start(content, 50);
 
@@ -167,7 +169,7 @@ Good luck defending your territory!`;
                 mode: 'word',
                 width: wrapWidth
             },
-            maxLines: 100
+            maxLines: 20
         })
     }
     
