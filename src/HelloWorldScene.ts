@@ -24,17 +24,20 @@ class Enemy extends Phaser.GameObjects.Image {
 	frozen = false;
 	frozenTimer = 0;
 	fireTimer = 0;
-	frozenMax = 100;
-	fireMax = 100;
+	frozenMax = 40;
+	fireMax = 200;
 	follower = { t: 0, vec: new Phaser.Math.Vector2() };
 	hp = 0;
 	path: Phaser.Curves.Path;
 	timeOnPath = 0;
+	gameScene: Phaser.Scene;
 
 	constructor(scene: HelloWorldScene) {
 		var scenePath = scene.path
 		super(scene, 0, 0, 'sprites', 'enemy');
 		this.path = scenePath
+		this.fireTimer = 0;
+		this.gameScene = scene;
 	}
 
 	startOnPath() {
@@ -47,18 +50,18 @@ class Enemy extends Phaser.GameObjects.Image {
 		this.setPosition(this.follower.vec.x, this.follower.vec.y);
 	}
 
-	receiveDamage(damage: number, gameScene: Phaser.Scenes.ScenePlugin, fireShot: boolean, iceShot: boolean) {
+	receiveDamage(damage: number, gameScene: Phaser.Scene, fireShot: boolean, iceShot: boolean) {
 		//console.log(damage)
 		//console.log(this.hp)
 		this.hp -= damage;
 		//console.log(this.hp)
 
-		if(fireShot){
-			this.onFire;
+		if(fireShot && this.onFire == false){
+			this.onFire = true;
 		}
 
-		if(iceShot){
-			this.frozen;
+		if(iceShot && this.frozen == false){
+			this.frozen = true;
 		}
 		
 		// if hp drops below 0 we deactivate this enemy
@@ -78,20 +81,28 @@ class Enemy extends Phaser.GameObjects.Image {
 		else if (this.frozenTimer >= this.frozenMax){
 			this.frozen = false;
 			this.frozenTimer = 0;
+			this.clearTint();
 		}
-		else {
+		else if(this.frozen == true){
 			this.frozenTimer++;
+			this.setTint(Phaser.Display.Color.GetColor(130, 160, 230));
 		}
 
-		if(this.onFire == true && this.fireTimer % 20 == 0 && this.fireTimer < this.fireMax){
-			this.hp -= 5;
+		if(this.onFire == true && this.fireTimer % 25 < 5 && this.fireTimer < this.fireMax){
+			this.fireTimer++;
+			this.receiveDamage(2,this.gameScene,false,false)
+			console.log(this.hp);
+			this.setTintFill(Phaser.Display.Color.GetColor(255, 165, 0))
 		}
 		else if (this.fireTimer >= this.fireMax){
 			this.onFire = false;
 			this.fireTimer = 0;
+			console.log("done");
+			this.clearTint();
 		}
-		else {
+		else if(this.onFire == true){
 			this.fireTimer++;
+			this.clearTint();
 		}
 
 		this.path.getPoint(this.follower.t, this.follower.vec);
@@ -282,7 +293,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	  		bullet.setVisible(false);
   
 	  		// decrease the enemy hp with BULLET_DAMAGE
-	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene, false, false);
+	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene, true, false);
 		}
 	}
 
