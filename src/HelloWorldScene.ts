@@ -5,7 +5,8 @@ import Phaser from 'phaser'
 
 const ENEMY_SPEED = 1 / 10000;
   
-const BULLET_DAMAGE = 33;
+const BULLET_DAMAGE = 32;
+const PUNCH_DAMAGE = 40
   
 const map: number[][] = [
 	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -72,13 +73,13 @@ class Enemy extends Phaser.GameObjects.Image {
 	}
 }
 
-class Turret extends Phaser.GameObjects.Image {
+class Cowboy extends Phaser.GameObjects.Image {
 	private nextTic = 0;
 	private enemies: Phaser.GameObjects.Group;
 	private bullets: Phaser.GameObjects.Group;
 
 	constructor(scene: HelloWorldScene) {
-		super(scene, 0, 0, 'unitsprites', 'turret');
+		super(scene, 0, 0, 'unitscowboy', 'cowboy');
 		var enemymaybe = scene.enemies
 		var bulletsmaybe = scene.bullets
 		
@@ -128,6 +129,62 @@ class Turret extends Phaser.GameObjects.Image {
 	}
 }
 
+class Buff extends Phaser.GameObjects.Image {
+	private nextTic = 0;
+	private enemies: Phaser.GameObjects.Group;
+	private punches: Phaser.GameObjects.Group;
+
+	constructor(scene: HelloWorldScene) {
+		super(scene, 0, 0, 'unitsbuff', 'buff');
+		var enemymaybe = scene.enemies
+		var punchesmaybe = scene.punches // Error????
+		
+		this.enemies = enemymaybe;
+		this.punches = punchesmaybe;
+	}
+
+	place(i: number, j: number): void {
+		  this.y = i * 64 + 64 / 2; // Please check into this
+		  this.x = j * 64 + 64 / 2;
+		  map[i][j] = 1;
+	}
+
+	fire(): void {
+		  const enemy = this.getEnemy(this.x, this.y, 200);
+		  if (enemy) {
+			const angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+			this.addPunch(this.x, this.y, angle);
+			this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+		  }
+	}
+
+	update(time: number, delta: number): void {
+		  if (time > this.nextTic) {
+			this.fire();
+			this.nextTic = time + 1000;
+		  }
+	}
+
+	private getEnemy(x: number, y: number, distance: number) {
+		const enemyUnits = this.enemies.getChildren();
+		const maybe = enemyUnits.entries()
+		for (let i = 0; i < enemyUnits.length; i++) {
+	  		const enemy = enemyUnits[i] as Enemy;
+	  		if (enemy.active && Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y) < distance) {
+				return enemy;
+	  		}
+		}
+		return false;
+	}
+	private addPunch(x: number, y: number, angle: number): void {
+    	const punch = this.punches.get();
+    	if (punch)
+    	{
+        	punch.fire(x, y, angle);
+    	}
+	}
+}
+
 class Bullet extends Phaser.GameObjects.Image {
 	private incX = 0;
 	private incY = 0;
@@ -168,13 +225,54 @@ class Bullet extends Phaser.GameObjects.Image {
 	}
 }
 
-export default class HelloWorldScene extends Phaser.Scene {
+class Punch extends Phaser.GameObjects.Image {
+	private incX = 0;
+	private incY = 0;
+	private lifespan = 0;
+	private speed = Phaser.Math.GetSpeed(60, 1);
+	private dx = 0;
+	private dy = 0;
 
+	constructor(scene: Phaser.Scene) {
+		  super(scene, 0, 0, 'punch'); // I still need to edit
+	}
+
+	fire(x: number, y: number, angle: number): void {
+		  this.setActive(true);
+		  this.setVisible(true);
+		  // Bullets fire from the middle of the screen to the given x/y
+		  this.setPosition(x, y);
+
+		  // we don't need to rotate the bullets as they are round
+		  // this.setRotation(angle);
+
+		  this.dx = Math.cos(angle);
+		  this.dy = Math.sin(angle);
+
+		  this.lifespan = 1000;
+		}
+
+	update(time: number, delta: number): void {
+		  this.lifespan -= delta;
+
+		  this.x += this.dx * (this.speed * delta);
+		  this.y += this.dy * (this.speed * delta);
+
+		  if (this.lifespan <= 0) {
+			this.setActive(false);
+			this.setVisible(false);
+		  }
+	}
+}
+
+export default class HelloWorldScene extends Phaser.Scene {
 	nextEnemy!: number;
 	path!: Phaser.Curves.Path;
-	turrets!: Phaser.GameObjects.Group;
+	cowboys!: Phaser.GameObjects.Group;
+	buffs! : Phaser.GameObjects.Group;
 	enemies!: Phaser.GameObjects.Group;
 	bullets!: Phaser.GameObjects.Group;
+	punches! : Phaser.GameObjects.Group;
 	waveNumber!: number;
 	money!: number;
 	moneyText!: Phaser.GameObjects.Text;
@@ -186,12 +284,19 @@ export default class HelloWorldScene extends Phaser.Scene {
 	preload() {
 		this.load.image('background', 'assets/grassmeadows.png');
 		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json');
-		this.load.atlas('unitsprites', 'assets/cowboy.png', 'assets/spritesheet.json');
+		this.load.atlas('unitscowboy', 'assets/cowboy.png', 'assets/spritesheet.json');
+		this.load.atlas('unitsbuff','assets/buff.png', 'assets/spritesheet.json')
 		this.load.image('bullet','assets/bigbill.png');
+		this.load.image('punch','assets/punch.png');
+		//this.load.image('buff','assets/')
 	}
   
 	create()  {
 		this.add.image(200, 200, 'background');
+
+		const Ccowboy = this.add.image(100,550, 'unitscowboy')
+		const Dbuff = this.add.image(200,550, 'unitsbuff')
+
 		
 		const graphics = this.add.graphics();
 		this.drawLines(graphics);
@@ -206,17 +311,26 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true, repeat: 0 });
 		// console.log(this.enemies)
   
-		this.turrets = this.add.group({ classType: Turret, runChildUpdate: true });
-  
+		// Units
+		this.cowboys = this.add.group({ classType: Cowboy, runChildUpdate: true });
+		this.buffs = this.add.group({classType: Buff, runChildUpdate: true})
+
+		// Attacks
 		this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
-  
+		this.punches = this.physics.add.group({ classType: Punch, runChildUpdate: true})
+
 		this.nextEnemy = 0;
 
 		// its underlined in red but still works
 		this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy, undefined, this.scene);
-  
-		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-			this.placeTurret(pointer, this.turrets)
+		this.physics.add.overlap(this.enemies, this.punches, this.damageEnemies, undefined, this.scene)
+
+		Ccowboy.setInteractive().on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+			this.placeCowboy(pointer, this.cowboys)
+		});
+
+		Dbuff.setInteractive().on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+			this.placeBuff(pointer, this.buffs)
 		});
 
 		this.waveNumber = 0
@@ -238,7 +352,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.moneyText = this.add.text(400, 30, "Money: " + this.money)
 	}
 
-	private damageEnemy(enemy: Enemy, bullet: Bullet): void {
+	private damageEnemy(enemy: Enemy, bullet: Bullet, punch: Punch): void {
 		// only if both enemy and bullet are alive
 		
 		if (enemy.active === true && bullet.active === true) {
@@ -248,7 +362,17 @@ export default class HelloWorldScene extends Phaser.Scene {
   
 	  		// decrease the enemy hp with BULLET_DAMAGE
 	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene);
+			enemy.receiveDamage(PUNCH_DAMAGE, this.scene)
 		}
+
+		if (enemy.active === true && punch.active === true) {
+			// we remove the bullet right away
+			 bullet.setActive(false);
+			 bullet.setVisible(false);
+ 
+			 // decrease the enemy hp with BULLET_DAMAGE
+		     enemy.receiveDamage(PUNCH_DAMAGE, this.scene)
+	   }
 	}
 
 	private drawLines(graphics: Phaser.GameObjects.Graphics): void {
@@ -281,16 +405,31 @@ export default class HelloWorldScene extends Phaser.Scene {
     	// }
 	}
 
-	private canPlaceTurret(i: number, j: number): boolean {
+	private canPlace(i: number, j: number): boolean {
     	return map[i][j] === 0;
 	}
 
-	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group): void {
+	private placeCowboy(pointer: Phaser.Input.Pointer, cowboys: Phaser.GameObjects.Group): void {
     	const i = Math.floor(pointer.y/64);
     	const j = Math.floor(pointer.x/64);
-    	if(this.canPlaceTurret(i, j) && this.money >= 125) {
+    	if(this.canPlace(i, j) && this.money >= 125) {
 			this.money -= 125
-        	const turret = turrets.get();
+        	const turret = cowboys.get();
+        	if (turret)
+        	{
+            	turret.setActive(true);
+            	turret.setVisible(true);
+            	turret.place(i, j);
+        	}   
+    	}
+	}
+
+	private placeBuff(pointer: Phaser.Input.Pointer, buffs: Phaser.GameObjects.Group): void {
+    	const i = Math.floor(pointer.y/64);
+    	const j = Math.floor(pointer.x/64);
+    	if(this.canPlace(i, j) && this.money >= 150) {
+			this.money -= 150
+        	const turret = buffs.get();
         	if (turret)
         	{
             	turret.setActive(true);
