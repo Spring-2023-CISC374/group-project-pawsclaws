@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import { TabPages, Sizer, } from 'phaser3-rex-plugins/templates/ui/ui-components'
+import Drag from 'phaser3-rex-plugins/plugins/drag.js';
+import eventsCenter from "../../EventsCenter";
 
 const COLOR_PRIMARY = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
@@ -30,6 +32,7 @@ export class PageScene extends Phaser.Scene {
     preload ()
     {
        this.load.html("UnitEditor", "assets/html/UnitEditor.html")
+       this.load.image("doge", "/assets/buff_doge.png")
     }
 
     create ()
@@ -72,21 +75,65 @@ export class PageScene extends Phaser.Scene {
             .layout()
             .swapFirstPage()
 
-        this.AddBuyMenuChild(this);
+        this.AddBuyMenuChild();
         this.AddUpgradeMenuChild();
+
+        eventsCenter.on("tower-placed-successfully", (turret: any) => {
+            console.log("in event for edit menu")
+            console.log(turret)
+            this.AddEditMenuChild(turret)
+        }, {once: true})
     }
 
     update () 
     {
-        while(this.numberOfUnits < this.maxNumOfUnits){
-            this.AddEditMenuChild(this);
-        }
+        // while(this.numberOfUnits < this.maxNumOfUnits){
+        //     this.AddEditMenuChild(this);
+        // }
     }
     
     // Currently being called at the end of the create function (keep if you want the content to be static)
-    AddBuyMenuChild(scene){
-        var text = scene.CreateLabel(this, 'Hello World')
+    AddBuyMenuChild(){
+        var text = this.CreateLabel(this, 'cost: 125')
+        var doge = this.add.image(0,0, "doge").setScale(0.1)
+        var background_doge = this.add.image(doge.x,doge.y, "doge").setScale(0.1).setVisible(false)
+        var draggable_doge = new Drag(doge)
+        doge.setInteractive()
+
+        doge.on('dragstart', (pointer: any) => {
+            // make the background doge appear
+            background_doge.x = doge.x
+            background_doge.y = doge.y
+            background_doge.setVisible(true)
+
+            // make the draggable doge smaller so its easier to place
+            doge.setScale(0.05)
+            // set the draggable doge x and y to wherever the mouse is
+            doge.x = pointer.x
+            doge.y = pointer.y 
+        })
+        // updates the doges x and y when being dragged
+        doge.on('drag', (pointer: any) => {
+            doge.x = pointer.x
+            doge.y = pointer.y 
+        })
+        doge.on('dragend', (pointer: any) => {
+            // set the scale of the doge back to 0.1 for the shop
+            // set the doge x and y to the background doge x and y
+            doge.setScale(0.1)
+            doge.x = background_doge.x
+            doge.y = background_doge.y
+
+            // make the background doge disappear
+            background_doge.setVisible(false)
+
+            var doge_text = "doge"
+            //console.log(doge_text)
+            eventsCenter.emit("tower-place?", doge_text)
+        })
+
         this.buyMenuSizer.add(text).layout();
+        this.buyMenuSizer.add(doge).layout();
     }
 
     AddUpgradeMenuChild(){
@@ -314,7 +361,7 @@ export class PageScene extends Phaser.Scene {
         var size: string;
         var classType: string;
 
-        this.numberOfUnits++;
+        //this.numberOfUnits++;
         var title = this.CreateLabel(this,"Unit #" + this.numberOfUnits);
         var child = this.rexUI.add.sizer({
             orientation: 'y',

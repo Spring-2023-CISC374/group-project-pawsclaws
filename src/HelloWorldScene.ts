@@ -2,6 +2,7 @@
 // https://gamedevacademy.org/how-to-make-tower-defense-game-with-phaser-3/
 // */
 import Phaser from 'phaser'
+import eventsCenter from './EventsCenter';
 
 const ENEMY_SPEED = 1 / 10000;
   
@@ -42,7 +43,7 @@ class Enemy extends Phaser.GameObjects.Image {
 
 	startOnPath() {
 		this.follower.t = 0;
-		this.hp = 100;
+		this.hp = 1000;
 		this.timeOnPath = 0;
 		
 		this.path.getPoint(this.follower.t, this.follower.vec);
@@ -50,7 +51,7 @@ class Enemy extends Phaser.GameObjects.Image {
 		this.setPosition(this.follower.vec.x, this.follower.vec.y);
 	}
 
-	receiveDamage(damage: number, gameScene: Phaser.Scene, fireShot: boolean, iceShot: boolean) {
+	receiveDamage(damage: number, gameScene: any, fireShot: boolean, iceShot: boolean) {
 		//console.log(damage)
 		//console.log(this.hp)
 		this.hp -= damage;
@@ -122,6 +123,13 @@ class Turret extends Phaser.GameObjects.Image {
 	private nextTic = 0;
 	private enemies: Phaser.GameObjects.Group;
 	private bullets: Phaser.GameObjects.Group;
+
+	// for the edit menu
+	turret_png?: string;
+	turret_class_type?: string;
+	turret_name?: string;
+	turret_horizontal?: number;
+	turret_vertical?: number;
 
 	constructor(scene: HelloWorldScene) {
 		super(scene, 0, 0, 'unitsprites', 'turret');
@@ -234,10 +242,10 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json');
 		this.load.atlas('unitsprites', 'assets/cowboy.png', 'assets/spritesheet.json');
 		this.load.image('bullet','assets/bigbill.png');
+		this.load.image("doge", "/assets/buff_doge.png")
 	}
   
 	create()  {
-		this.scene.launch("PageScene") 
 		this.add.image(200, 200, 'background');
 		
 		const graphics = this.add.graphics();
@@ -264,7 +272,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy, undefined, this.scene);
   
 		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-			this.placeTurret(pointer, this.turrets)
+			this.placeTurret(pointer, this.turrets, "unitsprites")
 		});
 
 		this.waveNumber = 0
@@ -284,7 +292,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 		this.money = 300
 		this.moneyText = this.add.text(400, 30, "Money: " + this.money)
-		this.scene.launch("PageScene")
 
 		var instructionsButton = this.add.text(200,650, 'Instructions')
         instructionsButton.setInteractive()
@@ -293,6 +300,11 @@ export default class HelloWorldScene extends Phaser.Scene {
             this.scene.launch("InstructionsScene")
         }
         )
+
+		// event listener 
+		// waits for the event "tower-place?"" to be called in the buy menu in PageScene
+		eventsCenter.on("tower-place?", (doge_text: any) => {
+			this.placeTurret(this.input.mousePointer, this.turrets, doge_text)})
 	}
 
 	update(time: number, delta: number): void {  
@@ -333,17 +345,22 @@ export default class HelloWorldScene extends Phaser.Scene {
     	return map[i][j] === 0;
 	}
 
-	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group): void {
+	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group, texture: string): void {
     	const i = Math.floor(pointer.y/64);
     	const j = Math.floor(pointer.x/64);
     	if(this.canPlaceTurret(i, j) && this.money >= 125) {
 			this.money -= 125
         	const turret = turrets.get();
-        	if (turret)
-        	{
+        	if (turret) {
+				console.log("texture of tower: ",texture)
+				turret.setTexture(texture)
+				// if the texutre passed is doge, scale it down because the original is massive and covers the screen
+				if(texture == "doge"){turret.setScale(0.04)}
             	turret.setActive(true);
             	turret.setVisible(true);
             	turret.place(i, j);
+				//console.log("about to emit tower success")
+				eventsCenter.emit("tower-placed-successfully", turret)
         	}   
     	}
 	}
