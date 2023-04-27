@@ -5,8 +5,9 @@ import Phaser from 'phaser'
 
 const ENEMY_SPEED = 1 / 10000;
   
-const BULLET_DAMAGE = 32;
-const PUNCH_DAMAGE = 40
+// Decrease of Bullet Damage
+const BULLET_DAMAGE = 20;
+//const PUNCH_DAMAGE = 40
   
 const map: number[][] = [
 	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -185,6 +186,62 @@ class Buff extends Phaser.GameObjects.Image {
 	}
 }
 
+class Donut extends Phaser.GameObjects.Image {
+	private nextTic = 0;
+	private enemies: Phaser.GameObjects.Group;
+	private bullets: Phaser.GameObjects.Group;
+
+	constructor(scene: HelloWorldScene) {
+		super(scene, 0, 0, 'unitsdonut', 'donut');
+		var enemymaybe = scene.enemies
+		var bulletsmaybe = scene.bullets
+		
+		this.enemies = enemymaybe;
+		this.bullets = bulletsmaybe;
+	}
+
+	place(i: number, j: number): void {
+		  this.y = i * 64 + 64 / 2; // Please check into this
+		  this.x = j * 64 + 64 / 2;
+		  map[i][j] = 1;
+	}
+
+	fire(): void {
+		  const enemy = this.getEnemy(this.x, this.y, 200);
+		  if (enemy) {
+			const angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+			this.addBullet(this.x, this.y, angle);
+			this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+		  }
+	}
+
+	update(time: number, delta: number): void {
+		  if (time > this.nextTic) {
+			this.fire();
+			this.nextTic = time + 1000;
+		  }
+	}
+
+	private getEnemy(x: number, y: number, distance: number) {
+		const enemyUnits = this.enemies.getChildren();
+		const maybe = enemyUnits.entries()
+		for (let i = 0; i < enemyUnits.length; i++) {
+	  		const enemy = enemyUnits[i] as Enemy;
+	  		if (enemy.active && Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y) < distance) {
+				return enemy;
+	  		}
+		}
+		return false;
+	}
+	private addBullet(x: number, y: number, angle: number): void {
+    	const bullet = this.bullets.get();
+    	if (bullet)
+    	{
+        	bullet.fire(x, y, angle);
+    	}
+	}
+}
+
 class Projectile extends Phaser.GameObjects.Image {
 	private incX = 0;
 	private incY = 0;
@@ -231,6 +288,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	path!: Phaser.Curves.Path;
 	cowboys!: Phaser.GameObjects.Group;
 	buffs! : Phaser.GameObjects.Group;
+	donuts! : Phaser.GameObjects.Group;
 	enemies!: Phaser.GameObjects.Group;
 	bullets!: Phaser.GameObjects.Group;
 	//punches! : Phaser.GameObjects.Group;
@@ -249,7 +307,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.atlas('unitsbuff','assets/buff.png', 'assets/spritesheet.json');
 		this.load.atlas('unitsdonut','assets/donut.png','assets/spritesheet.json');
 		this.load.image('bullet','assets/bigbill.png');
-		this.load.image('punch','assets/punch.png');
+		//this.load.image('punch','assets/punch.png');
 		//this.load.image('buff','assets/')
 	}
   
@@ -258,18 +316,28 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 		let selectedCow = false;
 		let selectedBuff = false;
+		let selectedDonut = false;
+
+		// Images of units that need to be selected and worked on (tweak these)
 		const Ccowboy = this.add.sprite(65,555, 'unitscowboy').setInteractive().on("pointerdown", () => {
-			console.log("C selected")
+			console.log("D selected")
 			selectedCow = true;
 			selectedBuff = false;
+			selectedDonut = false;
 		});
 		const Dbuff = this.add.sprite(130,555, 'unitsbuff').setInteractive().on("pointerdown", () => {
-			console.log("B selected")
+			console.log("C selected")
 			selectedBuff = true;
 			selectedCow = false;
+			selectedDonut = false;
+		});
+		const Cdonut = this.add.sprite(195,565, 'unitsdonut').setInteractive().on("pointerdown", () => {
+			console.log("B selected")
+			selectedBuff = false;
+			selectedCow = false;
+			selectedDonut = true;
 		});
 		
-
 		const graphics = this.add.graphics();
 		this.drawLines(graphics);
 		this.path = this.add.path(96, -20);
@@ -286,6 +354,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		// Units
 		this.cowboys = this.add.group({ classType: Cowboy, runChildUpdate: true });
 		this.buffs = this.add.group({classType: Buff, runChildUpdate: true})
+		this.donuts = this.add.group({classType: Donut, runChildUpdate: true})
 
 		// Attacks
 		this.bullets = this.physics.add.group({ classType: Projectile, runChildUpdate: true });
@@ -297,12 +366,16 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy, undefined, this.scene);
 		//this.physics.add.overlap(this.enemies, this.punches, this.damageEnemy, undefined, this.scene);
 
+		// Simplier way of doing the pointer (square brain)
 		this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
 			if (selectedCow) {
 				this.placeCowboy(pointer, this.cowboys)
 			}
 			if (selectedBuff) {
 				this.placeBuff(pointer, this.buffs)
+			}
+			if (selectedDonut) {
+				this.placeDonut(pointer, this.donuts)
 			}
 		});
 		
@@ -322,7 +395,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 		// 	})
 		// });
 		
-
 		this.waveNumber = 0
 		var waveText = this.add.text(400, 10, "Wave: " + this.waveNumber)
 		var startWaveButton = this.add.text(400,50, 'Start Next Wave')
@@ -401,6 +473,7 @@ export default class HelloWorldScene extends Phaser.Scene {
     	return map[i][j] === 0;
 	}
 
+	// All the units are here
 	private placeCowboy(pointer: Phaser.Input.Pointer, cowboys: Phaser.GameObjects.Group): void {
     	const i = Math.floor(pointer.y/64);
     	const j = Math.floor(pointer.x/64);
@@ -428,6 +501,23 @@ export default class HelloWorldScene extends Phaser.Scene {
         	if (turret)
         	{
 				console.log("Buff: turret works");
+            	turret.setActive(true);
+            	turret.setVisible(true);
+            	turret.place(i, j);
+        	}   
+    	}
+	}
+
+	private placeDonut(pointer: Phaser.Input.Pointer, donuts: Phaser.GameObjects.Group): void {
+    	const i = Math.floor(pointer.y/64);
+    	const j = Math.floor(pointer.x/64);
+    	if(this.canPlace(i, j) && this.money >= 100) {
+			console.log("Donut: placed")
+			this.money -= 100
+        	const turret = donuts.get();
+        	if (turret)
+        	{
+				console.log("Donut: turret works")
             	turret.setActive(true);
             	turret.setVisible(true);
             	turret.place(i, j);
