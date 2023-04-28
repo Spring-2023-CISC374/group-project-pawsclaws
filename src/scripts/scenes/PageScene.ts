@@ -82,10 +82,10 @@ export class PageScene extends Phaser.Scene {
         this.AddUpgradeMenuChild();
         this.placedTowers = this.physics.add.group({ runChildUpdate: true });
 
-        eventsCenter.on("tower-placed-successfully", (turret: any) => {
+        eventsCenter.on("tower-placed-successfully", (turret: any, texture: any) => {
             console.log("in event for edit menu")
             console.log(turret)
-            this.AddEditMenuChild(this, turret)
+            this.AddEditMenuChild(this, turret, texture)
             this.placedTowers.add(turret)
         })
     }
@@ -360,15 +360,24 @@ export class PageScene extends Phaser.Scene {
         }).layout();
     }
 
-    AddEditMenuChild(scene: any, turret: any){
+    AddEditMenuChild(scene: any, turret: any, texture: string){
         var name: string;
         var horizontal: string;
         var vertical: string;
         var size: string;
         var classType: string;
+        var unitNumber: integer;
+        var unitType: string;
+        
+        //Get unit number
+        this.numberOfUnits++;
+        unitNumber = this.numberOfUnits;
 
-        //this.numberOfUnits++;
-        var title = this.CreateLabel(this,"Unit #" + this.numberOfUnits);
+        //
+        unitType = texture;
+
+        var title = this.CreateLabel(this,"Unit #" + unitNumber + ": (" + unitType + ")");
+        title.setMinWidth(400);
         var child = this.rexUI.add.sizer({
             orientation: 'y',
             space: { item: 10 }
@@ -388,6 +397,9 @@ export class PageScene extends Phaser.Scene {
                         name = text;
                         textObject.text = text;
                         console.log(name);
+                        title.text = "Unit #" + unitNumber + ": " + name.substring(0,8) + " (" + unitType + ")";
+                        title.layout();
+                        editor.layout();
                     }
                 }
                 scene.rexUI.edit(nameField.getElement('text'), config);
@@ -430,7 +442,7 @@ export class PageScene extends Phaser.Scene {
         //     printText.text = inputText.text;
         // })
 
-
+        
         // HORIZONTAL PLACEMENT UI
         var horizLabel = this.add.text(0,0,'Horizontal Position:').setFontSize(20);
         var horizField = this.rexUI.add.label({
@@ -476,32 +488,32 @@ export class PageScene extends Phaser.Scene {
             scene.rexUI.edit(vertField.getElement('text'),config);
         });
         
-        // SIZE UI
-        var sizeLabel = this.add.text(0,0,'Size:').setFontSize(20);
-        var sizeField = this.rexUI.add.buttons({
-            x: 400, y: 400,
-            orientation: 'x',
-            buttons: [
-                this.createButton(this, 'Small').setOrigin(0.5, 1),
-                this.createButton(this, 'Medium').setOrigin(0.5, 1),
-                this.createButton(this, 'Large').setOrigin(0.5, 1),
-            ],
+        // // SIZE UI
+        // var sizeLabel = this.add.text(0,0,'Size:').setFontSize(20);
+        // var sizeField = this.rexUI.add.buttons({
+        //     x: 400, y: 400,
+        //     orientation: 'x',
+        //     buttons: [
+        //         this.createButton(this, 'Small').setOrigin(0.5, 1),
+        //         this.createButton(this, 'Medium').setOrigin(0.5, 1),
+        //         this.createButton(this, 'Large').setOrigin(0.5, 1),
+        //     ],
 
-            space: {
-                left: 10, right: 10, top: 10, bottom: 10,
-                item: 6
-            }
-        })
-        .setOrigin(0.5, 1)
-        .layout()
+        //     space: {
+        //         left: 10, right: 10, top: 10, bottom: 10,
+        //         item: 6
+        //     }
+        // })
+        // .setOrigin(0.5, 1)
+        // .layout()
 
-        sizeField
-            .on('button.click', function (button, index, pointer, event) {
-                button.scaleYoyo(500, 1.2);
-                size = button.text;
-                sizeLabel.text = 'Size: ' + size;
-                console.log(size);
-            })
+        // sizeField
+        //     .on('button.click', function (button, index, pointer, event) {
+        //         button.scaleYoyo(500, 1.2);
+        //         size = button.text;
+        //         sizeLabel.text = 'Size: ' + size;
+        //         console.log(size);
+        //     })
 
         // CLASS TYPE UI
         var classLabel = this.add.text(0,0,'Class Type: (5 gp to Unlock)').setFontSize(20);
@@ -527,6 +539,7 @@ export class PageScene extends Phaser.Scene {
                 button.scaleYoyo(500, 1.2);
                 classType = button.text;
                 classLabel.text = 'Class: ' + classType;
+                turret.setClassTypes(classType)
                 console.log(classType);
             })
         
@@ -549,12 +562,12 @@ export class PageScene extends Phaser.Scene {
         child.add(vertField, {
             align: "left"
         });
-        child.add(sizeLabel, {
-            align: "left"
-        });
-        child.add(sizeField, {
-            align: "left"
-        })
+        // child.add(sizeLabel, {
+        //     align: "left"
+        // });
+        // child.add(sizeField, {
+        //     align: "left"
+        // })
         child.add(classLabel, {
             align: "left"
         });
@@ -581,6 +594,7 @@ export class PageScene extends Phaser.Scene {
         }).collapse(0);
         editor.setMinWidth(430)
         this.editMenuSizer.add(editor).layout();
+        this.tabPages.layout();
     }
 
     CreateLabel(scene, text) {
@@ -588,7 +602,7 @@ export class PageScene extends Phaser.Scene {
         width: 40, height: 40,
         
         background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 5, COLOR_LIGHT),
-        text: scene.add.text(0, 0, text, { fontSize: 24 }),
+        text: scene.add.text(0, 0, text, { fontSize: 20 }),
         
         space: { left: 10, right: 10, top: 10, bottom: 10 }
         })

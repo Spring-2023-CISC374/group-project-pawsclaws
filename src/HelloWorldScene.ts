@@ -130,6 +130,8 @@ class Turret extends Phaser.GameObjects.Image {
 	turret_name?: string;
 	turret_horizontal?: number;
 	turret_vertical?: number;
+	isFire: boolean;
+	isIce: boolean;
 
 	constructor(scene: HelloWorldScene) {
 		super(scene, 0, 0, 'unitsprites', 'turret');
@@ -138,6 +140,8 @@ class Turret extends Phaser.GameObjects.Image {
 		
 		this.enemies = enemymaybe;
 		this.bullets = bulletsmaybe;
+		this.isFire = false;
+		this.isIce = false;
 	}
 
 	place(i: number, j: number): void {
@@ -162,6 +166,21 @@ class Turret extends Phaser.GameObjects.Image {
 		  }
 	}
 
+	setClassTypes(classType: string){
+		this.isFire = false;
+		this.isIce = false;
+		switch(classType){
+			case "Fire":
+				this.isFire = true;
+				break;
+			case "Ice":
+				this.isIce = true;
+				break;
+			default:
+				break;
+		}
+	}
+
 	private getEnemy(x: number, y: number, distance: number) {
 		const enemyUnits = this.enemies.getChildren();
 		const maybe = enemyUnits.entries()
@@ -177,7 +196,7 @@ class Turret extends Phaser.GameObjects.Image {
     	const bullet = this.bullets.get();
     	if (bullet)
     	{
-        	bullet.fire(x, y, angle);
+        	bullet.fire(x, y, angle, this.isFire, this.isIce);
     	}
 	}
 
@@ -190,17 +209,22 @@ class Bullet extends Phaser.GameObjects.Image {
 	private speed = Phaser.Math.GetSpeed(600, 1);
 	private dx = 0;
 	private dy = 0;
+	isFire: boolean;
+	isIce: boolean;
 
 	constructor(scene: Phaser.Scene) {
 		  super(scene, 0, 0, 'bullet');
+		  this.isFire = false;
+		  this.isIce = false;
 	}
 
-	fire(x: number, y: number, angle: number): void {
+	fire(x: number, y: number, angle: number, isFire: boolean, isIce: boolean): void {
 		  this.setActive(true);
 		  this.setVisible(true);
 		  // Bullets fire from the middle of the screen to the given x/y
 		  this.setPosition(x, y);
-
+		  this.isFire = isFire;
+		  this.isIce = isIce;
 		  // we don't need to rotate the bullets as they are round
 		  // this.setRotation(angle);
 
@@ -306,11 +330,13 @@ export default class HelloWorldScene extends Phaser.Scene {
 		// waits for the event "tower-place?"" to be called in the buy menu in PageScene
 		eventsCenter.on("tower-place?", (doge_text: any) => {
 			this.placeTurret(this.input.mousePointer, this.turrets, doge_text)})
+
 	}
 
 	update(time: number, delta: number): void {  
 
 		this.moneyText.setText("Money: " + this.money)
+		
 	}
 
 	private damageEnemy(enemy: any, bullet: any): void {
@@ -322,7 +348,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	  		bullet.setVisible(false);
   
 	  		// decrease the enemy hp with BULLET_DAMAGE
-	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene, true, false);
+	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene, bullet.isFire, bullet.isIce);
 		}
 	}
 
@@ -361,7 +387,7 @@ export default class HelloWorldScene extends Phaser.Scene {
             	turret.setVisible(true);
             	turret.place(i, j);
 				//console.log("about to emit tower success")
-				eventsCenter.emit("tower-placed-successfully", turret)
+				eventsCenter.emit("tower-placed-successfully", turret, texture)
 				turret.setInteractive()
 				turret.on("pointerdown", () => {console.log("selected unit ")})
 
