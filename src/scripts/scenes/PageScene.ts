@@ -3,6 +3,8 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import { TabPages, Sizer, } from 'phaser3-rex-plugins/templates/ui/ui-components'
 import Drag from 'phaser3-rex-plugins/plugins/drag.js';
 import eventsCenter from "../../EventsCenter";
+import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
+import { Rectangle } from "phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms";
 
 const COLOR_PRIMARY = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
@@ -18,6 +20,7 @@ export class PageScene extends Phaser.Scene {
     
     numberOfUnits = 0;
     maxNumOfUnits = 5;
+    placedTowers: any;
 
     constructor ()
     {
@@ -77,12 +80,14 @@ export class PageScene extends Phaser.Scene {
 
         this.AddBuyMenuChild();
         this.AddUpgradeMenuChild();
+        this.placedTowers = this.physics.add.group({ runChildUpdate: true });
 
         eventsCenter.on("tower-placed-successfully", (turret: any) => {
             console.log("in event for edit menu")
             console.log(turret)
-            this.AddEditMenuChild(turret)
-        }, {once: true})
+            this.AddEditMenuChild(this, turret)
+            this.placedTowers.add(turret)
+        })
     }
 
     update () 
@@ -99,6 +104,8 @@ export class PageScene extends Phaser.Scene {
         var background_doge = this.add.image(doge.x,doge.y, "doge").setScale(0.1).setVisible(false)
         var draggable_doge = new Drag(doge)
         doge.setInteractive()
+        console.log("yessii")
+        console.log(this.placedTowers)
 
         doge.on('dragstart', (pointer: any) => {
             // make the background doge appear
@@ -107,7 +114,7 @@ export class PageScene extends Phaser.Scene {
             background_doge.setVisible(true)
 
             // make the draggable doge smaller so its easier to place
-            doge.setScale(0.05)
+            doge.setScale(0.04)
             // set the draggable doge x and y to wherever the mouse is
             doge.x = pointer.x
             doge.y = pointer.y 
@@ -128,7 +135,6 @@ export class PageScene extends Phaser.Scene {
             background_doge.setVisible(false)
 
             var doge_text = "doge"
-            //console.log(doge_text)
             eventsCenter.emit("tower-place?", doge_text)
         })
 
@@ -354,7 +360,7 @@ export class PageScene extends Phaser.Scene {
         }).layout();
     }
 
-    AddEditMenuChild(scene){
+    AddEditMenuChild(scene: any, turret: any){
         var name: string;
         var horizontal: string;
         var vertical: string;
@@ -386,22 +392,65 @@ export class PageScene extends Phaser.Scene {
                 }
                 scene.rexUI.edit(nameField.getElement('text'), config);
             });
-        
+            
+
+        // var inputText = new InputText(this, 100, 100, 300, 100, {
+        //     type: 'number',
+        //     text: turret.x as string,
+        //     fontSize: '40px'
+
+        // })
+        // .on('textchange', () => {
+        //     var newCord = Math.floor((inputText.text as unknown as number) / 64)
+        //     if(newCord < 10 && newCord >= 0) {
+        //         turret.x = newCord * 64 + 64 / 2
+        //         turret.x = inputText.text as unknown as number
+        //         console.log(newCord)
+        //         console.log(turret.x)
+        //     }
+        // })
+        // var isFocused = inputText.isFocused
+        // this.add.existing(inputText);
+        // var printText = this.add.text(400, 200, '', {
+        //     fontSize: '12px',
+        //     fixedWidth: 100,
+        //     fixedHeight: 100,
+        // }).setOrigin(0.5);
+        // scene.add.rexInputText
+        // this.scene.add.rexInputText()
+        // var inputText = scene.add.rexInputText(400, 400, 10, 10, {
+        //     id: 'myNumberInput',
+        //     type: 'number',
+        //     text: '0',
+        //     fontSize: '12px',
+        // })
+        // .resize(100, 100)
+        // .setOrigin(0.5)
+        // .on('textchange', function (inputText: any) {
+        //     printText.text = inputText.text;
+        // })
+
+
         // HORIZONTAL PLACEMENT UI
         var horizLabel = this.add.text(0,0,'Horizontal Position:').setFontSize(20);
         var horizField = this.rexUI.add.label({
             orientation: 'x',
             background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
             text: this.rexUI.add.BBCodeText(0, 0, '', { fixedWidth: 300, fixedHeight: 18, halign: 'left' }),
-            space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, }
+            space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, },
         })
-        .setInteractive()
+        .setInteractive().setText(turret.x)
         .on('pointerdown', function () {
             var config = {
                 onTextChanged: function(textObject, text) {
-                    horizontal = text;
-                    textObject.text = text;
-                    console.log(horizontal);
+                    var newCord = Math.floor((text as unknown as number) / 64)
+                    if(newCord < 10 && newCord >= 0) {
+                        turret.x = newCord * 64 + 64 / 2
+                        console.log(newCord)
+                        console.log(turret.x)
+                        textObject.text = text;
+                    }
+                    textObject.text = turret.x
                 }
             }
             scene.rexUI.edit(horizField.getElement('text'), config);

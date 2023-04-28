@@ -43,7 +43,7 @@ class Enemy extends Phaser.GameObjects.Image {
 
 	startOnPath() {
 		this.follower.t = 0;
-		this.hp = 1000;
+		this.hp = 100;
 		this.timeOnPath = 0;
 		
 		this.path.getPoint(this.follower.t, this.follower.vec);
@@ -141,9 +141,9 @@ class Turret extends Phaser.GameObjects.Image {
 	}
 
 	place(i: number, j: number): void {
-		  this.y = i * 64 + 64 / 2; // Please check into this
-		  this.x = j * 64 + 64 / 2;
-		  map[i][j] = 1;
+		this.y = i * 64 + 64 / 2; // Please check into this
+		this.x = j * 64 + 64 / 2;
+		map[i][j] = 1;
 	}
 
 	fire(): void {
@@ -180,6 +180,7 @@ class Turret extends Phaser.GameObjects.Image {
         	bullet.fire(x, y, angle);
     	}
 	}
+
 }
 
 class Bullet extends Phaser.GameObjects.Image {
@@ -361,6 +362,9 @@ export default class HelloWorldScene extends Phaser.Scene {
             	turret.place(i, j);
 				//console.log("about to emit tower success")
 				eventsCenter.emit("tower-placed-successfully", turret)
+				turret.setInteractive()
+				turret.on("pointerdown", () => {console.log("selected unit ")})
+
         	}   
     	}
 	}
