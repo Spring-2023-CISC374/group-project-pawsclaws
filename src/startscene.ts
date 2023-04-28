@@ -1,7 +1,6 @@
 import Phaser from 'phaser'
 
 export default class startscene extends Phaser.Scene {
-
 	
 	constructor() {
 		super('startscene')

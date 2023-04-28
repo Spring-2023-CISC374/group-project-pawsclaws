@@ -5,7 +5,9 @@ import Phaser from 'phaser'
 
 const ENEMY_SPEED = 1 / 10000;
   
-const BULLET_DAMAGE = 33;
+// Decrease of Bullet Damage
+const BULLET_DAMAGE = 20;
+//const PUNCH_DAMAGE = 40
   
 const map: number[][] = [
 	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -21,7 +23,7 @@ const map: number[][] = [
 
 class Enemy extends Phaser.GameObjects.Image {
 	follower = { t: 0, vec: new Phaser.Math.Vector2() };
-	hp = 0;
+	hp = 0; // Why did I set this to 0
 	path: Phaser.Curves.Path;
 	timeOnPath = 0;
 
@@ -72,13 +74,13 @@ class Enemy extends Phaser.GameObjects.Image {
 	}
 }
 
-class Turret extends Phaser.GameObjects.Image {
+class Cowboy extends Phaser.GameObjects.Image {
 	private nextTic = 0;
 	private enemies: Phaser.GameObjects.Group;
 	private bullets: Phaser.GameObjects.Group;
 
 	constructor(scene: HelloWorldScene) {
-		super(scene, 0, 0, 'unitsprites', 'turret');
+		super(scene, 0, 0, 'unitscowboy', 'cowboy');
 		var enemymaybe = scene.enemies
 		var bulletsmaybe = scene.bullets
 		
@@ -128,7 +130,119 @@ class Turret extends Phaser.GameObjects.Image {
 	}
 }
 
-class Bullet extends Phaser.GameObjects.Image {
+class Buff extends Phaser.GameObjects.Image {
+	private nextTic = 0;
+	private enemies: Phaser.GameObjects.Group;
+	private bullets: Phaser.GameObjects.Group;
+
+	constructor(scene: HelloWorldScene) {
+		super(scene, 0, 0, 'unitsbuff', 'buff');
+		var enemymaybe = scene.enemies
+		var bulletsmaybe = scene.bullets
+		
+		this.enemies = enemymaybe;
+		this.bullets = bulletsmaybe;
+	}
+
+	place(i: number, j: number): void {
+		  this.y = i * 64 + 64 / 2; // Please check into this
+		  this.x = j * 64 + 64 / 2;
+		  map[i][j] = 1;
+	}
+
+	fire(): void {
+		  const enemy = this.getEnemy(this.x, this.y, 200);
+		  if (enemy) {
+			const angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+			this.addBullet(this.x, this.y, angle);
+			this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+		  }
+	}
+
+	update(time: number, delta: number): void {
+		  if (time > this.nextTic) {
+			this.fire();
+			this.nextTic = time + 1000;
+		  }
+	}
+
+	private getEnemy(x: number, y: number, distance: number) {
+		const enemyUnits = this.enemies.getChildren();
+		const maybe = enemyUnits.entries()
+		for (let i = 0; i < enemyUnits.length; i++) {
+	  		const enemy = enemyUnits[i] as Enemy;
+	  		if (enemy.active && Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y) < distance) {
+				return enemy;
+	  		}
+		}
+		return false;
+	}
+	private addBullet(x: number, y: number, angle: number): void {
+    	const bullet = this.bullets.get();
+    	if (bullet)
+    	{
+        	bullet.fire(x, y, angle);
+    	}
+	}
+}
+
+class Donut extends Phaser.GameObjects.Image {
+	private nextTic = 0;
+	private enemies: Phaser.GameObjects.Group;
+	private bullets: Phaser.GameObjects.Group;
+
+	constructor(scene: HelloWorldScene) {
+		super(scene, 0, 0, 'unitsdonut', 'donut');
+		var enemymaybe = scene.enemies
+		var bulletsmaybe = scene.bullets
+		
+		this.enemies = enemymaybe;
+		this.bullets = bulletsmaybe;
+	}
+
+	place(i: number, j: number): void {
+		  this.y = i * 64 + 64 / 2; // Please check into this
+		  this.x = j * 64 + 64 / 2;
+		  map[i][j] = 1;
+	}
+
+	fire(): void {
+		  const enemy = this.getEnemy(this.x, this.y, 200);
+		  if (enemy) {
+			const angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+			this.addBullet(this.x, this.y, angle);
+			this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+		  }
+	}
+
+	update(time: number, delta: number): void {
+		  if (time > this.nextTic) {
+			this.fire();
+			this.nextTic = time + 1000;
+		  }
+	}
+
+	private getEnemy(x: number, y: number, distance: number) {
+		const enemyUnits = this.enemies.getChildren();
+		const maybe = enemyUnits.entries()
+		for (let i = 0; i < enemyUnits.length; i++) {
+	  		const enemy = enemyUnits[i] as Enemy;
+	  		if (enemy.active && Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y) < distance) {
+				return enemy;
+	  		}
+		}
+		return false;
+	}
+	private addBullet(x: number, y: number, angle: number): void {
+    	const bullet = this.bullets.get();
+    	if (bullet)
+    	{
+        	bullet.fire(x, y, angle);
+    	}
+	}
+}
+
+class Projectile extends Phaser.GameObjects.Image {
 	private incX = 0;
 	private incY = 0;
 	private lifespan = 0;
@@ -138,6 +252,7 @@ class Bullet extends Phaser.GameObjects.Image {
 
 	constructor(scene: Phaser.Scene) {
 		  super(scene, 0, 0, 'bullet');
+		  //super(scene, 0, 0, 'punch');
 	}
 
 	fire(x: number, y: number, angle: number): void {
@@ -169,12 +284,14 @@ class Bullet extends Phaser.GameObjects.Image {
 }
 
 export default class HelloWorldScene extends Phaser.Scene {
-
 	nextEnemy!: number;
 	path!: Phaser.Curves.Path;
-	turrets!: Phaser.GameObjects.Group;
+	cowboys!: Phaser.GameObjects.Group;
+	buffs! : Phaser.GameObjects.Group;
+	donuts! : Phaser.GameObjects.Group;
 	enemies!: Phaser.GameObjects.Group;
 	bullets!: Phaser.GameObjects.Group;
+	//punches! : Phaser.GameObjects.Group;
 	waveNumber!: number;
 	money!: number;
 	moneyText!: Phaser.GameObjects.Text;
@@ -185,13 +302,41 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 	preload() {
 		this.load.image('background', 'assets/grassmeadows.png');
-		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json');
-		this.load.atlas('unitsprites', 'assets/cowboy.png', 'assets/spritesheet.json');
+		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json'); // Automatically interactive maybe
+		this.load.atlas('unitscowboy', 'assets/cowboy.png', 'assets/spritesheet.json');
+		this.load.atlas('unitsbuff','assets/buff.png', 'assets/spritesheet.json');
+		this.load.atlas('unitsdonut','assets/donut.png','assets/spritesheet.json');
 		this.load.image('bullet','assets/bigbill.png');
+		//this.load.image('punch','assets/punch.png');
+		//this.load.image('buff','assets/')
 	}
   
 	create()  {
 		this.add.image(200, 200, 'background');
+
+		let selectedCow = false;
+		let selectedBuff = false;
+		let selectedDonut = false;
+
+		// Images of units that need to be selected and worked on (tweak these)
+		const Ccowboy = this.add.sprite(65,555, 'unitscowboy').setInteractive().on("pointerdown", () => {
+			console.log("D selected")
+			selectedCow = true;
+			selectedBuff = false;
+			selectedDonut = false;
+		});
+		const Dbuff = this.add.sprite(130,555, 'unitsbuff').setInteractive().on("pointerdown", () => {
+			console.log("C selected")
+			selectedBuff = true;
+			selectedCow = false;
+			selectedDonut = false;
+		});
+		const Cdonut = this.add.sprite(195,565, 'unitsdonut').setInteractive().on("pointerdown", () => {
+			console.log("B selected")
+			selectedBuff = false;
+			selectedCow = false;
+			selectedDonut = true;
+		});
 		
 		const graphics = this.add.graphics();
 		this.drawLines(graphics);
@@ -206,19 +351,50 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true, repeat: 0 });
 		// console.log(this.enemies)
   
-		this.turrets = this.add.group({ classType: Turret, runChildUpdate: true });
-  
-		this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
-  
+		// Units
+		this.cowboys = this.add.group({ classType: Cowboy, runChildUpdate: true });
+		this.buffs = this.add.group({classType: Buff, runChildUpdate: true})
+		this.donuts = this.add.group({classType: Donut, runChildUpdate: true})
+
+		// Attacks
+		this.bullets = this.physics.add.group({ classType: Projectile, runChildUpdate: true });
+		//this.punches = this.physics.add.group({ classType: Projectile, runChildUpdate: true });
+
 		this.nextEnemy = 0;
 
 		// its underlined in red but still works
 		this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy, undefined, this.scene);
-  
-		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-			this.placeTurret(pointer, this.turrets)
-		});
+		//this.physics.add.overlap(this.enemies, this.punches, this.damageEnemy, undefined, this.scene);
 
+		// Simplier way of doing the pointer (square brain)
+		this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+			if (selectedCow) {
+				this.placeCowboy(pointer, this.cowboys)
+			}
+			if (selectedBuff) {
+				this.placeBuff(pointer, this.buffs)
+			}
+			if (selectedDonut) {
+				this.placeDonut(pointer, this.donuts)
+			}
+		});
+		
+		// Ccowboy.setInteractive().on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+		// 	console.log("switching to Cowboy")
+		// 	this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+		// 		console.log("placing cowboy")
+		// 		this.placeCowboy(pointer, this.cowboys)
+		// 	})
+		// });
+
+		// Dbuff.setInteractive().on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+		// 	console.log("switching to Buff")
+		// 	this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+		// 		console.log("placing buff")
+		// 		this.placeBuff(pointer, this.buffs)
+		// 	})
+		// });
+		
 		this.waveNumber = 0
 		var waveText = this.add.text(400, 10, "Wave: " + this.waveNumber)
 		var startWaveButton = this.add.text(400,50, 'Start Next Wave')
@@ -238,7 +414,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.moneyText = this.add.text(400, 30, "Money: " + this.money)
 	}
 
-	private damageEnemy(enemy: Enemy, bullet: Bullet): void {
+	private damageEnemy(enemy: Enemy, bullet: Projectile, punch: Projectile): void {
 		// only if both enemy and bullet are alive
 		
 		if (enemy.active === true && bullet.active === true) {
@@ -248,7 +424,19 @@ export default class HelloWorldScene extends Phaser.Scene {
   
 	  		// decrease the enemy hp with BULLET_DAMAGE
 	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene);
+			//enemy.receiveDamage(PUNCH_DAMAGE, this.scene)
 		}
+
+		/*
+		if (enemy.active === true && punch.active === true) {
+			// we remove the bullet right away
+			 bullet.setActive(false);
+			 bullet.setVisible(false);
+ 
+			 // decrease the enemy hp with BULLET_DAMAGE
+		     enemy.receiveDamage(PUNCH_DAMAGE, this.scene)
+	   }
+	   */
 	}
 
 	private drawLines(graphics: Phaser.GameObjects.Graphics): void {
@@ -281,18 +469,55 @@ export default class HelloWorldScene extends Phaser.Scene {
     	// }
 	}
 
-	private canPlaceTurret(i: number, j: number): boolean {
+	private canPlace(i: number, j: number): boolean {
     	return map[i][j] === 0;
 	}
 
-	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group): void {
+	// All the units are here
+	private placeCowboy(pointer: Phaser.Input.Pointer, cowboys: Phaser.GameObjects.Group): void {
     	const i = Math.floor(pointer.y/64);
     	const j = Math.floor(pointer.x/64);
-    	if(this.canPlaceTurret(i, j) && this.money >= 125) {
+    	if(this.canPlace(i, j) && this.money >= 125) {
+			console.log("Cow: placed")
 			this.money -= 125
-        	const turret = turrets.get();
+        	const turret = cowboys.get();
         	if (turret)
         	{
+				console.log("Cow: turret works")
+            	turret.setActive(true);
+            	turret.setVisible(true);
+            	turret.place(i, j);
+        	}   
+    	}
+	}
+
+	private placeBuff(pointer: Phaser.Input.Pointer, buffs: Phaser.GameObjects.Group): void {
+    	const i = Math.floor(pointer.y/64);
+    	const j = Math.floor(pointer.x/64);
+    	if(this.canPlace(i, j) && this.money >= 150) {
+			console.log("Buff: placed")
+			this.money -= 150
+        	const turret = buffs.get();
+        	if (turret)
+        	{
+				console.log("Buff: turret works");
+            	turret.setActive(true);
+            	turret.setVisible(true);
+            	turret.place(i, j);
+        	}   
+    	}
+	}
+
+	private placeDonut(pointer: Phaser.Input.Pointer, donuts: Phaser.GameObjects.Group): void {
+    	const i = Math.floor(pointer.y/64);
+    	const j = Math.floor(pointer.x/64);
+    	if(this.canPlace(i, j) && this.money >= 100) {
+			console.log("Donut: placed")
+			this.money -= 100
+        	const turret = donuts.get();
+        	if (turret)
+        	{
+				console.log("Donut: turret works")
             	turret.setActive(true);
             	turret.setVisible(true);
             	turret.place(i, j);

@@ -7,11 +7,27 @@
     "spriteSourceSize":{"x":0,"y":0,"w":75,"h":75},
     "sourceSize":{"w":75,"h":75}},
 {
-    "filename":"turret",
+    "filename":"cowboy",
     "frame":{"x":0,"y":0,"w":75,"h":75},
     "rotated":false,
     "trimmed":false,
     "image":"cowboy.png",
+    "spriteSourceSize":{"x":0,"y":0,"w":75,"h":75},
+    "sourceSize":{"w":75,"h":75}},
+{
+    "filename":"buff",
+    "frame":{"x":0,"y":0,"w":75,"h":75},
+    "rotated":false,
+    "trimmed":false,
+    "image":"buff.png",
+    "spriteSourceSize":{"x":0,"y":0,"w":75,"h":75},
+    "sourceSize":{"w":75,"h":75}},
+{
+    "filename":"donut",
+    "frame":{"x":0,"y":0,"w":75,"h":75},
+    "rotated":false,
+    "trimmed":false,
+    "image":"donut.png",
     "spriteSourceSize":{"x":0,"y":0,"w":75,"h":75},
     "sourceSize":{"w":75,"h":75}},
 {
