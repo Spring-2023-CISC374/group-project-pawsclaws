@@ -1,6 +1,8 @@
 import Phaser from 'phaser'
-import startScene from './scenes/startScene'
+import startScene from './scenes/Load'
 import HelloWorldScene from './HelloWorldScene'
+import LoadScene from './scenes/LoadScenes'
+import StartScene from './scenes/StartScene'
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
@@ -10,7 +12,7 @@ const config: Phaser.Types.Core.GameConfig = {
 	physics: {
 		default: 'arcade'
 	},
-	scene: [startScene, HelloWorldScene],
+	scene: [StartScene, HelloWorldScene],
 	scale: {
 		// fits the game to the window
 		mode: Phaser.Scale.FIT,
