@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import startScene from './scenes/startScene'
-import HelloWorldScene from './HelloWorldScene'
+import HelloWorldScene from './scenes/mainScene'
 import { InstructionsScene } from './scripts/scenes/InstructionsScene';
 
 //import { Controller, SceneA, SceneB, SceneC } from './scripts/scenes/SideMenu'

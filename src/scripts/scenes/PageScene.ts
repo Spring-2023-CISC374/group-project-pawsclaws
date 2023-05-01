@@ -35,14 +35,15 @@ export class PageScene extends Phaser.Scene {
     preload ()
     {
        this.load.html("UnitEditor", "assets/html/UnitEditor.html")
-       this.load.image("doge", "/assets/buff_doge.png")
+       this.load.image('doge', '/assets/buff_doge.png')
+       this.load.image('cat', '/assets/cowboy_cat.png')
     }
 
     create ()
     {
         this.tabPages = this.rexUI.add.tabPages({
-            x: 890, y: 260,
-            width: 500, height: 520,
+            x: 955, y: 355,
+            width: 550, height: 710,
             background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 0, COLOR_DARK),
         
             tabs: {
@@ -98,49 +99,88 @@ export class PageScene extends Phaser.Scene {
     }
     
     // Currently being called at the end of the create function (keep if you want the content to be static)
-    AddBuyMenuChild(){
+    AddBuyMenuChild() {
         var text = this.CreateLabel(this, 'cost: 125')
-        var doge = this.add.image(0,0, "doge").setScale(0.1)
-        var background_doge = this.add.image(doge.x,doge.y, "doge").setScale(0.1).setVisible(false)
-        var draggable_doge = new Drag(doge)
-        doge.setInteractive()
-        console.log("yessii")
-        console.log(this.placedTowers)
+        var text2 = this.CreateLabel(this, 'cost: 150')
+        var cowboy = this.add.image(0,0, 'cat').setScale(0.1)
+        var buff = this.add.image(0,0, 'doge').setScale(0.1)
+        var background_cowboy = this.add.image(cowboy.x,cowboy.y, 'cat').setScale(0.1).setVisible(false)
+        var background_buff = this.add.image(buff.x,buff.y, 'doge').setScale(0.1).setVisible(false)
+        var draggable_cowboy = new Drag(cowboy)
+        var draggable_buff = new Drag(buff)
+        cowboy.setInteractive()
+        buff.setInteractive()
 
-        doge.on('dragstart', (pointer: any) => {
-            // make the background doge appear
-            background_doge.x = doge.x
-            background_doge.y = doge.y
-            background_doge.setVisible(true)
+        // Cowboy Cat Unit
+        cowboy.on('dragstart', (pointer: any) => {
+            // make the background cowboy appear
+            background_cowboy.x = cowboy.x
+            background_cowboy.y = cowboy.y
+            background_cowboy.setVisible(true)
 
-            // make the draggable doge smaller so its easier to place
-            doge.setScale(0.04)
-            // set the draggable doge x and y to wherever the mouse is
-            doge.x = pointer.x
-            doge.y = pointer.y 
+            // make the draggable cowboy smaller so its easier to place
+            cowboy.setScale(0.04)
+            // set the draggable cowboy x and y to wherever the mouse is
+            cowboy.x = pointer.x
+            cowboy.y = pointer.y 
         })
-        // updates the doges x and y when being dragged
-        doge.on('drag', (pointer: any) => {
-            doge.x = pointer.x
-            doge.y = pointer.y 
+        // updates the cowboys x and y when being dragged
+        cowboy.on('drag', (pointer: any) => {
+            cowboy.x = pointer.x
+            cowboy.y = pointer.y 
         })
-        doge.on('dragend', (pointer: any) => {
-            // set the scale of the doge back to 0.1 for the shop
-            // set the doge x and y to the background doge x and y
-            doge.setScale(0.1)
-            doge.x = background_doge.x
-            doge.y = background_doge.y
+        cowboy.on('dragend', (pointer: any) => {
+            // set the scale of the cowboy back to 0.1 for the shop
+            // set the cowboy x and y to the background cowboy x and y
+            cowboy.setScale(0.1)
+            cowboy.x = background_cowboy.x
+            cowboy.y = background_cowboy.y
 
-            // make the background doge disappear
-            background_doge.setVisible(false)
+            // make the background cowboy disappear
+            background_cowboy.setVisible(false)
 
-            var doge_text = "doge"
-            eventsCenter.emit("tower-place?", doge_text)
+            var cowboy_text = "cowboy"
+            eventsCenter.emit("tower-place?", cowboy_text)
         })
-
         this.buyMenuSizer.add(text).layout();
-        this.buyMenuSizer.add(doge).layout();
+        this.buyMenuSizer.add(cowboy).layout();
+
+        // Buff Doge Unit
+        buff.on('dragstart', (pointer: any) => {
+            // make the background cowboy appear
+            background_buff.x = buff.x
+            background_buff.y = buff.y
+            background_buff.setVisible(true)
+
+            // make the draggable buff smaller so its easier to place
+            buff.setScale(0.04)
+            // set the draggable buff x and y to wherever the mouse is
+            buff.x = pointer.x
+            buff.y = pointer.y 
+        })
+        // updates the buffs x and y when being dragged
+        buff.on('drag', (pointer: any) => {
+            buff.x = pointer.x
+            buff.y = pointer.y 
+        })
+        buff.on('dragend', (pointer: any) => {
+            // set the scale of the buff back to 0.1 for the shop
+            // set the buff x and y to the background buff x and y
+            buff.setScale(0.1)
+            buff.x = background_buff.x
+            buff.y = background_buff.y
+
+            // make the background buff disappear
+            background_buff.setVisible(false)
+
+            var buff_text = "buff"
+            eventsCenter.emit("tower-place?", buff_text)
+        })
+        this.buyMenuSizer.add(text2).layout();
+        this.buyMenuSizer.add(buff).layout();
     }
+
+
 
     AddUpgradeMenuChild(){
         var fireClassLabel = this.CreateLabel(this, 'Fire Class:')
