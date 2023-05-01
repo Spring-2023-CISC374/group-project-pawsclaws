@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
-import { TabPages, Sizer, } from 'phaser3-rex-plugins/templates/ui/ui-components'
+import { TabPages, Sizer, FadeIn, } from 'phaser3-rex-plugins/templates/ui/ui-components'
 import Drag from 'phaser3-rex-plugins/plugins/drag.js';
 import eventsCenter from "../../EventsCenter";
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
@@ -36,10 +36,12 @@ export class PageScene extends Phaser.Scene {
     {
        this.load.html("UnitEditor", "assets/html/UnitEditor.html")
        this.load.image("doge", "/assets/buff_doge.png")
+       this.load.atlas("unitsprites", '/assets/cowboy.png', '/assets/spritesheet.json');
     }
 
     create ()
     {
+        this.scene.bringToTop("PageScene")
         this.tabPages = this.rexUI.add.tabPages({
             x: 890, y: 260,
             width: 500, height: 520,
@@ -76,9 +78,10 @@ export class PageScene extends Phaser.Scene {
                 page: this.CreateScrollablePanel(this, this.upgradeMenuSizer)
             })
             .layout()
-            .swapFirstPage()
+            .swapPage('Buy')
 
-        this.AddBuyMenuChild();
+        this.AddBuyMenuChild("unitsprites");
+        this.AddBuyMenuChild("doge");
         this.AddUpgradeMenuChild();
         this.placedTowers = this.physics.add.group({ runChildUpdate: true });
 
@@ -92,54 +95,56 @@ export class PageScene extends Phaser.Scene {
 
     update () 
     {
-        // while(this.numberOfUnits < this.maxNumOfUnits){
-        //     this.AddEditMenuChild(this);
-        // }
     }
     
     // Currently being called at the end of the create function (keep if you want the content to be static)
-    AddBuyMenuChild(){
+    AddBuyMenuChild(texture: string){
         var text = this.CreateLabel(this, 'cost: 125')
-        var doge = this.add.image(0,0, "doge").setScale(0.1)
-        var background_doge = this.add.image(doge.x,doge.y, "doge").setScale(0.1).setVisible(false)
-        var draggable_doge = new Drag(doge)
-        doge.setInteractive()
-        console.log("yessii")
-        console.log(this.placedTowers)
+        if(texture == "doge") {
+            var tower_object = this.add.image(0,0, texture).setScale(0.1)
+            var background_object = this.add.image(tower_object.x,tower_object.y, texture).setScale(0.1).setVisible(false)
+            var background_object_2 = this.add.image(tower_object.x,tower_object.y, texture).setScale(0.04).setVisible(false)
+        }
+        else {
+            var tower_object = this.add.image(0,0, texture).setScale(2)
+            var background_object = this.add.image(tower_object.x,tower_object.y, texture).setScale(2).setVisible(false)
+            var background_object_2 = this.add.image(tower_object.x,tower_object.y, texture).setScale(1).setVisible(false)
+        }
+        var draggable_object = new Drag(tower_object)
+        tower_object.setInteractive()
 
-        doge.on('dragstart', (pointer: any) => {
-            // make the background doge appear
-            background_doge.x = doge.x
-            background_doge.y = doge.y
-            background_doge.setVisible(true)
+        tower_object.on('dragstart', (pointer: any) => {
+            // make the background object in shop appear
+            background_object.x = tower_object.x
+            background_object.y = tower_object.y
+            background_object.setVisible(true)
 
-            // make the draggable doge smaller so its easier to place
-            doge.setScale(0.04)
-            // set the draggable doge x and y to wherever the mouse is
-            doge.x = pointer.x
-            doge.y = pointer.y 
+            // make the object that follows the pointer while dragging appear
+            background_object_2.x = pointer.x
+            background_object_2.y = pointer.y
+            background_object_2.setVisible(true)
+
+            tower_object.setVisible(false)
         })
-        // updates the doges x and y when being dragged
-        doge.on('drag', (pointer: any) => {
-            doge.x = pointer.x
-            doge.y = pointer.y 
+        // updates the dragging background objects x and y when being dragged
+        tower_object.on('drag', (pointer: any) => {
+            background_object_2.x = pointer.x
+            background_object_2.y = pointer.y
         })
-        doge.on('dragend', (pointer: any) => {
-            // set the scale of the doge back to 0.1 for the shop
-            // set the doge x and y to the background doge x and y
-            doge.setScale(0.1)
-            doge.x = background_doge.x
-            doge.y = background_doge.y
+        tower_object.on('dragend', () => {
+            tower_object.x = background_object.x
+            tower_object.y = background_object.y
+            tower_object.setVisible(true)
 
-            // make the background doge disappear
-            background_doge.setVisible(false)
+            // make the background objects disappear
+            background_object.setVisible(false)
+            background_object_2.setVisible(false)
 
-            var doge_text = "doge"
-            eventsCenter.emit("tower-place?", doge_text)
+            eventsCenter.emit("tower-place?", texture)
         })
 
         this.buyMenuSizer.add(text).layout();
-        this.buyMenuSizer.add(doge).layout();
+        this.buyMenuSizer.add(tower_object).layout();
     }
 
     AddUpgradeMenuChild(){

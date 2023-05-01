@@ -247,6 +247,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
   
 	create()  {
+		this.scene.launch("PageScene")
 		this.add.image(200, 200, 'background');
 		
 		const graphics = this.add.graphics();
@@ -304,8 +305,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 		// event listener 
 		// waits for the event "tower-place?"" to be called in the buy menu in PageScene
-		eventsCenter.on("tower-place?", (doge_text: any) => {
-			this.placeTurret(this.input.mousePointer, this.turrets, doge_text)})
+		eventsCenter.on("tower-place?", (tower_text: any) => {
+			this.placeTurret(this.input.mousePointer, this.turrets, tower_text)})
 	}
 
 	update(time: number, delta: number): void {  
