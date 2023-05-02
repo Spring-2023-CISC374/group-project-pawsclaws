@@ -5,6 +5,7 @@ import Drag from 'phaser3-rex-plugins/plugins/drag.js';
 import eventsCenter from "../../EventsCenter";
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 import { Rectangle } from "phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms";
+import HelloWorldScene from '../../HelloWorldScene'
 
 const COLOR_PRIMARY = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
@@ -103,17 +104,24 @@ export class PageScene extends Phaser.Scene {
         if(texture == "doge") {
             var tower_object = this.add.image(0,0, texture).setScale(0.1)
             var background_object = this.add.image(tower_object.x,tower_object.y, texture).setScale(0.1).setVisible(false)
-            var background_object_2 = this.add.image(tower_object.x,tower_object.y, texture).setScale(0.04).setVisible(false)
+            var background_object_2 = this.add.image(tower_object.x,tower_object.y, texture).setScale(0.04).setVisible(false).setDepth(1)
         }
         else {
             var tower_object = this.add.image(0,0, texture).setScale(2)
             var background_object = this.add.image(tower_object.x,tower_object.y, texture).setScale(2).setVisible(false)
-            var background_object_2 = this.add.image(tower_object.x,tower_object.y, texture).setScale(1).setVisible(false)
+            var background_object_2 = this.add.image(tower_object.x,tower_object.y, texture).setScale(1).setVisible(false).setDepth(1)
         }
         var draggable_object = new Drag(tower_object)
         tower_object.setInteractive()
 
+        // 200 is the radius of the circle because the range for the turret is 200
+        var range_circle = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+
         tower_object.on('dragstart', (pointer: any) => {
+            range_circle.x = pointer.x
+            range_circle.y = pointer.y
+            range_circle.setVisible(true)
+
             // make the background object in shop appear
             background_object.x = tower_object.x
             background_object.y = tower_object.y
@@ -125,13 +133,29 @@ export class PageScene extends Phaser.Scene {
             background_object_2.setVisible(true)
 
             tower_object.setVisible(false)
+            
         })
+
         // updates the dragging background objects x and y when being dragged
         tower_object.on('drag', (pointer: any) => {
+            range_circle.x = pointer.x
+            range_circle.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
             background_object_2.x = pointer.x
             background_object_2.y = pointer.y
         })
         tower_object.on('dragend', () => {
+            range_circle.setVisible(false)
+
             tower_object.x = background_object.x
             tower_object.y = background_object.y
             tower_object.setVisible(true)
@@ -399,42 +423,6 @@ export class PageScene extends Phaser.Scene {
             });
             
 
-        // var inputText = new InputText(this, 100, 100, 300, 100, {
-        //     type: 'number',
-        //     text: turret.x as string,
-        //     fontSize: '40px'
-
-        // })
-        // .on('textchange', () => {
-        //     var newCord = Math.floor((inputText.text as unknown as number) / 64)
-        //     if(newCord < 10 && newCord >= 0) {
-        //         turret.x = newCord * 64 + 64 / 2
-        //         turret.x = inputText.text as unknown as number
-        //         console.log(newCord)
-        //         console.log(turret.x)
-        //     }
-        // })
-        // var isFocused = inputText.isFocused
-        // this.add.existing(inputText);
-        // var printText = this.add.text(400, 200, '', {
-        //     fontSize: '12px',
-        //     fixedWidth: 100,
-        //     fixedHeight: 100,
-        // }).setOrigin(0.5);
-        // scene.add.rexInputText
-        // this.scene.add.rexInputText()
-        // var inputText = scene.add.rexInputText(400, 400, 10, 10, {
-        //     id: 'myNumberInput',
-        //     type: 'number',
-        //     text: '0',
-        //     fontSize: '12px',
-        // })
-        // .resize(100, 100)
-        // .setOrigin(0.5)
-        // .on('textchange', function (inputText: any) {
-        //     printText.text = inputText.text;
-        // })
-
 
         // HORIZONTAL PLACEMENT UI
         var horizLabel = this.add.text(0,0,'Horizontal Position:').setFontSize(20);
@@ -450,10 +438,7 @@ export class PageScene extends Phaser.Scene {
                 onTextChanged: function(textObject, text) {
                     var newCord = Math.floor((text as unknown as number) / 64)
                     if(newCord < 10 && newCord >= 0) {
-                        turret.x = newCord * 64 + 64 / 2
-                        console.log(newCord)
-                        console.log(turret.x)
-                        textObject.text = text;
+                        eventsCenter.emit("changeHorizontally", [turret, newCord])
                     }
                     textObject.text = turret.x
                 }
@@ -469,13 +454,15 @@ export class PageScene extends Phaser.Scene {
             text: this.rexUI.add.BBCodeText(0, 0, '', { fixedWidth: 300, fixedHeight: 18, halign: 'left' }),
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, }
         })
-        .setInteractive()
+        .setInteractive().setText(turret.y)
         .on('pointerdown', function () {
             var config = {
                 onTextChanged: function(textObject, text) {
-                    vertical = text;
-                    textObject.text = text;
-                    console.log(vertical);
+                    var newCord = Math.floor((text as unknown as number) / 64)
+                    if(newCord < 8 && newCord >= 0) {
+                        eventsCenter.emit("changeVertically", [turret, newCord])
+                    }
+                    textObject.text = turret.y
                 }
             }
             scene.rexUI.edit(vertField.getElement('text'),config);

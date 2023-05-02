@@ -307,6 +307,34 @@ export default class HelloWorldScene extends Phaser.Scene {
 		// waits for the event "tower-place?"" to be called in the buy menu in PageScene
 		eventsCenter.on("tower-place?", (tower_text: any) => {
 			this.placeTurret(this.input.mousePointer, this.turrets, tower_text)})
+		
+		eventsCenter.on("canplace", (pointer: any) => {
+			console.log("wipppiee")
+			eventsCenter.emit("returnplace", this.canPlaceTurret(Math.floor(pointer.y/64), Math.floor(pointer.x/64)))
+		})
+
+		eventsCenter.on("changeHorizontally", (lst: any) => {
+			var turret = lst[0]
+			var newCord = Number(lst[1])
+			var original_i = Math.floor(turret.y/64)
+			var original_j = Math.floor(turret.x/64)
+			if(this.canPlaceTurret(original_i, newCord)){
+				map[original_i][newCord] = 1
+				map[original_i][original_j] = 0
+				turret.x = newCord * 64 + 64 / 2
+			}
+		})
+		eventsCenter.on("changeVertically", (lst: any) => {
+			var turret = lst[0]
+			var newCord = Number(lst[1])
+			var original_i = Math.floor(turret.y/64)
+			var original_j = Math.floor(turret.x/64)
+			if(this.canPlaceTurret(newCord, original_j)){
+				map[newCord][original_j] = 1
+				map[original_i][original_j] = 0
+				turret.y = newCord * 64 + 64 / 2
+			}
+		})
 	}
 
 	update(time: number, delta: number): void {  
@@ -342,6 +370,9 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 	private canPlaceTurret(i: number, j: number): boolean {
 		if(i > 7 || j > 9){
+			return false
+		}
+		if(i < 0 || j < 0){
 			return false
 		}
     	return map[i][j] === 0;
