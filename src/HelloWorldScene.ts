@@ -40,10 +40,12 @@ class Enemy extends Phaser.GameObjects.Image {
 		this.fireTimer = 0;
 		this.gameScene = scene;
 	}
+	
+
 
 	startOnPath() {
 		this.follower.t = 0;
-		this.hp = 100;
+		this.hp = 10;
 		this.timeOnPath = 0;
 		
 		this.path.getPoint(this.follower.t, this.follower.vec);
@@ -67,9 +69,11 @@ class Enemy extends Phaser.GameObjects.Image {
 		
 		// if hp drops below 0 we deactivate this enemy
 		if (this.hp <= 0) {
+			//eventsCenter.emit("popsound")
 			this.setActive(false);
 			this.setVisible(false);
 			this.destroy();
+			eventsCenter.emit("popsound")
 			gameScene.money += 50;
 			
 		}
@@ -233,6 +237,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	waveNumber!: number;
 	money!: number;
 	moneyText!: Phaser.GameObjects.Text;
+	music!: any
 	
 	constructor() {
 		super('helloworldscene')
@@ -244,9 +249,14 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.atlas('unitsprites', 'assets/cowboy.png', 'assets/spritesheet.json');
 		this.load.image('bullet','assets/bigbill.png');
 		this.load.image("doge", "/assets/buff_doge.png")
+		this.load.audio("pop", ["public/assets/Pops.mp3"])
 	}
   
 	create()  {
+		this.music = this.sound.add("pop")
+		eventsCenter.on("popsound", () => {
+			this.music.play()
+		})
 		this.scene.launch("PageScene")
 		this.add.image(200, 200, 'background');
 		
