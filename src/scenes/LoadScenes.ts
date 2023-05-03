@@ -44,14 +44,11 @@ export default class LoadScene extends Phaser.Scene {
         //var startGif = this.add.sprite(500, 500, "startGif")
         //startGif.play("play-gif")
 
-        var text = this.add.text(800, 100, "click the cat")
-
-        this.input.on("pointerdown", () =>{
-            this.scene.start("startScene")
+        const text = this.add.text(800, 100, "click the cat")
+        this.sceneSprite.setInteractive();
+        this.sceneSprite.on("pointerdown", () =>{
+            this.scene.start("HelloWorldScene")
         })
-
-
-
         //gif.anims.play('play-gif');
     }
 
