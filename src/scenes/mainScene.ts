@@ -45,7 +45,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
 
 	preload() {
-		this.load.image('background', 'assets/grasslands.png');
+		this.load.image('background', 'assets/map.png');
 		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json');
 		//this.load.atlas('cowboy', 'assets/cowboy_cat.png', 'assets/spritesheet.json');
 		//this.load.atlas('buff', '/assets/buff_doge.png', 'assets/spritesheet.json');
@@ -57,8 +57,8 @@ export default class HelloWorldScene extends Phaser.Scene {
   
 	create()  {
 
-		this.add.image(300, 240, 'background');
-		this.add.image(380,760, 'bar')
+		this.add.image(415, 320, 'background').setScale(0.89);
+		this.add.image(380, 760, 'bar')
 
 		// Only used for visualization
 		const graphics = this.add.graphics();
