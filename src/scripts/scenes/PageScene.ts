@@ -35,15 +35,15 @@ export class PageScene extends Phaser.Scene {
     preload ()
     {
        this.load.html("UnitEditor", "assets/html/UnitEditor.html")
-       this.load.image('doge', '/assets/buff_doge.png')
-       this.load.image('cat', '/assets/cowboy_cat.png')
+       this.load.image('buff', '/assets/buff_doge.png')
+       this.load.image('cowboy', '/assets/cowboy_cat.png')
     }
 
     create ()
     {
         this.tabPages = this.rexUI.add.tabPages({
-            x: 955, y: 355,
-            width: 550, height: 710,
+            x: 1028, y: 359,
+            width: 500, height: 720,
             background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 0, COLOR_DARK),
         
             tabs: {
@@ -102,10 +102,10 @@ export class PageScene extends Phaser.Scene {
     AddBuyMenuChild() {
         var text = this.CreateLabel(this, 'cost: 125')
         var text2 = this.CreateLabel(this, 'cost: 150')
-        var cowboy = this.add.image(0,0, 'cat').setScale(0.1)
-        var buff = this.add.image(0,0, 'doge').setScale(0.1)
-        var background_cowboy = this.add.image(cowboy.x,cowboy.y, 'cat').setScale(0.1).setVisible(false)
-        var background_buff = this.add.image(buff.x,buff.y, 'doge').setScale(0.1).setVisible(false)
+        var cowboy = this.add.image(0,0, 'cowboy').setScale(0.1)
+        var buff = this.add.image(0,0, 'buff').setScale(0.1)
+        var background_cowboy = this.add.image(cowboy.x,cowboy.y, 'cowboy').setScale(0.1).setVisible(false)
+        var background_buff = this.add.image(buff.x,buff.y, 'buff').setScale(0.1).setVisible(false)
         var draggable_cowboy = new Drag(cowboy)
         var draggable_buff = new Drag(buff)
         cowboy.setInteractive()
@@ -204,7 +204,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         burnDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -229,7 +229,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         burnDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -255,7 +255,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         frozenDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -281,7 +281,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         lightningAdditionTargetsSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -306,7 +306,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         lightningDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -332,7 +332,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         puddleDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -357,7 +357,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         acidDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -433,7 +433,7 @@ export class PageScene extends Phaser.Scene {
             .setInteractive()
             .on('pointerdown', function () {
                 var config = {
-                    onTextChanged: function(textObject, text) {
+                    onTextChanged: function(textObject: any, text: any) {
                         name = text;
                         textObject.text = text;
                         console.log(name);
@@ -494,7 +494,7 @@ export class PageScene extends Phaser.Scene {
         .setInteractive().setText(turret.x)
         .on('pointerdown', function () {
             var config = {
-                onTextChanged: function(textObject, text) {
+                onTextChanged: function(textObject: any, text: any) {
                     var newCord = Math.floor((text as unknown as number) / 64)
                     if(newCord < 10 && newCord >= 0) {
                         turret.x = newCord * 64 + 64 / 2
@@ -519,7 +519,7 @@ export class PageScene extends Phaser.Scene {
         .setInteractive()
         .on('pointerdown', function () {
             var config = {
-                onTextChanged: function(textObject, text) {
+                onTextChanged: function(textObject: any, text: any) {
                     vertical = text;
                     textObject.text = text;
                     console.log(vertical);
@@ -575,7 +575,7 @@ export class PageScene extends Phaser.Scene {
         .layout()
 
         classField
-            .on('button.click', function (button, index, pointer, event) {
+            .on('button.click', function (button: any, index: any, pointer: any, event: any) {
                 button.scaleYoyo(500, 1.2);
                 classType = button.text;
                 classLabel.text = 'Class: ' + classType;
@@ -637,7 +637,7 @@ export class PageScene extends Phaser.Scene {
         this.tabPages.layout();
     }
 
-    CreateLabel(scene, text) {
+    CreateLabel(scene: any, text: any) {
         return scene.rexUI.add.label({
         width: 40, height: 40,
         
@@ -650,7 +650,7 @@ export class PageScene extends Phaser.Scene {
 
     // Function used often to create a button. Scene is always set to 'this' and 
     // text is set to what you want written on the button
-    createButton(scene, text) {
+    createButton(scene: any, text: any) {
         return scene.rexUI.add.label({
             width: 60,
             height: 30,
@@ -669,7 +669,7 @@ export class PageScene extends Phaser.Scene {
     // Function to create Scrollable Panel, needs a child sizer (basically just a container) to hold anything that
     // will be added. Function below is a basic setting of an empty sizer. Scene is alway set to 'this'. 
     // To add to child sizer after the fact, just have it as a variable and perform a .add().layout().
-    CreateScrollablePanel(scene, childSizer) {
+    CreateScrollablePanel(scene: any, childSizer: any) {
         
         return scene.rexUI.add.scrollablePanel({
             x: 400,

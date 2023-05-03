@@ -4,20 +4,21 @@
 import Phaser from 'phaser'
 import eventsCenter from '../EventsCenter';
 import { Enemy } from '../componets/enemy';
-import { Cowboy, Buff, Donut } from '../componets/units';
+import { Turret } from '../componets/units';
 import { Bullet } from '../componets/attack';
 
 const BULLET_DAMAGE = 33;
 
 const map: number[][] = [
-	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, -1, -1, -1, -1, -1, -1, -1, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, -1, 0, 0]
+	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, -1, 0, 0, 0, 0, 0, -1, -1, -1, 0, 0],
+	[0, -1, 0, 0, 0, 0, 0, -1, 0, -1, 0, 0],
+	[0, -1, 0, -1, -1, -1, -1, -1, -1, -1, 0, 0],
+	[0, -1, 0, -1, 0, 0, 0, -1, 0, 0, 0, 0],
+	[0, -1, -1, -1, 0, 0, 0, -1, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, -1, -1, -1, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0]
 ];
 
 
@@ -29,9 +30,10 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 	nextEnemy!: number;
 	path!: Phaser.Curves.Path;
-	cowboys!: Phaser.GameObjects.Group;
-	buffs! : Phaser.GameObjects.Group;
-	donuts! : Phaser.GameObjects.Group;
+	turrets!: Phaser.GameObjects.Group;
+	//cowboys!: Phaser.GameObjects.Group;
+	//buffs! : Phaser.GameObjects.Group;
+	//donuts! : Phaser.GameObjects.Group;
 	enemies!: Phaser.GameObjects.Group;
 	bullets!: Phaser.GameObjects.Group;
 	waveNumber!: number;
@@ -43,26 +45,43 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
 
 	preload() {
-		this.load.image('background', 'assets/grassmeadows.png');
+		this.load.image('background', 'assets/grasslands.png');
 		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json');
 		//this.load.atlas('cowboy', 'assets/cowboy_cat.png', 'assets/spritesheet.json');
 		//this.load.atlas('buff', '/assets/buff_doge.png', 'assets/spritesheet.json');
 		this.load.image('bullet','assets/bigbill.png');
-		this.load.image('cat', '/assets/cowboy_cat.png');
-		this.load.image('doge', '/assets/buff_doge.png');
+		this.load.image('cowboy', '/assets/cowboy_cat.png');
+		this.load.image('buff', '/assets/buff_doge.png');
+		this.load.image('bar', '/assets/menu.PNG')
 	}
   
 	create()  {
-		this.add.image(200, 200, 'background');
-		
+
+		this.add.image(300, 240, 'background');
+		this.add.image(380,760, 'bar')
+
+		// Only used for visualization
 		const graphics = this.add.graphics();
 		this.drawLines(graphics);
+
+		// The path of our enemies 
+		// Parameters are the start and y of our path
 		this.path = this.add.path(96, -20);
 		this.path.lineTo(96, 164);
-		this.path.lineTo(480, 164);
-		this.path.lineTo(480, 544);
+		this.path.lineTo(96, 350);
+		this.path.lineTo(225, 350);
+		//this.path.lineTo(225, 230);
+		this.path.lineTo(225, 230);
+		this.path.lineTo(610, 230);
+		this.path.lineTo(610, 100);
+		this.path.lineTo(480, 100);
+		this.path.lineTo(480, 426);
+		this.path.lineTo(610, 426);
+		this.path.lineTo(610, 610);
   
 		graphics.lineStyle(2, 0xffffff, 1);
+
+		// Visualize the path
 		this.path.draw(graphics);
 
   
@@ -70,9 +89,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		// console.log(this.enemies)
 
 		// Units
-		this.cowboys = this.add.group({ classType: Cowboy, runChildUpdate: true });
-		this.buffs = this.add.group({ classType: Buff, runChildUpdate: true });
-		this.donuts = this.add.group({ classType: Donut, runChildUpdate: true });
+		this.turrets = this.add.group({ classType: Turret, runChildUpdate: true });
   
 		this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
   
@@ -88,8 +105,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 		*/
 
 		this.waveNumber = 0
-		var waveText = this.add.text(400, 10, "Wave: " + this.waveNumber)
-		var startWaveButton = this.add.text(400,50, 'Start Next Wave')
+		var waveText = this.add.text(50, 640, "Wave: " + this.waveNumber)
+		var startWaveButton = this.add.text(50,675, 'Start Next Wave')
 		startWaveButton.setInteractive()
 		startWaveButton.on('pointerdown', () => {
 			
@@ -103,9 +120,9 @@ export default class HelloWorldScene extends Phaser.Scene {
 		})
 
 		this.money = 300
-		this.moneyText = this.add.text(400, 30, "Money: " + this.money)
+		this.moneyText = this.add.text(50, 657, "Money: " + this.money)
 
-		var instructionsButton = this.add.text(200,650, 'Instructions')
+		var instructionsButton = this.add.text(600,650, 'Instructions')
         instructionsButton.setInteractive()
         instructionsButton.on('pointerdown',  () => {
 			console.log("clicked button")
@@ -115,11 +132,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 		// event listener 
 		// waits for the event "tower-place?"" to be called in the buy menu in PageScene
-		eventsCenter.on("tower-place?", (doge_text: any) => {
-			this.placeTurret(this.input.mousePointer, this.buffs, doge_text)})
-
-		eventsCenter.on("tower-place?",(cat_text: any) => {
-			this.placeTurret(this.input.mousePointer, this.cowboys, cat_text)})
+		eventsCenter.on("tower-place?", (text: any) => {
+			this.placeTurret(this.input.mousePointer, this.turrets, text)})
 		
 
 	}
@@ -143,21 +157,22 @@ export default class HelloWorldScene extends Phaser.Scene {
 		}
 	}
 
+	// Draws the grid and makes it bigger
 	private drawLines(graphics: Phaser.GameObjects.Graphics): void {
     	graphics.lineStyle(1, 0x000000, 0.8);
-    	for(let i = 0; i < 8; i++) {
+    	for(let i = 0; i < 10; i++) {
         	graphics.moveTo(0, i * 64);
-        	graphics.lineTo(640, i * 64);
+        	graphics.lineTo(800, i * 64);
     	}
-    	for(let j = 0; j < 10; j++) {
+    	for(let j = 0; j < 13; j++) {
         	graphics.moveTo(j * 64, 0);
-        	graphics.lineTo(j * 64, 512);
+        	graphics.lineTo(j * 64, 610);
     	}
     	graphics.strokePath();
 	}
 
-	private canPlaceTurret(i: number, j: number): boolean {
-		if(i > 7 || j > 9){
+	private canPlace(i: number, j: number): boolean {
+		if(i > 9 || j > 12){
 			return false
 		}
     	return map[i][j] === 0;
@@ -166,15 +181,28 @@ export default class HelloWorldScene extends Phaser.Scene {
 	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group, texture: string): void {
     	const i = Math.floor(pointer.y/64);
     	const j = Math.floor(pointer.x/64);
-		// I need to make something that specifies the thing that I need 
-		const CC = this.cowboys
-		const turret = turrets.get();
-    	if(this.canPlaceTurret(i, j) && this.money >= 125) {
-				this.money -= 125
+		// I need to make something that specifies the thing that I need
+    	if(this.canPlace(i, j)) {
+				const turret = turrets.get()
 				console.log("texture of tower: ",texture)
 				turret.setTexture(texture)
 				// if the texutre passed is doge, scale it down because the original is massive and covers the screen
-				if(texture == "cat"){turret.setScale(0.04)}
+				if(texture == "cowboy"){
+					if (this.money >= 125) {
+						this.money -= 125
+						turret.setScale(0.04)
+					} else {
+						return
+					}
+				}
+				if (texture == "buff") {
+					if (this.money >= 150) {
+						this.money -= 150
+						turret.setScale(0.04)
+					} else {
+						return
+					}
+				}
             	turret.setActive(true);
             	turret.setVisible(true);
             	turret.place(i, j);
@@ -183,23 +211,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 				turret.setInteractive()
 				turret.on("pointerdown", () => {console.log("selected unit ")})
 
-        	}
-		
-
-			// Buff Doge
-		if(this.canPlaceTurret(i, j) && this.money >= 150) {
-				this.money -= 150
-				console.log("texture of tower: ",texture)
-				turret.setTexture(texture)
-				// if the texutre passed is doge, scale it down because the original is massive and covers the screen
-				if(texture == "doge"){turret.setScale(0.04)}
-            	turret.setActive(true);
-            	turret.setVisible(true);
-            	turret.place(i, j);
-				//console.log("about to emit tower success")
-				eventsCenter.emit("tower-placed-successfully", turret, texture)
-				turret.setInteractive()
-				turret.on("pointerdown", () => {console.log("selected unit ")})
         	}
     	}
 
