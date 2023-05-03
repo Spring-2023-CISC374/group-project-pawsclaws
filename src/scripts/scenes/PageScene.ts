@@ -142,8 +142,6 @@ export class PageScene extends Phaser.Scene {
             var cowboy_text = "cowboy"
             eventsCenter.emit("tower-place?", cowboy_text)
         })
-        this.buyMenuSizer.add(text).layout();
-        this.buyMenuSizer.add(cowboy).layout();
 
         // Buff Doge Unit
         buff.on('dragstart', (pointer: any) => {
@@ -176,11 +174,30 @@ export class PageScene extends Phaser.Scene {
             var buff_text = "buff"
             eventsCenter.emit("tower-place?", buff_text)
         })
-        this.buyMenuSizer.add(text2).layout();
-        this.buyMenuSizer.add(buff).layout();
+
+        var row1 = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        var row1column1 = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        var row1column2 = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+
+        row1column1.add(text).layout();
+        row1column1.add(cowboy).layout();
+        row1column2.add(text2).layout();
+        row1column2.add(buff).layout();
+        row1.add(row1column1).layout();
+        row1.add(row1column2).layout();
+        this.buyMenuSizer.add(row1, {
+            align: "left"
+        }).layout();
     }
-
-
 
     AddUpgradeMenuChild(){
         var fireClassLabel = this.CreateLabel(this, 'Fire Class:')
