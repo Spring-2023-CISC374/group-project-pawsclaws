@@ -249,7 +249,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.atlas('unitsprites', 'assets/cowboy.png', 'assets/spritesheet.json');
 		this.load.image('bullet','assets/bigbill.png');
 		this.load.image("doge", "/assets/buff_doge.png")
-		this.load.audio("pop", ["public/assets/Pops.mp3"])
+		this.load.audio("pop", ["/assets/Pops.mp3"])
 	}
   
 	create()  {
