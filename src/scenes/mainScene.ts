@@ -1,7 +1,7 @@
 // I GOT THIS CODE FROM 
 // https://gamedevacademy.org/how-to-make-tower-defense-game-with-phaser-3/
 // */
-import Phaser from 'phaser'
+import Phaser, { NONE } from 'phaser'
 import eventsCenter from '../EventsCenter';
 import { Enemy } from '../componets/enemy';
 import { Turret } from '../componets/units';
@@ -52,7 +52,9 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.image('bullet','assets/bigbill.png');
 		this.load.image('cowboy', '/assets/cowboy_cat.png');
 		this.load.image('buff', '/assets/buff_doge.png');
-		this.load.image('bar', '/assets/menu.PNG')
+		this.load.image('bigm','/assets/rootbeer_cat.png');
+        this.load.image('bulldog','/assets/bulldog.png');
+		this.load.image('bar', '/assets/menu.PNG');
 	}
   
 	create()  {
@@ -188,16 +190,32 @@ export default class HelloWorldScene extends Phaser.Scene {
 				turret.setTexture(texture)
 				// if the texutre passed is doge, scale it down because the original is massive and covers the screen
 				if(texture == "cowboy"){
-					if (this.money >= 125) {
-						this.money -= 125
+					if (this.money >= 150) {
+						this.money -= 150
+						turret.setScale(0.04)
+					} else {
+						return 
+					}
+				}
+				if (texture == "buff") {
+					if (this.money >= 175) {
+						this.money -= 175
 						turret.setScale(0.04)
 					} else {
 						return
 					}
 				}
-				if (texture == "buff") {
-					if (this.money >= 150) {
-						this.money -= 150
+				if (texture == "bigm") {
+					if (this.money >= 225) {
+						this.money -= 225
+						turret.setScale(0.04)
+					} else {
+						return
+					}
+				}
+				if (texture == "bulldog") {
+					if (this.money >= 275) {
+						this.money -= 275
 						turret.setScale(0.04)
 					} else {
 						return

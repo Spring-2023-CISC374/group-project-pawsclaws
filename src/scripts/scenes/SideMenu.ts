@@ -3,7 +3,7 @@ import Phaser from "phaser";
 //Used Two Phaser Tutorials on their website as guides (Scene Controller and Change Scene Order) 
 
 export class Controller extends Phaser.Scene {
-    private text: Phaser.GameObjects.Text;
+    private text!: Phaser.GameObjects.Text;
 
     constructor ()
     {

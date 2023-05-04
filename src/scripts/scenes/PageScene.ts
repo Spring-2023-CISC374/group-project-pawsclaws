@@ -37,6 +37,8 @@ export class PageScene extends Phaser.Scene {
        this.load.html("UnitEditor", "assets/html/UnitEditor.html")
        this.load.image('buff', '/assets/buff_doge.png')
        this.load.image('cowboy', '/assets/cowboy_cat.png')
+       this.load.image('bigm','/assets/rootbeer_cat.png')
+       this.load.image('bulldog','/assets/bulldog.png')
     }
 
     create ()
@@ -100,16 +102,28 @@ export class PageScene extends Phaser.Scene {
     
     // Currently being called at the end of the create function (keep if you want the content to be static)
     AddBuyMenuChild() {
-        var text = this.CreateLabel(this, 'cost: 125')
-        var text2 = this.CreateLabel(this, 'cost: 150')
+        var text = this.CreateLabel(this, 'cost: 150')
+        var text2 = this.CreateLabel(this, 'cost: 200')
+        //var text3
+        //var text4 
+        var text5 = this.CreateLabel(this, 'cost: 225')
+        var text6 = this.CreateLabel(this, 'cost: 275')
         var cowboy = this.add.image(0,0, 'cowboy').setScale(0.1)
         var buff = this.add.image(0,0, 'buff').setScale(0.1)
+        var bigm = this.add.image(0,0,'bigm').setScale(0.1)
+        var bulldog = this.add.image(0,0,'bulldog').setScale(0.1)
         var background_cowboy = this.add.image(cowboy.x,cowboy.y, 'cowboy').setScale(0.1).setVisible(false)
         var background_buff = this.add.image(buff.x,buff.y, 'buff').setScale(0.1).setVisible(false)
+        var background_bigm = this.add.image(bigm.x,bigm.y,'bigm').setScale(0.1).setVisible(false)
+        var background_bulldog = this.add.image(bulldog.x,bulldog.y,'bulldog').setScale(0.1).setVisible(false)
         var draggable_cowboy = new Drag(cowboy)
         var draggable_buff = new Drag(buff)
+        var draggable_bigm = new Drag(bigm)
+        var draggable_bulldog = new Drag(bulldog)
         cowboy.setInteractive()
         buff.setInteractive()
+        bigm.setInteractive()
+        bulldog.setInteractive()
 
         // Cowboy Cat Unit
         cowboy.on('dragstart', (pointer: any) => {
@@ -175,6 +189,70 @@ export class PageScene extends Phaser.Scene {
             eventsCenter.emit("tower-place?", buff_text)
         })
 
+        // Big M Unit
+        bigm.on('dragstart', (pointer: any) => {
+            // make the background cowboy appear
+            background_bigm.x = bigm.x
+            background_bigm.y = bigm.y
+            background_bigm.setVisible(true)
+
+            // make the draggable cowboy smaller so its easier to place
+            bigm.setScale(0.04)
+            // set the draggable cowboy x and y to wherever the mouse is
+            bigm.x = bigm.x
+            bigm.y = bigm.y 
+        })
+        // updates the cowboys x and y when being dragged
+        bigm.on('drag', (pointer: any) => {
+            bigm.x = pointer.x
+            bigm.y = pointer.y 
+        })
+        bigm.on('dragend', (pointer: any) => {
+            // set the scale of the cowboy back to 0.1 for the shop
+            // set the cowboy x and y to the background cowboy x and y
+            bigm.setScale(0.1)
+            bigm.x = background_bigm.x
+            bigm.y = background_bigm.y
+
+            // make the background cowboy disappear
+            background_bigm.setVisible(false)
+
+            var bigm_text = "bigm"
+            eventsCenter.emit("tower-place?", bigm_text)
+        })
+
+        // Big M Unit
+        bulldog.on('dragstart', (pointer: any) => {
+            // make the background cowboy appear
+            background_bulldog.x = bulldog.x
+            background_bulldog.y = bulldog.y
+            background_bulldog.setVisible(true)
+
+            // make the draggable cowboy smaller so its easier to place
+            bulldog.setScale(0.04)
+            // set the draggable cowboy x and y to wherever the mouse is
+            bulldog.x = bulldog.x
+            bulldog.y = bulldog.y 
+        })
+        // updates the cowboys x and y when being dragged
+        bulldog.on('drag', (pointer: any) => {
+            bulldog.x = pointer.x
+            bulldog.y = pointer.y 
+        })
+        bulldog.on('dragend', (pointer: any) => {
+            // set the scale of the cowboy back to 0.1 for the shop
+            // set the cowboy x and y to the background cowboy x and y
+            bulldog.setScale(0.1)
+            bulldog.x = background_bulldog.x
+            bulldog.y = background_bulldog.y
+
+            // make the background cowboy disappear
+            background_bulldog.setVisible(false)
+
+            var bulldog_text = "bulldog"
+            eventsCenter.emit("tower-place?", bulldog_text)
+        })
+
         var row1 = this.rexUI.add.sizer({
             width: 200,
             orientation: 'x'
@@ -188,6 +266,20 @@ export class PageScene extends Phaser.Scene {
             orientation: 'y'
         });
 
+        var row2 = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        var row2column1 = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        var row2column2 = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+
+
         row1column1.add(text).layout();
         row1column1.add(cowboy).layout();
         row1column2.add(text2).layout();
@@ -195,6 +287,16 @@ export class PageScene extends Phaser.Scene {
         row1.add(row1column1).layout();
         row1.add(row1column2).layout();
         this.buyMenuSizer.add(row1, {
+            align: "left"
+        }).layout();
+
+        row2column1.add(text5).layout();
+        row2column1.add(bigm).layout();
+        row2column2.add(text6).layout();
+        row2column2.add(bulldog).layout();
+        row2.add(row2column1).layout();
+        row2.add(row2column2).layout();
+        this.buyMenuSizer.add(row2, {
             align: "left"
         }).layout();
     }
