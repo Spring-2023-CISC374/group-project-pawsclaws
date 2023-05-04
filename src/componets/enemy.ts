@@ -1,3 +1,4 @@
+import eventsCenter from '../EventsCenter';
 import { CollisionGroup, default as HelloWorldScene } from '../scenes/mainScene';
 
 const ENEMY_SPEED = 1 / 10000;
@@ -53,6 +54,7 @@ export class Enemy extends Phaser.GameObjects.Image {
 			this.setVisible(false);
 			this.destroy();
 			gameScene.money += 50;
+			eventsCenter.emit("popsound")
 			
 		}
 	}

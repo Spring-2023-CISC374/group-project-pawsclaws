@@ -79,7 +79,7 @@ export class PageScene extends Phaser.Scene {
             .layout()
             .swapFirstPage()
 
-        this.AddBuyMenuChild();
+        this.AddBuyMenuChild("cowboy", 125, "buff", 150);
         this.AddUpgradeMenuChild();
         this.placedTowers = this.physics.add.group({ runChildUpdate: true });
 
@@ -99,80 +99,121 @@ export class PageScene extends Phaser.Scene {
     }
     
     // Currently being called at the end of the create function (keep if you want the content to be static)
-    AddBuyMenuChild() {
-        var text = this.CreateLabel(this, 'cost: 125')
-        var text2 = this.CreateLabel(this, 'cost: 150')
-        var cowboy = this.add.image(0,0, 'cowboy').setScale(0.1)
-        var buff = this.add.image(0,0, 'buff').setScale(0.1)
-        var background_cowboy = this.add.image(cowboy.x,cowboy.y, 'cowboy').setScale(0.1).setVisible(false)
-        var background_buff = this.add.image(buff.x,buff.y, 'buff').setScale(0.1).setVisible(false)
-        var draggable_cowboy = new Drag(cowboy)
-        var draggable_buff = new Drag(buff)
-        cowboy.setInteractive()
-        buff.setInteractive()
+    AddBuyMenuChild(texture1: string, cost1: number, texture2: string, cost2: number) {
+        var text = this.CreateLabel(this, 'cost: '.concat(cost1.toString()))
+        var text2 = this.CreateLabel(this, 'cost: '.concat(cost2.toString()))
+
+        var store_object_1 = this.add.image(0,0, texture1).setScale(0.1)
+        var background_object_1 = this.add.image(store_object_1.x, store_object_1.y, texture1).setScale(0.1).setVisible(false)
+        var draggable_object_1 = new Drag(store_object_1)
+        store_object_1.setInteractive()
+        
+        var store_object_2 = this.add.image(0,0, texture2).setScale(0.1)
+        var background_object_2 = this.add.image(store_object_2.x, store_object_2.y, texture2).setScale(0.1).setVisible(false)
+        var draggable_object_2 = new Drag(store_object_2)
+        store_object_2.setInteractive()
+
+        // 200 is the radius of the circle because the range for the turret is 200
+        var range_circle = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+        
 
         // Cowboy Cat Unit
-        cowboy.on('dragstart', (pointer: any) => {
+        store_object_1.on('dragstart', (pointer: any) => {
+            range_circle.x = pointer.x
+            range_circle.y = pointer.y
+            range_circle.setVisible(true)
             // make the background cowboy appear
-            background_cowboy.x = cowboy.x
-            background_cowboy.y = cowboy.y
-            background_cowboy.setVisible(true)
+            background_object_1.x = store_object_1.x
+            background_object_1.y = store_object_1.y
+            background_object_1.setVisible(true)
 
             // make the draggable cowboy smaller so its easier to place
-            cowboy.setScale(0.04)
+            store_object_1.setScale(0.04).setDepth(1)
             // set the draggable cowboy x and y to wherever the mouse is
-            cowboy.x = pointer.x
-            cowboy.y = pointer.y 
+            store_object_1.x = pointer.x
+            store_object_1.y = pointer.y 
         })
         // updates the cowboys x and y when being dragged
-        cowboy.on('drag', (pointer: any) => {
-            cowboy.x = pointer.x
-            cowboy.y = pointer.y 
+        store_object_1.on('drag', (pointer: any) => {
+            range_circle.x = pointer.x
+            range_circle.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            store_object_1.x = pointer.x
+            store_object_1.y = pointer.y 
         })
-        cowboy.on('dragend', (pointer: any) => {
+        store_object_1.on('dragend', (pointer: any) => {
+            range_circle.setVisible(false)
+
             // set the scale of the cowboy back to 0.1 for the shop
             // set the cowboy x and y to the background cowboy x and y
-            cowboy.setScale(0.1)
-            cowboy.x = background_cowboy.x
-            cowboy.y = background_cowboy.y
+            store_object_1.setScale(0.1).setDepth(0)
+            store_object_1.x = background_object_1.x
+            store_object_1.y = background_object_1.y
 
             // make the background cowboy disappear
-            background_cowboy.setVisible(false)
-
-            var cowboy_text = "cowboy"
-            eventsCenter.emit("tower-place?", cowboy_text)
+            background_object_1.setVisible(false)
+            
+            //"cowboy"
+            eventsCenter.emit("tower-place?", texture1)
         })
 
         // Buff Doge Unit
-        buff.on('dragstart', (pointer: any) => {
+        store_object_2.on('dragstart', (pointer: any) => {
+            range_circle.x = pointer.x
+            range_circle.y = pointer.y
+            range_circle.setVisible(true)
+
             // make the background cowboy appear
-            background_buff.x = buff.x
-            background_buff.y = buff.y
-            background_buff.setVisible(true)
+            background_object_2.x = store_object_2.x
+            background_object_2.y = store_object_2.y
+            background_object_2.setVisible(true)
 
             // make the draggable buff smaller so its easier to place
-            buff.setScale(0.04)
+            store_object_2.setScale(0.04).setDepth(1)
             // set the draggable buff x and y to wherever the mouse is
-            buff.x = pointer.x
-            buff.y = pointer.y 
+            store_object_2.x = pointer.x
+            store_object_2.y = pointer.y 
         })
         // updates the buffs x and y when being dragged
-        buff.on('drag', (pointer: any) => {
-            buff.x = pointer.x
-            buff.y = pointer.y 
+        store_object_2.on('drag', (pointer: any) => {
+            range_circle.x = pointer.x
+            range_circle.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            store_object_2.x = pointer.x
+            store_object_2.y = pointer.y 
         })
-        buff.on('dragend', (pointer: any) => {
+        store_object_2.on('dragend', (pointer: any) => {
+            range_circle.setVisible(false)
+
             // set the scale of the buff back to 0.1 for the shop
             // set the buff x and y to the background buff x and y
-            buff.setScale(0.1)
-            buff.x = background_buff.x
-            buff.y = background_buff.y
+            store_object_2.setScale(0.1).setDepth(0)
+            store_object_2.x = background_object_2.x
+            store_object_2.y = background_object_2.y
 
             // make the background buff disappear
-            background_buff.setVisible(false)
+            background_object_2.setVisible(false)
 
-            var buff_text = "buff"
-            eventsCenter.emit("tower-place?", buff_text)
+            //"buff"
+            eventsCenter.emit("tower-place?", texture2)
         })
 
         var row1 = this.rexUI.add.sizer({
@@ -189,9 +230,9 @@ export class PageScene extends Phaser.Scene {
         });
 
         row1column1.add(text).layout();
-        row1column1.add(cowboy).layout();
+        row1column1.add(store_object_1).layout();
         row1column2.add(text2).layout();
-        row1column2.add(buff).layout();
+        row1column2.add(store_object_2).layout();
         row1.add(row1column1).layout();
         row1.add(row1column2).layout();
         this.buyMenuSizer.add(row1, {
@@ -513,11 +554,8 @@ export class PageScene extends Phaser.Scene {
             var config = {
                 onTextChanged: function(textObject: any, text: any) {
                     var newCord = Math.floor((text as unknown as number) / 64)
-                    if(newCord < 10 && newCord >= 0) {
-                        turret.x = newCord * 64 + 64 / 2
-                        console.log(newCord)
-                        console.log(turret.x)
-                        textObject.text = text;
+                    if(newCord < 12 && newCord >= 0) {
+                        eventsCenter.emit("changeHorizontally", [turret, newCord])
                     }
                     textObject.text = turret.x
                 }
@@ -533,13 +571,15 @@ export class PageScene extends Phaser.Scene {
             text: this.rexUI.add.BBCodeText(0, 0, '', { fixedWidth: 300, fixedHeight: 18, halign: 'left' }),
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, }
         })
-        .setInteractive()
+        .setInteractive().setText(turret.y)
         .on('pointerdown', function () {
             var config = {
                 onTextChanged: function(textObject: any, text: any) {
-                    vertical = text;
-                    textObject.text = text;
-                    console.log(vertical);
+                    var newCord = Math.floor((text as unknown as number) / 64)
+                    if(newCord < 8 && newCord >= 0) {
+                        eventsCenter.emit("changeVertically", [turret, newCord])
+                    }
+                    textObject.text = turret.y
                 }
             }
             scene.rexUI.edit(vertField.getElement('text'),config);
