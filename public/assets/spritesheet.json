@@ -11,9 +11,10 @@
     "frame":{"x":0,"y":0,"w":75,"h":75},
     "rotated":false,
     "trimmed":false,
-    "image":"cowboy.png",
+    "image":"donut.png",
     "spriteSourceSize":{"x":0,"y":0,"w":75,"h":75},
     "sourceSize":{"w":75,"h":75}},
+
 {
     "filename":"buff",
     "frame":{"x":0,"y":0,"w":75,"h":75},

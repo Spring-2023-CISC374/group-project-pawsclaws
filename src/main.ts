@@ -1,17 +1,19 @@
 import Phaser from 'phaser'
+import startScene from './scenes/startScene'
+import HelloWorldScene from './scenes/mainScene'
+import { InstructionsScene } from './scripts/scenes/InstructionsScene';
+
 //import { Controller, SceneA, SceneB, SceneC } from './scripts/scenes/SideMenu'
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
-import HelloWorldScene from './HelloWorldScene';
-import startScene from './scenes/startScene';
 import { PageScene } from './scripts/scenes/PageScene';
-// import startScene from './scenes/startScene'
-// import HelloWorldScene from './HelloWorldScene'
 
-const config = {
+
+
+const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
-	parent: 'app', //Other one is parent: 'content' ...?
-	width: 1150,
-	height: 600,
+	parent: 'content',
+	width: 1280,
+	height: 720,
 	dom: {
 		createContainer: true
 	},
@@ -23,9 +25,9 @@ const config = {
         }]
 	},
 	physics: {
-		default: 'arcade',
+		default: 'arcade'
 	},
-	scene: [startScene, HelloWorldScene,PageScene],
+	scene: [startScene, HelloWorldScene, PageScene, InstructionsScene],
 	scale: {
 		// fits the game to the window
 		mode: Phaser.Scale.FIT,
@@ -35,3 +37,4 @@ const config = {
 }
 
 export default new Phaser.Game(config)
+

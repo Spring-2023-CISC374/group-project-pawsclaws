@@ -6,12 +6,12 @@ export default class startScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('startbutton','assets/pawsclawslogo.jpg')
+        this.load.image('startbutton','assets/pawsclaws.png')
     }
 
     // This Scene messes with the logo screen
     create() {
-        var startButton = this.add.image(575,290, 'startbutton')
+        var startButton = this.add.image(644,337, 'startbutton')
         startButton.setInteractive()
         startButton.on('pointerdown', () => {
             this.scene.start("helloworldscene")
