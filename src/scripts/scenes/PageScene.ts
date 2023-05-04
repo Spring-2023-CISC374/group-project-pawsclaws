@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
-import { TabPages, Sizer, } from 'phaser3-rex-plugins/templates/ui/ui-components'
+import { TabPages, Sizer, GridSizer} from 'phaser3-rex-plugins/templates/ui/ui-components'
 import Drag from 'phaser3-rex-plugins/plugins/drag.js';
 import eventsCenter from "../../EventsCenter";
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
@@ -15,7 +15,7 @@ export class PageScene extends Phaser.Scene {
     tabPages!: TabPages;
 
     editMenuSizer!: Sizer;
-    buyMenuSizer!: Sizer;
+    buyMenuSizer!: GridSizer;
     upgradeMenuSizer!: Sizer;
     
     numberOfUnits = 0;
@@ -56,20 +56,20 @@ export class PageScene extends Phaser.Scene {
         
             space: { left: 5, right: 5, top: 5, bottom: 5, item: 10 }
         
-        })
+        }).setMinWidth(520);
 
         this.CreateSizers();
 
         this.tabPages
             .addPage({
-                key: 'Edit',
-                tab: this.CreateLabel(this, 'Edit'),
-                page: this.CreateScrollablePanel(this, this.editMenuSizer)
-            })
-            .addPage({
                 key: 'Buy',
                 tab: this.CreateLabel(this, 'Buy'),
                 page: this.CreateScrollablePanel(this, this.buyMenuSizer)
+            })
+            .addPage({
+                key: 'Edit',
+                tab: this.CreateLabel(this, 'Edit'),
+                page: this.CreateScrollablePanel(this, this.editMenuSizer)
             })
             .addPage({
                 key: 'Upgrade',
@@ -100,8 +100,8 @@ export class PageScene extends Phaser.Scene {
     
     // Currently being called at the end of the create function (keep if you want the content to be static)
     AddBuyMenuChild() {
-        var text = this.CreateLabel(this, 'cost: 125')
-        var text2 = this.CreateLabel(this, 'cost: 150')
+        var text = this.add.text(0,0, 'cost: 125')
+        var text2 = this.add.text(0,0, 'cost: 150')
         var cowboy = this.add.image(0,0, 'cowboy').setScale(0.1)
         var buff = this.add.image(0,0, 'buff').setScale(0.1)
         var background_cowboy = this.add.image(cowboy.x,cowboy.y, 'cowboy').setScale(0.1).setVisible(false)
@@ -174,29 +174,99 @@ export class PageScene extends Phaser.Scene {
             var buff_text = "buff"
             eventsCenter.emit("tower-place?", buff_text)
         })
-
-        var row1 = this.rexUI.add.sizer({
+        var cowboy_cat_title = this.rexUI.add.sizer({
             width: 200,
             orientation: 'x'
         });
-        var row1column1 = this.rexUI.add.sizer({
-            width: 200,
-            orientation: 'y'
-        });
-        var row1column2 = this.rexUI.add.sizer({
-            width: 200,
-            orientation: 'y'
-        });
+        cowboy_cat_title.add(this.CreateLabel(this, 'Cowboy Cat:'));
+        cowboy_cat_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
 
-        row1column1.add(text).layout();
-        row1column1.add(cowboy).layout();
-        row1column2.add(text2).layout();
-        row1column2.add(buff).layout();
-        row1.add(row1column1).layout();
-        row1.add(row1column2).layout();
-        this.buyMenuSizer.add(row1, {
-            align: "left"
-        }).layout();
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+            button.scaleYoyo(500, 1.2);
+            cowboy_cat_card.toggleFace();
+        }));
+
+        var cowboy_cat_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);
+        cowboy_cat_buy.add(text).layout();
+        cowboy_cat_buy.add(cowboy).layout();
+
+        var cowboy_cat_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        cowboy_cat_info.add(this.add.text(0,0,"\nAttack Speed: 5/10\n\nAttack Damage: 5/10\n\nRange: 6/10").setFontSize(17))
+
+        var cowboy_cat_card = this.rexUI.add.perspectiveCard({
+            front: cowboy_cat_buy,
+            back: cowboy_cat_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+        var buff_doge_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        }).setMinWidth(245);
+        buff_doge_title.add(this.CreateLabel(this, 'Buff Doge:'));
+        buff_doge_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+            button.scaleYoyo(500, 1.2);
+            buff_doge_card.toggleFace();
+        }), {align: 'right'});
+        var buff_doge_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);;
+        buff_doge_buy.add(text2).layout();
+        buff_doge_buy.add(buff).layout();
+
+        var buff_doge_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        buff_doge_info.add(this.add.text(0,0,"\nAttack Speed: 5/10 \n\nAttack Damage: 8/10\n\nRange: 3/10").setFontSize(17));
+
+        var buff_doge_card = this.rexUI.add.perspectiveCard({
+            front: buff_doge_buy,
+            back: buff_doge_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+        //this.buyMenuSizer.add(this.CreateLabel(this, 'Cowboy Cat:'), 0, 0, 'left', 0, true).layout();
+        this.buyMenuSizer.add(cowboy_cat_title, 0, 0, 'center', 0, true).layout();
+        this.buyMenuSizer.add(cowboy_cat_card, 0 , 1, 'center', 0, true).layout();
+        this.buyMenuSizer.add(buff_doge_title, 1, 0, 'center', 0, true).layout();
+        this.buyMenuSizer.add(buff_doge_card, 1 , 1, 'center', 0, true).layout();
+        this.buyMenuSizer.layout();
     }
 
     AddUpgradeMenuChild(){
@@ -211,7 +281,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -236,7 +306,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -262,7 +332,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -288,7 +358,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -313,7 +383,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -339,7 +409,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -364,7 +434,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -434,7 +504,7 @@ export class PageScene extends Phaser.Scene {
         unitType = texture;
 
         var title = this.CreateLabel(this,"Unit #" + unitNumber + ": (" + unitType + ")");
-        title.setMinWidth(400);
+        title.setMinWidth(420);
         var child = this.rexUI.add.sizer({
             orientation: 'y',
             space: { item: 10 }
@@ -578,10 +648,10 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, 'Fire').setOrigin(0.5, 1),
-                this.createButton(this, 'Ice').setOrigin(0.5, 1),
-                this.createButton(this, 'Poison').setOrigin(0.5, 1),
-                this.createButton(this, 'Lightning').setOrigin(0.5, 1)
+                this.createButton(this, 'Fire', 20).setOrigin(0.5, 1),
+                this.createButton(this, 'Ice', 20).setOrigin(0.5, 1),
+                this.createButton(this, 'Poison', 20).setOrigin(0.5, 1),
+                this.createButton(this, 'Lightning', 20).setOrigin(0.5, 1)
             ],
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
@@ -667,20 +737,20 @@ export class PageScene extends Phaser.Scene {
 
     // Function used often to create a button. Scene is always set to 'this' and 
     // text is set to what you want written on the button
-    createButton(scene: any, text: any) {
+    createButton(scene: any, text: any, fontSize: any) {
         return scene.rexUI.add.label({
-            width: 60,
-            height: 30,
+            width: 25,
+            height: 25,
             background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_LIGHT),
             text: scene.add.text(0, 0, text, {
-                fontSize: 18
+                fontSize: fontSize
             }),
             align: 'center',
             space: {
                 left: 10,
                 right: 10,
             }
-        });
+        }).setInnerPadding(5);
     }
 
     // Function to create Scrollable Panel, needs a child sizer (basically just a container) to hold anything that
@@ -738,9 +808,11 @@ export class PageScene extends Phaser.Scene {
         })
         .layout();
 
-        this.buyMenuSizer = this.rexUI.add.sizer({
-            width: 200,
-            orientation: 'y'
+        this.buyMenuSizer = this.rexUI.add.gridSizer({
+            column: 2,
+            row: 5,
+
+            columnProportions: 1,
         })
         .layout();
 
