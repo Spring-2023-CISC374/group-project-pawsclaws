@@ -44,7 +44,7 @@ export class TestScene extends Phaser.Scene {
         // this.panel.layout()
     }
 
-    CreatePanel (scene) {
+    CreatePanel (scene: any) {
         var panel = scene.rexUI.add.sizer({
             orientation: 'x',
             space: { item: 50, top: 20, bottom: 20 }
@@ -64,7 +64,7 @@ export class TestScene extends Phaser.Scene {
         return panel;
     }
 
-    CreatePaper(scene, content, background) {
+    CreatePaper(scene: any, content: any, background: any) {
         return scene.rexUI.add.label({
             orientation: 'y',
             width: background.displayWidth,
