@@ -25,12 +25,16 @@ export class Enemy extends Phaser.GameObjects.Image {
 
 	startOnPath() {
 		this.follower.t = 0;
-		this.hp = 100;
+		this.hp = 400;
 		this.timeOnPath = 0;
 		
 		this.path.getPoint(this.follower.t, this.follower.vec);
 
 		this.setPosition(this.follower.vec.x, this.follower.vec.y);
+	}
+
+	getHp(){
+		return this.hp;
 	}
 
 	receiveDamage(damage: number, gameScene: any, fireShot: boolean, iceShot: boolean) {
