@@ -7,7 +7,8 @@ import { Enemy } from '../componets/enemy';
 import { Turret } from '../componets/units';
 import { Bullet } from '../componets/attack';
 
-const BULLET_DAMAGE = 33;
+const BULLET_DAMAGE = 50;
+const NEXT_BALLOON_SPAWN = 650; //in milliseconds
 
 const map: number[][] = [
 	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -192,16 +193,16 @@ export default class HelloWorldScene extends Phaser.Scene {
 	  		// decrease the enemy hp with BULLET_DAMAGE
 	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene, bullet.isFire, bullet.isIce);
 			var hp = enemy.getHp();
-			if (hp > 300){ //purple == 400-301
+			if (hp > 150){ //purple == 151-200
 				enemy.setTexture('balloons', 'purple');
 			}
-			else if (hp > 200){ //green == 300-201
+			else if (hp > 100){ //green == 101-150
 				enemy.setTexture('balloons', 'green');
 			}
-			else if (hp > 100){ //blue == 101-200
+			else if (hp > 50){ //blue == 51-100
 				enemy.setTexture('balloons', 'blue');
 			}
-			else if (hp > 0){	//red === 0-100
+			else if (hp > 0){	//red === 0-50
 				enemy.setTexture('balloons', 'red');
 			}
 		}
@@ -267,7 +268,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 
         	}
     	}
-
+		//Start wave (arr[wavenumber]: )
+		//Start wave (red: int, blue)
 	private startWave(waveNumber: number) {
 		const enemy = this.enemies.get()
 		if (enemy){
@@ -275,23 +277,22 @@ export default class HelloWorldScene extends Phaser.Scene {
 			enemy.setVisible(true)
 			enemy.startOnPath()
 			var hp = enemy.getHp();
-			if (hp > 300){ //purple == 400-301
+			if (hp > 150){ //purple == 400-301
 				enemy.setTexture('balloons', 'purple');
 			}
-			else if (hp > 200){ //green == 300-201
+			else if (hp > 100){ //green == 300-201
 				enemy.setTexture('balloons', 'green');
 			}
-			else if (hp > 100){ //blue == 101-200
+			else if (hp > 50){ //blue == 101-200
 				enemy.setTexture('balloons', 'blue');
 			}
 			else {	//red === 0-100
 				enemy.setTexture('balloons', 'red');
 			}
-				
 		}
 		waveNumber--;
 		if(waveNumber > 0){
-			setTimeout(() => {this.startWave(waveNumber)}, 1000)
+			setTimeout(() => {this.startWave(waveNumber)}, NEXT_BALLOON_SPAWN)
 		}
 	}
 }

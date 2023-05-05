@@ -1,10 +1,10 @@
-
+const DISTANCE_OF_ATTACK_PER_SECOND = 600;
 
 export class Bullet extends Phaser.GameObjects.Image {
 	private incX = 0;
 	private incY = 0;
 	private lifespan = 0;
-	private speed = Phaser.Math.GetSpeed(600, 1);
+	private speed = Phaser.Math.GetSpeed(DISTANCE_OF_ATTACK_PER_SECOND, 1);
 	private dx = 0;
 	private dy = 0;
 	isFire: boolean;
