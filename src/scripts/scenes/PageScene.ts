@@ -568,43 +568,6 @@ export class PageScene extends Phaser.Scene {
                 }
                 scene.rexUI.edit(nameField.getElement('text'), config);
             });
-            
-
-        // var inputText = new InputText(this, 100, 100, 300, 100, {
-        //     type: 'number',
-        //     text: turret.x as string,
-        //     fontSize: '40px'
-
-        // })
-        // .on('textchange', () => {
-        //     var newCord = Math.floor((inputText.text as unknown as number) / 64)
-        //     if(newCord < 10 && newCord >= 0) {
-        //         turret.x = newCord * 64 + 64 / 2
-        //         turret.x = inputText.text as unknown as number
-        //         console.log(newCord)
-        //         console.log(turret.x)
-        //     }
-        // })
-        // var isFocused = inputText.isFocused
-        // this.add.existing(inputText);
-        // var printText = this.add.text(400, 200, '', {
-        //     fontSize: '12px',
-        //     fixedWidth: 100,
-        //     fixedHeight: 100,
-        // }).setOrigin(0.5);
-        // scene.add.rexInputText
-        // this.scene.add.rexInputText()
-        // var inputText = scene.add.rexInputText(400, 400, 10, 10, {
-        //     id: 'myNumberInput',
-        //     type: 'number',
-        //     text: '0',
-        //     fontSize: '12px',
-        // })
-        // .resize(100, 100)
-        // .setOrigin(0.5)
-        // .on('textchange', function (inputText: any) {
-        //     printText.text = inputText.text;
-        // })
 
         
         // HORIZONTAL PLACEMENT UI
