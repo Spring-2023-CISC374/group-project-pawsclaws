@@ -8,6 +8,7 @@ import { Turret } from '../componets/units';
 import { Bullet } from '../componets/attack';
 
 const BULLET_DAMAGE = 50;
+const NEXT_BALLOON_SPAWN = 650; //in milliseconds
 
 const map: number[][] = [
 	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -145,10 +146,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 		
 	}
 
-	addMoney(){
-		this.money += 2;
-	}
-
 	private damageEnemy(enemy: any, bullet: any): void {
 		// only if both enemy and bullet are alive
 		
@@ -231,7 +228,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 
         	}
     	}
-
+		//Start wave (arr[wavenumber]: )
+		//Start wave (red: int, blue)
 	private startWave(waveNumber: number) {
 		const enemy = this.enemies.get()
 		if (enemy){
@@ -254,7 +252,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		}
 		waveNumber--;
 		if(waveNumber > 0){
-			setTimeout(() => {this.startWave(waveNumber)}, 650)
+			setTimeout(() => {this.startWave(waveNumber)}, NEXT_BALLOON_SPAWN)
 		}
 	}
 }

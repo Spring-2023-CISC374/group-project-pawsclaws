@@ -12,6 +12,7 @@ const map: number[][] = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0]
 ];
+const DELAY_BETWEEN_SHOTS = 1000;
 
 export class Turret extends Phaser.GameObjects.Image {
 	private nextTic = 0;
@@ -56,7 +57,7 @@ export class Turret extends Phaser.GameObjects.Image {
 	update(time: number, delta: number): void {
 		  if (time > this.nextTic) {
 			this.fire();
-			this.nextTic = time + 1000;
+			this.nextTic = time + DELAY_BETWEEN_SHOTS;
 		  }
 	}
 
