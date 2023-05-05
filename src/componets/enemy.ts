@@ -1,6 +1,9 @@
 import { CollisionGroup, default as HelloWorldScene } from '../scenes/mainScene';
 
-const ENEMY_SPEED = 1 / 10000;
+const PURPLE_SPEED = 1 / 7500;
+const GREEN_SPEED = 1 / 8500;
+const BLUE_SPEED = 1 / 10000;
+const RED_SPEED = 1 / 12000;
 
 export class Enemy extends Phaser.GameObjects.Image {
 	onFire = false;
@@ -9,6 +12,9 @@ export class Enemy extends Phaser.GameObjects.Image {
 	fireTimer = 0;
 	frozenMax = 40;
 	fireMax = 200;
+	gotblue: boolean;
+	gotgreen: boolean;
+	gotpurple: boolean;
 	follower = { t: 0, vec: new Phaser.Math.Vector2() };
 	hp = 0;
 	path: Phaser.Curves.Path;
@@ -21,11 +27,14 @@ export class Enemy extends Phaser.GameObjects.Image {
 		this.path = scenePath
 		this.fireTimer = 0;
 		this.gameScene = scene;
+		this.gotblue = false;
+		this.gotgreen = false;
+		this.gotpurple = false;
 	}
 
 	startOnPath() {
 		this.follower.t = 0;
-		this.hp = 400;
+		this.hp = 200;
 		this.timeOnPath = 0;
 		
 		this.path.getPoint(this.follower.t, this.follower.vec);
@@ -50,20 +59,53 @@ export class Enemy extends Phaser.GameObjects.Image {
 		if(iceShot && this.frozen == false){
 			this.frozen = true;
 		}
+
+		
+		if(this.hp > 100){ //green
+			if(!this.gotpurple){
+				this.gotpurple = true;
+				gameScene.money += 2;
+			}
+		}
+		else if(this.hp > 50){ //blue
+			if(!this.gotgreen){
+				this.gotgreen = true;
+				gameScene.money += 2;
+			}
+		}
+		else{ //red
+			if(!this.gotblue){
+				this.gotblue = true;
+				gameScene.money += 2;
+			}
+		}
+
+		
 		
 		// if hp drops below 0 we deactivate this enemy
 		if (this.hp <= 0) {
 			this.setActive(false);
 			this.setVisible(false);
 			this.destroy();
-			gameScene.money += 50;
+			gameScene.money += 5;
 			
 		}
 	}
 
 	update(time: number, delta: number) {
 		if (this.frozen == false){
-			this.follower.t += ENEMY_SPEED * delta;
+			if(this.hp > 150){ //purple
+				this.follower.t += PURPLE_SPEED * delta;
+			}
+			else if(this.hp > 100){ //green
+				this.follower.t += GREEN_SPEED * delta;
+			}
+			else if(this.hp > 50){ //blue
+				this.follower.t += BLUE_SPEED * delta;
+			}
+			else{ //red
+				this.follower.t += RED_SPEED * delta;
+			}
 		}
 		else if (this.frozenTimer >= this.frozenMax){
 			this.frozen = false;
