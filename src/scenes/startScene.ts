@@ -9,6 +9,7 @@ export default class startScene extends Phaser.Scene {
         this.load.image('startbutton','assets/pawsclaws.png')
     }
 
+    // This Scene messes with the logo screen
     create() {
         var startButton = this.add.image(644,337, 'startbutton')
         startButton.setInteractive()
