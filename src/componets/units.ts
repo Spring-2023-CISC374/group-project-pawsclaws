@@ -1,6 +1,7 @@
 import { Enemy } from './enemy'
 import { CollisionGroup, default as HelloWorldScene } from '../scenes/mainScene';
 
+const DELAY_BETWEEN_SHOTS = 1000; //in milliseconds
 const map: number[][] = [
 	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, -1, 0, 0, 0, 0, 0, -1, -1, -1, 0, 0],
@@ -12,7 +13,6 @@ const map: number[][] = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0]
 ];
-const DELAY_BETWEEN_SHOTS = 1000;
 
 export class Turret extends Phaser.GameObjects.Image {
 	private nextTic = 0;

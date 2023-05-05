@@ -111,68 +111,105 @@ export class PageScene extends Phaser.Scene {
         cowboy.setInteractive()
         buff.setInteractive()
 
+        var range_circle = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+
         // Cowboy Cat Unit
         cowboy.on('dragstart', (pointer: any) => {
+            range_circle.x = pointer.x
+            range_circle.y = pointer.y
+            range_circle.setVisible(true)
             // make the background cowboy appear
             background_cowboy.x = cowboy.x
             background_cowboy.y = cowboy.y
             background_cowboy.setVisible(true)
 
             // make the draggable cowboy smaller so its easier to place
-            cowboy.setScale(0.04)
+            cowboy.setScale(0.04).setDepth(1)
             // set the draggable cowboy x and y to wherever the mouse is
             cowboy.x = pointer.x
             cowboy.y = pointer.y 
         })
         // updates the cowboys x and y when being dragged
         cowboy.on('drag', (pointer: any) => {
+            range_circle.x = pointer.x
+            range_circle.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
             cowboy.x = pointer.x
             cowboy.y = pointer.y 
         })
         cowboy.on('dragend', (pointer: any) => {
+            range_circle.setVisible(false)
+
             // set the scale of the cowboy back to 0.1 for the shop
             // set the cowboy x and y to the background cowboy x and y
-            cowboy.setScale(0.1)
+            cowboy.setScale(0.1).setDepth(0)
             cowboy.x = background_cowboy.x
             cowboy.y = background_cowboy.y
 
             // make the background cowboy disappear
             background_cowboy.setVisible(false)
-
-            var cowboy_text = "cowboy"
-            eventsCenter.emit("tower-place?", cowboy_text)
+            
+            //"cowboy"
+            eventsCenter.emit("tower-place?", "cowboy")
         })
 
         // Buff Doge Unit
         buff.on('dragstart', (pointer: any) => {
+            range_circle.x = pointer.x
+            range_circle.y = pointer.y
+            range_circle.setVisible(true)
+
             // make the background cowboy appear
             background_buff.x = buff.x
             background_buff.y = buff.y
             background_buff.setVisible(true)
 
             // make the draggable buff smaller so its easier to place
-            buff.setScale(0.04)
+            buff.setScale(0.04).setDepth(1)
             // set the draggable buff x and y to wherever the mouse is
             buff.x = pointer.x
             buff.y = pointer.y 
         })
         // updates the buffs x and y when being dragged
         buff.on('drag', (pointer: any) => {
+            range_circle.x = pointer.x
+            range_circle.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
             buff.x = pointer.x
             buff.y = pointer.y 
         })
         buff.on('dragend', (pointer: any) => {
+            range_circle.setVisible(false)
+
             // set the scale of the buff back to 0.1 for the shop
             // set the buff x and y to the background buff x and y
-            buff.setScale(0.1)
+            buff.setScale(0.1).setDepth(0)
             buff.x = background_buff.x
             buff.y = background_buff.y
 
             // make the background buff disappear
             background_buff.setVisible(false)
 
-            var buff_text = "buff"
-            eventsCenter.emit("tower-place?", buff_text)
+            //"buff"
+            eventsCenter.emit("tower-place?", "buff")
         })
         var cowboy_cat_title = this.rexUI.add.sizer({
             width: 200,
@@ -583,11 +620,8 @@ export class PageScene extends Phaser.Scene {
             var config = {
                 onTextChanged: function(textObject: any, text: any) {
                     var newCord = Math.floor((text as unknown as number) / 64)
-                    if(newCord < 10 && newCord >= 0) {
-                        turret.x = newCord * 64 + 64 / 2
-                        console.log(newCord)
-                        console.log(turret.x)
-                        textObject.text = text;
+                    if(newCord < 12 && newCord >= 0) {
+                        eventsCenter.emit("changeHorizontally", [turret, newCord])
                     }
                     textObject.text = turret.x
                 }
@@ -603,13 +637,15 @@ export class PageScene extends Phaser.Scene {
             text: this.rexUI.add.BBCodeText(0, 0, '', { fixedWidth: 300, fixedHeight: 18, halign: 'left' }),
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, }
         })
-        .setInteractive()
+        .setInteractive().setText(turret.y)
         .on('pointerdown', function () {
             var config = {
                 onTextChanged: function(textObject: any, text: any) {
-                    vertical = text;
-                    textObject.text = text;
-                    console.log(vertical);
+                    var newCord = Math.floor((text as unknown as number) / 64)
+                    if(newCord < 8 && newCord >= 0) {
+                        eventsCenter.emit("changeVertically", [turret, newCord])
+                    }
+                    textObject.text = turret.y
                 }
             }
             scene.rexUI.edit(vertField.getElement('text'),config);

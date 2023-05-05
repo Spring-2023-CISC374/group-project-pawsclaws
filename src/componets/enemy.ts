@@ -1,9 +1,11 @@
+import eventsCenter from '../EventsCenter';
 import { CollisionGroup, default as HelloWorldScene } from '../scenes/mainScene';
 
-const PURPLE_SPEED = 1 / 7500;
-const GREEN_SPEED = 1 / 8500;
-const BLUE_SPEED = 1 / 10000;
-const RED_SPEED = 1 / 12000;
+const PURPLE_SPEED = 1 / 7500; //speed to complete at this color is 7.5 seconds
+const GREEN_SPEED = 1 / 8500; //speed to complete at this color is 8.5 seconds
+const BLUE_SPEED = 1 / 10000; //speed to complete at this color is 10 seconds
+const RED_SPEED = 1 / 12000; //speed to complete at this color is 12 seconds
+const MONEY_PER_POP = 5; 
 
 export class Enemy extends Phaser.GameObjects.Image {
 	onFire = false;
@@ -60,23 +62,23 @@ export class Enemy extends Phaser.GameObjects.Image {
 			this.frozen = true;
 		}
 
-		
-		if(this.hp > 100){ //green
+		// Give Money on move from Purple to Green
+		if(this.hp > 100){ 
 			if(!this.gotpurple){
 				this.gotpurple = true;
-				gameScene.money += 2;
+				gameScene.money += MONEY_PER_POP;
 			}
 		}
 		else if(this.hp > 50){ //blue
 			if(!this.gotgreen){
 				this.gotgreen = true;
-				gameScene.money += 2;
+				gameScene.money += MONEY_PER_POP;
 			}
 		}
 		else{ //red
 			if(!this.gotblue){
 				this.gotblue = true;
-				gameScene.money += 2;
+				gameScene.money += MONEY_PER_POP;
 			}
 		}
 
@@ -87,7 +89,8 @@ export class Enemy extends Phaser.GameObjects.Image {
 			this.setActive(false);
 			this.setVisible(false);
 			this.destroy();
-			gameScene.money += 5;
+			gameScene.money += MONEY_PER_POP;
+			eventsCenter.emit("popsound");
 			
 		}
 	}

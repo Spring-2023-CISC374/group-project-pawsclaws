@@ -55,6 +55,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.image('cowboy', '/assets/cowboy_cat.png');
 		this.load.image('buff', '/assets/buff_doge.png');
 		this.load.image('bar', '/assets/menu.PNG')
+		this.load.audio("pop", ["/assets/Pops.mp3"])
 	}
   
 	create()  {
@@ -137,6 +138,41 @@ export default class HelloWorldScene extends Phaser.Scene {
 		eventsCenter.on("tower-place?", (text: any) => {
 			this.placeTurret(this.input.mousePointer, this.turrets, text)})
 		
+		eventsCenter.on("canplace", (pointer: any) => {
+			console.log("wipppiee")
+			eventsCenter.emit("returnplace", this.canPlace(Math.floor(pointer.y/64), Math.floor(pointer.x/64)))
+		})
+
+		eventsCenter.on("changeHorizontally", (lst: any) => {
+			var turret = lst[0]
+			var newCord = Number(lst[1])
+			var original_i = Math.floor(turret.y/64)
+			var original_j = Math.floor(turret.x/64)
+			if(this.canPlace(original_i, newCord)){
+				map[original_i][newCord] = 1
+				map[original_i][original_j] = 0
+				turret.x = newCord * 64 + 64 / 2
+			}
+		})
+		eventsCenter.on("changeVertically", (lst: any) => {
+			var turret = lst[0]
+			var newCord = Number(lst[1])
+			var original_i = Math.floor(turret.y/64)
+			var original_j = Math.floor(turret.x/64)
+			if(this.canPlace(newCord, original_j)){
+				map[newCord][original_j] = 1
+				map[original_i][original_j] = 0
+				turret.y = newCord * 64 + 64 / 2
+			}
+		})
+
+		var popSound = this.sound.add("pop")
+		eventsCenter.on("popsound", () => {
+			setTimeout(() => {
+				popSound.play()
+			}, 100)
+		})
+		
 
 	}
 
@@ -187,7 +223,10 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
 
 	private canPlace(i: number, j: number): boolean {
-		if(i > 9 || j > 12){
+		if(i > 8 || j > 11){
+			return false
+		}
+		if(i < 0 || j < 0){
 			return false
 		}
     	return map[i][j] === 0;
@@ -198,14 +237,10 @@ export default class HelloWorldScene extends Phaser.Scene {
     	const j = Math.floor(pointer.x/64);
 		// I need to make something that specifies the thing that I need
     	if(this.canPlace(i, j)) {
-				const turret = turrets.get()
-				console.log("texture of tower: ",texture)
-				turret.setTexture(texture)
 				// if the texutre passed is doge, scale it down because the original is massive and covers the screen
 				if(texture == "cowboy"){
 					if (this.money >= 125) {
 						this.money -= 125
-						turret.setScale(0.04)
 					} else {
 						return
 					}
@@ -213,14 +248,19 @@ export default class HelloWorldScene extends Phaser.Scene {
 				if (texture == "buff") {
 					if (this.money >= 150) {
 						this.money -= 150
-						turret.setScale(0.04)
 					} else {
 						return
 					}
 				}
+				const turret = turrets.get()
+				console.log("texture of tower: ",texture)
+				turret.setTexture(texture)
+				turret.setScale(0.04)
             	turret.setActive(true);
             	turret.setVisible(true);
             	turret.place(i, j);
+				//added to update the map in mainScene
+				map[i][j] = 1
 				//console.log("about to emit tower success")
 				eventsCenter.emit("tower-placed-successfully", turret, texture)
 				turret.setInteractive()
