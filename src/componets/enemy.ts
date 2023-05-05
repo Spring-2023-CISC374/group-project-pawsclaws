@@ -67,18 +67,21 @@ export class Enemy extends Phaser.GameObjects.Image {
 			if(!this.gotpurple){
 				this.gotpurple = true;
 				gameScene.money += MONEY_PER_POP;
+				eventsCenter.emit("popsound");
 			}
 		}
 		else if(this.hp > 50){ //blue
 			if(!this.gotgreen){
 				this.gotgreen = true;
 				gameScene.money += MONEY_PER_POP;
+				eventsCenter.emit("popsound");
 			}
 		}
 		else{ //red
 			if(!this.gotblue){
 				this.gotblue = true;
 				gameScene.money += MONEY_PER_POP;
+				eventsCenter.emit("popsound");
 			}
 		}
 
