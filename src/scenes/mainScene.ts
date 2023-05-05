@@ -49,6 +49,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json');
 		//this.load.atlas('cowboy', 'assets/cowboy_cat.png', 'assets/spritesheet.json');
 		//this.load.atlas('buff', '/assets/buff_doge.png', 'assets/spritesheet.json');
+		this.load.atlas('balloons', 'assets/balloonspritesheet.png', 'assets/balloons.json');
 		this.load.image('bullet','assets/bigbill.png');
 		this.load.image('cowboy', '/assets/cowboy_cat.png');
 		this.load.image('buff', '/assets/buff_doge.png');
@@ -190,6 +191,19 @@ export default class HelloWorldScene extends Phaser.Scene {
   
 	  		// decrease the enemy hp with BULLET_DAMAGE
 	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene, bullet.isFire, bullet.isIce);
+			var hp = enemy.getHp();
+			if (hp > 300){ //purple == 400-301
+				enemy.setTexture('balloons', 'purple');
+			}
+			else if (hp > 200){ //green == 300-201
+				enemy.setTexture('balloons', 'green');
+			}
+			else if (hp > 100){ //blue == 101-200
+				enemy.setTexture('balloons', 'blue');
+			}
+			else if (hp > 0){	//red === 0-100
+				enemy.setTexture('balloons', 'red');
+			}
 		}
 	}
 
@@ -260,6 +274,20 @@ export default class HelloWorldScene extends Phaser.Scene {
 			enemy.setActive(true)
 			enemy.setVisible(true)
 			enemy.startOnPath()
+			var hp = enemy.getHp();
+			if (hp > 300){ //purple == 400-301
+				enemy.setTexture('balloons', 'purple');
+			}
+			else if (hp > 200){ //green == 300-201
+				enemy.setTexture('balloons', 'green');
+			}
+			else if (hp > 100){ //blue == 101-200
+				enemy.setTexture('balloons', 'blue');
+			}
+			else {	//red === 0-100
+				enemy.setTexture('balloons', 'red');
+			}
+				
 		}
 		waveNumber--;
 		if(waveNumber > 0){
