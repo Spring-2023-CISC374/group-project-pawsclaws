@@ -1,7 +1,11 @@
 import eventsCenter from '../EventsCenter';
 import { CollisionGroup, default as HelloWorldScene } from '../scenes/mainScene';
 
-const ENEMY_SPEED = 1 / 10000;
+const PURPLE_SPEED = 1 / 7500; //speed to complete at this color is 7.5 seconds
+const GREEN_SPEED = 1 / 8500; //speed to complete at this color is 8.5 seconds
+const BLUE_SPEED = 1 / 10000; //speed to complete at this color is 10 seconds
+const RED_SPEED = 1 / 12000; //speed to complete at this color is 12 seconds
+const MONEY_PER_POP = 5; 
 
 export class Enemy extends Phaser.GameObjects.Image {
 	onFire = false;
@@ -10,6 +14,9 @@ export class Enemy extends Phaser.GameObjects.Image {
 	fireTimer = 0;
 	frozenMax = 40;
 	fireMax = 200;
+	gotblue: boolean;
+	gotgreen: boolean;
+	gotpurple: boolean;
 	follower = { t: 0, vec: new Phaser.Math.Vector2() };
 	hp = 0;
 	path: Phaser.Curves.Path;
@@ -22,11 +29,14 @@ export class Enemy extends Phaser.GameObjects.Image {
 		this.path = scenePath
 		this.fireTimer = 0;
 		this.gameScene = scene;
+		this.gotblue = false;
+		this.gotgreen = false;
+		this.gotpurple = false;
 	}
 
-	startOnPath() {
+	startOnPath(hp: any) {
 		this.follower.t = 0;
-		this.hp = 400;
+		this.hp = hp;
 		this.timeOnPath = 0;
 		
 		this.path.getPoint(this.follower.t, this.follower.vec);
@@ -51,21 +61,57 @@ export class Enemy extends Phaser.GameObjects.Image {
 		if(iceShot && this.frozen == false){
 			this.frozen = true;
 		}
+
+		// Give Money on move from Purple to Green
+		if(this.hp > 100){ 
+			if(!this.gotpurple){
+				this.gotpurple = true;
+				gameScene.money += MONEY_PER_POP;
+				eventsCenter.emit("popsound");
+			}
+		}
+		else if(this.hp > 50){ //blue
+			if(!this.gotgreen){
+				this.gotgreen = true;
+				gameScene.money += MONEY_PER_POP;
+				eventsCenter.emit("popsound");
+			}
+		}
+		else{ //red
+			if(!this.gotblue){
+				this.gotblue = true;
+				gameScene.money += MONEY_PER_POP;
+				eventsCenter.emit("popsound");
+			}
+		}
+
+		
 		
 		// if hp drops below 0 we deactivate this enemy
 		if (this.hp <= 0) {
 			this.setActive(false);
 			this.setVisible(false);
 			this.destroy();
-			gameScene.money += 50;
-			eventsCenter.emit("popsound")
+			gameScene.money += MONEY_PER_POP;
+			eventsCenter.emit("popsound");
 			
 		}
 	}
 
 	update(time: number, delta: number) {
 		if (this.frozen == false){
-			this.follower.t += ENEMY_SPEED * delta;
+			if(this.hp > 150){ //purple
+				this.follower.t += PURPLE_SPEED * delta;
+			}
+			else if(this.hp > 100){ //green
+				this.follower.t += GREEN_SPEED * delta;
+			}
+			else if(this.hp > 50){ //blue
+				this.follower.t += BLUE_SPEED * delta;
+			}
+			else{ //red
+				this.follower.t += RED_SPEED * delta;
+			}
 		}
 		else if (this.frozenTimer >= this.frozenMax){
 			this.frozen = false;
