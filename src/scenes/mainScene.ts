@@ -21,7 +21,10 @@ const map: number[][] = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0]
 ];
-
+const redBalloonsPerWave: number[] = [8,10,8,14,5,8,12,5,0,0,12]
+const blueBalloonsPerWave: number[] = [0,0,3,6,16,8,10,18,0,45,10]
+const greenBalloonsPerWave: number [] = [0,0,0,0,0,4,8,10,18,0,8]
+const purpleBalloonsPerWave: number [] = [0,0,0,0,0,0,0,0,0,0,0,4]
 
 export enum CollisionGroup {
     BULLET = -1, ENEMY = -2
@@ -268,31 +271,56 @@ export default class HelloWorldScene extends Phaser.Scene {
 
         	}
     	}
-		//Start wave (arr[wavenumber]: )
-		//Start wave (red: int, blue)
-	private startWave(waveNumber: number) {
+	
+	// Takes in the current wave number and uses it to get number of each type of balloon per wave
+	private async startWave(waveNumber: number) {
+		var numberOfRedBalloons = 0;
+		var numberOfBlueBalloons = 0;
+		var numberOfGreenBalloons = 0;
+		var numberOfPurpleBalloons = 0;
+		//Checks redBalloonsPerWave array and uses waveNumber as index to get correct number of balloons for this wave
+		//continues spawning until meets expect number of balloons
+		while(numberOfRedBalloons < redBalloonsPerWave[waveNumber-1]){
+			this.spawnBalloon(50, 'red');
+			await this.sleep(NEXT_BALLOON_SPAWN)
+			numberOfRedBalloons++;
+		}
+		//Checks blueBalloonsPerWave array and uses waveNumber as index to get correct number of balloons for this wave
+		//continues spawning until meets expect number of balloons
+		while(numberOfBlueBalloons < blueBalloonsPerWave[waveNumber-1]){
+			this.spawnBalloon(100, 'blue');
+			await this.sleep(NEXT_BALLOON_SPAWN);
+			numberOfBlueBalloons++;
+		}
+		//Checks greenBalloonsPerWave array and uses waveNumber as index to get correct number of balloons for this wave
+		//continues spawning until meets expect number of balloons
+		while(numberOfGreenBalloons < greenBalloonsPerWave[waveNumber-1]){
+			this.spawnBalloon(150, 'green');
+			await this.sleep(NEXT_BALLOON_SPAWN);
+			numberOfGreenBalloons++;
+		}
+		//Checks purpleBalloonsPerWave array and uses waveNumber as index to get correct number of balloons for this wave
+		//continues spawning until meets expect number of balloons
+		while(numberOfPurpleBalloons < purpleBalloonsPerWave[waveNumber-1]){
+			this.spawnBalloon(200, 'purple');
+			await this.sleep(NEXT_BALLOON_SPAWN);
+			numberOfPurpleBalloons++;
+		}
+	}
+
+	// Used to create spawning break between balloons
+	private sleep(ms: any){
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+	
+	// Used to spawn balloon upon call in startWave function, takes in hp and texture to be placed
+	private spawnBalloon(hp: any, texture: any){
 		const enemy = this.enemies.get()
 		if (enemy){
-			enemy.setActive(true)
-			enemy.setVisible(true)
-			enemy.startOnPath()
-			var hp = enemy.getHp();
-			if (hp > 150){ //purple == 400-301
-				enemy.setTexture('balloons', 'purple');
-			}
-			else if (hp > 100){ //green == 300-201
-				enemy.setTexture('balloons', 'green');
-			}
-			else if (hp > 50){ //blue == 101-200
-				enemy.setTexture('balloons', 'blue');
-			}
-			else {	//red === 0-100
-				enemy.setTexture('balloons', 'red');
-			}
-		}
-		waveNumber--;
-		if(waveNumber > 0){
-			setTimeout(() => {this.startWave(waveNumber)}, NEXT_BALLOON_SPAWN)
+			enemy.setActive(true);
+			enemy.setVisible(true);
+			enemy.startOnPath(hp);
+			enemy.setTexture('balloons', texture);
 		}
 	}
 }

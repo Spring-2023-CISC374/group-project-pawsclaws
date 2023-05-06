@@ -34,9 +34,9 @@ export class Enemy extends Phaser.GameObjects.Image {
 		this.gotpurple = false;
 	}
 
-	startOnPath() {
+	startOnPath(hp: any) {
 		this.follower.t = 0;
-		this.hp = 200;
+		this.hp = hp;
 		this.timeOnPath = 0;
 		
 		this.path.getPoint(this.follower.t, this.follower.vec);
