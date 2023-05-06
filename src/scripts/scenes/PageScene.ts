@@ -37,6 +37,8 @@ export class PageScene extends Phaser.Scene {
        this.load.html("UnitEditor", "assets/html/UnitEditor.html")
        this.load.image('buff', '/assets/buff_doge.png')
        this.load.image('cowboy', '/assets/cowboy_cat.png')
+       this.load.image('bigm','/assets/rootbeer_cat.png')
+       this.load.image('bulldog','/assets/bulldog.png')
     }
 
     create ()
@@ -102,22 +104,37 @@ export class PageScene extends Phaser.Scene {
     AddBuyMenuChild() {
         var text = this.add.text(0,0, 'cost: 125')
         var text2 = this.add.text(0,0, 'cost: 150')
+        var text3 = this.add.text(0,0, 'cost: 225')
+        var text4 = this.add.text(0,0, 'cost: 275')
         var cowboy = this.add.image(0,0, 'cowboy').setScale(0.1)
         var buff = this.add.image(0,0, 'buff').setScale(0.1)
+        var bigm = this.add.image(0,0,'bigm').setScale(0.1)
+        var bulldog = this.add.image(0,0,'bulldog').setScale(0.1)
         var background_cowboy = this.add.image(cowboy.x,cowboy.y, 'cowboy').setScale(0.1).setVisible(false)
         var background_buff = this.add.image(buff.x,buff.y, 'buff').setScale(0.1).setVisible(false)
+        var background_bigm = this.add.image(bigm.x,bigm.y,'bigm').setScale(0.1).setVisible(false)
+        var background_bulldog = this.add.image(bulldog.x,bulldog.y,'bulldog').setScale(0.1).setVisible(false)
         var draggable_cowboy = new Drag(cowboy)
         var draggable_buff = new Drag(buff)
+        var draggable_bigm = new Drag(bigm)
+        var draggable_bulldog = new Drag(bulldog)
         cowboy.setInteractive()
         buff.setInteractive()
+        bigm.setInteractive()
+        bulldog.setInteractive()
 
-        var range_circle = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+        // Long Range
+        var range_circle1 = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+        // Meduim Range
+        var range_circle2 = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+        // Short Range
+        var range_circle3 = this.add.circle(0, 0, 150, 0xff0000, 0.2).setVisible(false).setDepth(-1)
 
         // Cowboy Cat Unit
         cowboy.on('dragstart', (pointer: any) => {
-            range_circle.x = pointer.x
-            range_circle.y = pointer.y
-            range_circle.setVisible(true)
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            range_circle2.setVisible(true)
             // make the background cowboy appear
             background_cowboy.x = cowboy.x
             background_cowboy.y = cowboy.y
@@ -131,15 +148,15 @@ export class PageScene extends Phaser.Scene {
         })
         // updates the cowboys x and y when being dragged
         cowboy.on('drag', (pointer: any) => {
-            range_circle.x = pointer.x
-            range_circle.y = pointer.y
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
             eventsCenter.emit("canplace", pointer)
             eventsCenter.on("returnplace", (bool: any) => {
                 if(!bool){
-                    range_circle.setFillStyle(0xff0000, 0.2)
+                    range_circle2.setFillStyle(0xff0000, 0.2)
                 }
                 else{
-                    range_circle.setFillStyle(0xDCDCDC, 0.2)
+                    range_circle2.setFillStyle(0xDCDCDC, 0.2)
                 }
             })
 
@@ -147,7 +164,7 @@ export class PageScene extends Phaser.Scene {
             cowboy.y = pointer.y 
         })
         cowboy.on('dragend', (pointer: any) => {
-            range_circle.setVisible(false)
+            range_circle2.setVisible(false)
 
             // set the scale of the cowboy back to 0.1 for the shop
             // set the cowboy x and y to the background cowboy x and y
@@ -164,9 +181,9 @@ export class PageScene extends Phaser.Scene {
 
         // Buff Doge Unit
         buff.on('dragstart', (pointer: any) => {
-            range_circle.x = pointer.x
-            range_circle.y = pointer.y
-            range_circle.setVisible(true)
+            range_circle3.x = pointer.x
+            range_circle3.y = pointer.y
+            range_circle3.setVisible(true)
 
             // make the background cowboy appear
             background_buff.x = buff.x
@@ -181,15 +198,15 @@ export class PageScene extends Phaser.Scene {
         })
         // updates the buffs x and y when being dragged
         buff.on('drag', (pointer: any) => {
-            range_circle.x = pointer.x
-            range_circle.y = pointer.y
+            range_circle3.x = pointer.x
+            range_circle3.y = pointer.y
             eventsCenter.emit("canplace", pointer)
             eventsCenter.on("returnplace", (bool: any) => {
                 if(!bool){
-                    range_circle.setFillStyle(0xff0000, 0.2)
+                    range_circle3.setFillStyle(0xff0000, 0.2)
                 }
                 else{
-                    range_circle.setFillStyle(0xDCDCDC, 0.2)
+                    range_circle3.setFillStyle(0xDCDCDC, 0.2)
                 }
             })
 
@@ -197,7 +214,7 @@ export class PageScene extends Phaser.Scene {
             buff.y = pointer.y 
         })
         buff.on('dragend', (pointer: any) => {
-            range_circle.setVisible(false)
+            range_circle3.setVisible(false)
 
             // set the scale of the buff back to 0.1 for the shop
             // set the buff x and y to the background buff x and y
@@ -211,6 +228,107 @@ export class PageScene extends Phaser.Scene {
             //"buff"
             eventsCenter.emit("tower-place?", "buff")
         })
+
+          // Big M Unit
+          bigm.on('dragstart', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            range_circle2.setVisible(true)
+
+            // make the background Big M appear
+            background_bigm.x = bigm.x
+            background_bigm.y = bigm.y
+            background_bigm.setVisible(true)
+
+            // make the draggable Big M smaller so its easier to place
+            bigm.setScale(0.04)
+            // set the draggable Big M x and y to wherever the mouse is
+            bigm.x = bigm.x
+            bigm.y = bigm.y 
+        })
+        // updates the Big M x and y when being dragged
+        bigm.on('drag', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle2.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle2.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            bigm.x = pointer.x
+            bigm.y = pointer.y 
+        })
+        bigm.on('dragend', (pointer: any) => {
+            range_circle2.setVisible(false)
+
+            // set the scale of the Big M back to 0.1 for the shop
+            // set the Big M x and y to the background Big M x and y
+            bigm.setScale(0.1)
+            bigm.x = background_bigm.x
+            bigm.y = background_bigm.y
+
+            // make the background Big M disappear
+            background_bigm.setVisible(false)
+
+            var bigm_text = "bigm"
+            eventsCenter.emit("tower-place?", bigm_text)
+        })
+
+        // Bulldog Unit
+        bulldog.on('dragstart', (pointer: any) => {
+            range_circle3.x = pointer.x
+            range_circle3.y = pointer.y
+            range_circle3.setVisible(true)
+
+            // make the background cowboy appear
+            background_bulldog.x = bulldog.x
+            background_bulldog.y = bulldog.y
+            background_bulldog.setVisible(true)
+
+            // make the draggable Bulldog smaller so its easier to place
+            bulldog.setScale(0.04)
+            // set the draggable Bulldog x and y to wherever the mouse is
+            bulldog.x = bulldog.x
+            bulldog.y = bulldog.y 
+        })
+        // updates the  Bulldog x and y when being dragged
+        bulldog.on('drag', (pointer: any) => {
+            range_circle3.x = pointer.x
+            range_circle3.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle3.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle3.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            bulldog.x = pointer.x
+            bulldog.y = pointer.y 
+        })
+        bulldog.on('dragend', (pointer: any) => {
+            range_circle3.setVisible(false)
+
+            // set the scale of the  Bulldog back to 0.1 for the shop
+            // set the  Bulldog x and y to the background  Bulldog x and y
+            bulldog.setScale(0.1)
+            bulldog.x = background_bulldog.x
+            bulldog.y = background_bulldog.y
+
+            // make the background  Bulldog disappear
+            background_bulldog.setVisible(false)
+
+            var bulldog_text = "bulldog"
+            eventsCenter.emit("tower-place?", bulldog_text)
+        })
+
         var cowboy_cat_title = this.rexUI.add.sizer({
             width: 200,
             orientation: 'x'
@@ -289,11 +407,99 @@ export class PageScene extends Phaser.Scene {
             width: 200,
             orientation: 'y'
         });
-        buff_doge_info.add(this.add.text(0,0,"\nAttack Speed: 5/10 \n\nAttack Damage: 8/10\n\nRange: 3/10").setFontSize(17));
+        buff_doge_info.add(this.add.text(0,0,"\nAttack Speed: 5/10 \n\nAttack Damage: 7/10\n\nRange: 3/10").setFontSize(17));
 
         var buff_doge_card = this.rexUI.add.perspectiveCard({
             front: buff_doge_buy,
             back: buff_doge_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+        var bigm_cat_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        bigm_cat_title.add(this.CreateLabel(this, 'RootBeer Cat:'));
+        bigm_cat_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+            button.scaleYoyo(500, 1.3);
+            bigm_cat_card.toggleFace();
+        }));
+
+        var bigm_cat_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);
+        bigm_cat_buy.add(text3).layout();
+        bigm_cat_buy.add(bigm).layout();
+
+        var bigm_cat_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        bigm_cat_info.add(this.add.text(0,0,"\nAttack Speed: 3/10\n\nAttack Damage: 8/10\n\nRange: 6/10").setFontSize(17))
+
+        var bigm_cat_card = this.rexUI.add.perspectiveCard({
+            front: bigm_cat_buy,
+            back: bigm_cat_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+        var bulldog_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        bulldog_title.add(this.CreateLabel(this, 'Bulldog Spike:'));
+        bulldog_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+            button.scaleYoyo(500, 1.4);
+            bulldog_card.toggleFace();
+        }));
+
+        var bulldog_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);
+        bulldog_buy.add(text4).layout();
+        bulldog_buy.add(bulldog).layout();
+
+        var bulldog_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        bulldog_info.add(this.add.text(0,0,"\nAttack Speed: 7/10\n\nAttack Damage: 8/10\n\nRange: 3/10").setFontSize(17))
+
+        var bulldog_card = this.rexUI.add.perspectiveCard({
+            front: bulldog_buy,
+            back: bulldog_info,
             orientation: 0,
             snapshotPadding: 3,
         }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
@@ -303,6 +509,10 @@ export class PageScene extends Phaser.Scene {
         this.buyMenuSizer.add(cowboy_cat_card, 0 , 1, 'center', 0, true).layout();
         this.buyMenuSizer.add(buff_doge_title, 1, 0, 'center', 0, true).layout();
         this.buyMenuSizer.add(buff_doge_card, 1 , 1, 'center', 0, true).layout();
+        this.buyMenuSizer.add(bigm_cat_title, 0, 2, 'center', 0, true).layout();
+        this.buyMenuSizer.add(bigm_cat_card, 0, 3, 'center', 0, true).layout();
+        this.buyMenuSizer.add(bulldog_title, 1, 2, 'center', 0, true).layout();
+        this.buyMenuSizer.add(bulldog_card, 1, 3, 'center', 0, true).layout();
         this.buyMenuSizer.layout();
     }
 
