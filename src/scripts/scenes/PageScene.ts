@@ -123,13 +123,18 @@ export class PageScene extends Phaser.Scene {
         bigm.setInteractive()
         bulldog.setInteractive()
 
-        var range_circle = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+        // Long Range
+        var range_circle1 = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+        // Meduim Range
+        var range_circle2 = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+        // Short Range
+        var range_circle3 = this.add.circle(0, 0, 150, 0xff0000, 0.2).setVisible(false).setDepth(-1)
 
         // Cowboy Cat Unit
         cowboy.on('dragstart', (pointer: any) => {
-            range_circle.x = pointer.x
-            range_circle.y = pointer.y
-            range_circle.setVisible(true)
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            range_circle2.setVisible(true)
             // make the background cowboy appear
             background_cowboy.x = cowboy.x
             background_cowboy.y = cowboy.y
@@ -143,15 +148,15 @@ export class PageScene extends Phaser.Scene {
         })
         // updates the cowboys x and y when being dragged
         cowboy.on('drag', (pointer: any) => {
-            range_circle.x = pointer.x
-            range_circle.y = pointer.y
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
             eventsCenter.emit("canplace", pointer)
             eventsCenter.on("returnplace", (bool: any) => {
                 if(!bool){
-                    range_circle.setFillStyle(0xff0000, 0.2)
+                    range_circle2.setFillStyle(0xff0000, 0.2)
                 }
                 else{
-                    range_circle.setFillStyle(0xDCDCDC, 0.2)
+                    range_circle2.setFillStyle(0xDCDCDC, 0.2)
                 }
             })
 
@@ -159,7 +164,7 @@ export class PageScene extends Phaser.Scene {
             cowboy.y = pointer.y 
         })
         cowboy.on('dragend', (pointer: any) => {
-            range_circle.setVisible(false)
+            range_circle2.setVisible(false)
 
             // set the scale of the cowboy back to 0.1 for the shop
             // set the cowboy x and y to the background cowboy x and y
@@ -176,9 +181,9 @@ export class PageScene extends Phaser.Scene {
 
         // Buff Doge Unit
         buff.on('dragstart', (pointer: any) => {
-            range_circle.x = pointer.x
-            range_circle.y = pointer.y
-            range_circle.setVisible(true)
+            range_circle3.x = pointer.x
+            range_circle3.y = pointer.y
+            range_circle3.setVisible(true)
 
             // make the background cowboy appear
             background_buff.x = buff.x
@@ -193,15 +198,15 @@ export class PageScene extends Phaser.Scene {
         })
         // updates the buffs x and y when being dragged
         buff.on('drag', (pointer: any) => {
-            range_circle.x = pointer.x
-            range_circle.y = pointer.y
+            range_circle3.x = pointer.x
+            range_circle3.y = pointer.y
             eventsCenter.emit("canplace", pointer)
             eventsCenter.on("returnplace", (bool: any) => {
                 if(!bool){
-                    range_circle.setFillStyle(0xff0000, 0.2)
+                    range_circle3.setFillStyle(0xff0000, 0.2)
                 }
                 else{
-                    range_circle.setFillStyle(0xDCDCDC, 0.2)
+                    range_circle3.setFillStyle(0xDCDCDC, 0.2)
                 }
             })
 
@@ -209,7 +214,7 @@ export class PageScene extends Phaser.Scene {
             buff.y = pointer.y 
         })
         buff.on('dragend', (pointer: any) => {
-            range_circle.setVisible(false)
+            range_circle3.setVisible(false)
 
             // set the scale of the buff back to 0.1 for the shop
             // set the buff x and y to the background buff x and y
@@ -226,6 +231,10 @@ export class PageScene extends Phaser.Scene {
 
           // Big M Unit
           bigm.on('dragstart', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            range_circle2.setVisible(true)
+
             // make the background Big M appear
             background_bigm.x = bigm.x
             background_bigm.y = bigm.y
@@ -239,10 +248,24 @@ export class PageScene extends Phaser.Scene {
         })
         // updates the Big M x and y when being dragged
         bigm.on('drag', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle2.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle2.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
             bigm.x = pointer.x
             bigm.y = pointer.y 
         })
         bigm.on('dragend', (pointer: any) => {
+            range_circle2.setVisible(false)
+
             // set the scale of the Big M back to 0.1 for the shop
             // set the Big M x and y to the background Big M x and y
             bigm.setScale(0.1)
@@ -258,6 +281,10 @@ export class PageScene extends Phaser.Scene {
 
         // Bulldog Unit
         bulldog.on('dragstart', (pointer: any) => {
+            range_circle3.x = pointer.x
+            range_circle3.y = pointer.y
+            range_circle3.setVisible(true)
+
             // make the background cowboy appear
             background_bulldog.x = bulldog.x
             background_bulldog.y = bulldog.y
@@ -271,10 +298,24 @@ export class PageScene extends Phaser.Scene {
         })
         // updates the  Bulldog x and y when being dragged
         bulldog.on('drag', (pointer: any) => {
+            range_circle3.x = pointer.x
+            range_circle3.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle3.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle3.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
             bulldog.x = pointer.x
             bulldog.y = pointer.y 
         })
         bulldog.on('dragend', (pointer: any) => {
+            range_circle3.setVisible(false)
+
             // set the scale of the  Bulldog back to 0.1 for the shop
             // set the  Bulldog x and y to the background  Bulldog x and y
             bulldog.setScale(0.1)
