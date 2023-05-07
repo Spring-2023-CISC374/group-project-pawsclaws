@@ -5,7 +5,7 @@ import Phaser from 'phaser'
 import eventsCenter from '../EventsCenter';
 import { Enemy } from '../componets/enemy';
 import { Turret } from '../componets/units';
-import { Bullet, Punch } from '../componets/attack';
+import { Projectile } from '../componets/attack';
 
 const BULLET_DAMAGE = 50;
 const NEXT_BALLOON_SPAWN = 650; //in milliseconds
@@ -39,8 +39,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	//buffs! : Phaser.GameObjects.Group;
 	//donuts! : Phaser.GameObjects.Group;
 	enemies!: Phaser.GameObjects.Group;
-	bullets!: Phaser.GameObjects.Group;
-	punches!: Phaser.GameObjects.Group;
+	projectiles!: Phaser.GameObjects.Group;
 	waveNumber!: number;
 	money!: number;
 	moneyText!: Phaser.GameObjects.Text;
@@ -52,10 +51,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 	preload() {
 		this.load.image('background', 'assets/map.png');
 		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json');
-		//this.load.atlas('cowboy', 'assets/cowboy_cat.png', 'assets/spritesheet.json');
-		//this.load.atlas('buff', '/assets/buff_doge.png', 'assets/spritesheet.json');
 		this.load.atlas('balloons', 'assets/balloonspritesheet.png', 'assets/balloons.json');
-		this.load.image('bullet','assets/bigbill.png');
+		this.load.atlas('projectile','assets/spritesheetprojectile.png', 'assets/projectiles.json');
 		this.load.image('cowboy', '/assets/cowboy_cat.png');
 		this.load.image('buff', '/assets/buff_doge.png');
 		this.load.image('bigm','/assets/rootbeer_cat.png');
@@ -102,14 +99,12 @@ export default class HelloWorldScene extends Phaser.Scene {
 		// Units
 		this.turrets = this.add.group({ classType: Turret, runChildUpdate: true });
   
-		this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
-		this.punches = this.physics.add.group({ classType: Punch, runChildUpdate: true })
+		this.projectiles = this.physics.add.group({ classType: Projectile, runChildUpdate: true });
   
 		this.nextEnemy = 0;
 
 		// its underlined in red but still works
-		this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy, undefined, this.scene);
-		this.physics.add.overlap(this.enemies, this.punches, this.damageEnemy, undefined, this.scene);
+		this.physics.add.overlap(this.enemies, this.projectiles, this.damageEnemy, undefined, this.scene);
   
 		/*
 		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
@@ -146,7 +141,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		// event listener 
 		// waits for the event "tower-place?"" to be called in the buy menu in PageScene
 		eventsCenter.on("tower-place?", (text: any) => {
-			this.placeTurret(this.input.mousePointer, this.turrets, text)})
+			this.placeTurret(this.input.mousePointer, this.turrets, text, this.projectiles,text)})
 		
 		eventsCenter.on("canplace", (pointer: any) => {
 			console.log("wipppiee")
@@ -192,27 +187,32 @@ export default class HelloWorldScene extends Phaser.Scene {
 		
 	}
 
-	private damageEnemy(enemy: any, bullet: any): void {
-		// only if both enemy and bullet are alive
+	private damageEnemy(enemy: any, projectile: any): void {
+		// only if both enemy and projectile are alive
 		
-		if (enemy.active === true && bullet.active === true) {
-	 		// we remove the bullet right away
-			if(bullet.texture.key === "fists"){
-				bullet.setDepth(1).setScale(1.5)
-				bullet.setActive(false);
-				//bullet.x = enemy.x
-				//bullet.y = enemy.y
-				setTimeout(() => {
-					bullet.setVisible(false);
-				}, 150)
-			}
-			else{
-				bullet.setActive(false);
-	  			bullet.setVisible(false);
-			}
+		// if (enemy.active === true && bullet.active === true) {
+	 	// 	// we remove the bullet right away
+		// 	if(bullet.texture.key === "fists"){
+		// 		bullet.setDepth(1).setScale(1.5)
+		// 		bullet.setActive(false);
+		// 		//bullet.x = enemy.x
+		// 		//bullet.y = enemy.y
+		// 		setTimeout(() => {
+		// 			bullet.setVisible(false);
+		// 		}, 150)
+		// 	}
+		// 	else{
+		// 		bullet.setActive(false);
+	  	// 		bullet.setVisible(false);
+		// 	}
+		// }
+		if (enemy.active === true && projectile.active === true) {
+	 		// we remove the projectile right away
+	  		projectile.setActive(false);
+	  		projectile.setVisible(false);
   
 	  		// decrease the enemy hp with BULLET_DAMAGE
-	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene, bullet.isFire, bullet.isIce);
+	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene, projectile.isFire, projectile.isIce);
 			var hp = enemy.getHp();
 			if (hp > 150){ //purple == 151-200
 				enemy.setTexture('balloons', 'purple');
@@ -253,47 +253,62 @@ export default class HelloWorldScene extends Phaser.Scene {
     	return map[i][j] === 0;
 	}
 
-	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group, texture: string): void {
+	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group, texture: string,
+						projectiles: Phaser.GameObjects.Group, textureP: string): void {
     	const i = Math.floor(pointer.y/64);
     	const j = Math.floor(pointer.x/64);
 		// I need to make something that specifies the thing that I need
     	if(this.canPlace(i, j)) {
 				// if the texutre passed is doge, scale it down because the original is massive and covers the screen
 				if(texture == "cowboy"){
-					if (this.money >= 150) {
-						this.money -= 150
-					} else {
-						return 
+					// I thought it made sense for the projectiles to go within the if and or 
+					// into another if statement spritesheetprojectile.json
+					if (textureP == "bigbill") {
+						if (this.money >= 150) {
+							this.money -= 150
+						} else {
+							return 
+						}
 					}
 				}
 				if (texture == "buff") {
-					if (this.money >= 175) {
-						this.money -= 175
-					} else {
-						return
+					if (textureP == "fists") {
+						if (this.money >= 175) {
+							this.money -= 175
+						} else {
+							return
+						}
 					}
 				}
 				if (texture == "bigm") {
-					if (this.money >= 225) {
-						this.money -= 225
-					} else {
-						return
+					if (textureP == "rootbeers") {
+						if (this.money >= 225) {
+							this.money -= 225
+						} else {
+							return
+						}
 					}
 				}
 				if (texture == "bulldog") {
-					if (this.money >= 275) {
-						this.money -= 275
-					} else {
-						return
+					if (textureP == "chomp") {
+						if (this.money >= 275) {
+							this.money -= 275
+						} else {
+							return
+						}
 					}
 				}
 				const turret = turrets.get()
+				const projectile = projectiles.get()
 				console.log("texture of tower: ",texture)
 				turret.setTexture(texture)
 				turret.setScale(0.04)
             	turret.setActive(true);
             	turret.setVisible(true);
             	turret.place(i, j);
+
+				projectile.setTexture('projectile',textureP)
+
 				//added to update the map in mainScene
 				map[i][j] = 1
 				//console.log("about to emit tower success")
