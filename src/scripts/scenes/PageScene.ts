@@ -559,6 +559,7 @@ export class PageScene extends Phaser.Scene {
                 var config = {
                     onTextChanged: function(textObject: any, text: any) {
                         name = text;
+                        turret.name = text
                         textObject.text = text;
                         console.log(name);
                         title.text = "Unit #" + unitNumber + ": " + name.substring(0,8) + " (" + unitType + ")";

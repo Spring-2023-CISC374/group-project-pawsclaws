@@ -6,6 +6,7 @@ import eventsCenter from '../EventsCenter';
 import { Enemy } from '../componets/enemy';
 import { Turret } from '../componets/units';
 import { Bullet } from '../componets/attack';
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 
 const BULLET_DAMAGE = 33;
 
@@ -39,6 +40,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	waveNumber!: number;
 	money!: number;
 	moneyText!: Phaser.GameObjects.Text;
+	rexUI!: RexUIPlugin;
 	
 	constructor() {
 		super('helloworldscene')
@@ -59,7 +61,7 @@ export default class HelloWorldScene extends Phaser.Scene {
   
 	create()  {
 
-		this.add.image(415, 320, 'background').setScale(0.89);
+		var background = this.add.image(415, 320, 'background').setScale(0.89);
 		this.add.image(380, 760, 'bar')
 
 		// Only used for visualization
@@ -151,6 +153,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 				map[original_i][newCord] = 1
 				map[original_i][original_j] = 0
 				turret.x = newCord * 64 + 64 / 2
+				turret.range_circle.x = turret.x
+				tower_title.x = turret.x
 			}
 		})
 		eventsCenter.on("changeVertically", (lst: any) => {
@@ -162,6 +166,11 @@ export default class HelloWorldScene extends Phaser.Scene {
 				map[newCord][original_j] = 1
 				map[original_i][original_j] = 0
 				turret.y = newCord * 64 + 64 / 2
+				turret.range_circle.y = turret.y
+				tower_title.y = turret.y - 64
+				if(tower_title.y < 0){
+					tower_title.y = turret.y + 60
+				}
 			}
 		})
 
@@ -170,6 +179,53 @@ export default class HelloWorldScene extends Phaser.Scene {
 			setTimeout(() => {
 				popSound.play()
 			}, 100)
+		})
+
+		
+        var tower_title = this.rexUI.add.label({
+			width: 80, 
+			height: 30,
+			x: 0,
+			y: 0,
+			space: {left: 1},
+			
+			background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 1, 0x7b5e57),
+			text: this.add.text(0, 0, "").setFontSize(16),
+		}).layout().setVisible(false).setDepth(2);
+
+		eventsCenter.on("selected_tower", (turret: Turret, turrets: Phaser.GameObjects.Group) => {
+			console.log(turret.name)
+			if(!(turret.range_circle.visible)){
+				tower_title.x = turret.x
+				tower_title.y = turret.y - 60
+				if(tower_title.y < 0) {
+					tower_title.y = turret.y + 60
+				}
+				tower_title.setText(turret.name.substring(0,8)).setVisible(true)
+				
+				turret.range_circle.setVisible(true)
+				turret.setDepth(1)
+			}
+			else {
+				tower_title.setVisible(false)
+				turret.range_circle.setVisible(false)
+				turret.setDepth(0)
+			}
+			var all_turrets = turrets.getChildren()
+			all_turrets.forEach((turret_lst: any) => {
+				if(turret_lst !== turret){
+					turret_lst.range_circle.setVisible(false)
+					turret_lst.setDepth(0)
+				}
+			})
+		})
+		background.setInteractive()
+		background.on("pointerdown", () => {
+			this.turrets.getChildren().forEach((turret: any) => {
+				turret.range_circle.setVisible(false)
+				turret.setDepth(0)
+			})
+			tower_title.setVisible(false)
 		})
 		
 
@@ -262,9 +318,12 @@ export default class HelloWorldScene extends Phaser.Scene {
 				map[i][j] = 1
 				//console.log("about to emit tower success")
 				eventsCenter.emit("tower-placed-successfully", turret, texture)
+				
 				turret.setInteractive()
-				turret.on("pointerdown", () => {console.log("selected unit ")})
-
+				turret.on("pointerdown", () => {
+					console.log("tower selected")
+					eventsCenter.emit("selected_tower", turret, turrets)
+				})
         	}
     	}
 
