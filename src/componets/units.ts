@@ -18,6 +18,7 @@ export class Turret extends Phaser.GameObjects.Image {
 	private nextTic = 0;
 	private enemies: Phaser.GameObjects.Group;
 	private bullets: Phaser.GameObjects.Group;
+	private punches: Phaser.GameObjects.Group;
 
 	// for the edit menu
 	turret_png?: string;
@@ -32,9 +33,11 @@ export class Turret extends Phaser.GameObjects.Image {
 		super(scene, 0, 0, 'unitsprites', 'turret');
 		var enemymaybe = scene.enemies
 		var bulletsmaybe = scene.bullets
-		
+		var punchesmaybe = scene.punches
+
 		this.enemies = enemymaybe;
 		this.bullets = bulletsmaybe;
+		this.punches = punchesmaybe
 		this.isFire = false;
 		this.isIce = false;
 	}
@@ -46,12 +49,26 @@ export class Turret extends Phaser.GameObjects.Image {
 	}
 
 	fire(): void {
-		  const enemy = this.getEnemy(this.x, this.y, 200);
-		  if (enemy) {
-			const angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
-			this.addBullet(this.x, this.y, angle);
-			this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
-		  }
+		if(this.texture.key === "buff"){
+			const enemy = this.getEnemy(this.x, this.y, 100);
+			if (enemy) {
+				console.log("yeahhh")
+				const angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+				this.addPunch(this.x, this.y, angle);
+				//this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+				console.log("yeahhh")
+				return
+
+			}
+		}
+		else{
+			const enemy = this.getEnemy(this.x, this.y, 200);
+			if (enemy) {
+				const angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+				this.addBullet(this.x, this.y, angle);
+				this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+		}
+		}
 	}
 
 	update(time: number, delta: number): void {
@@ -93,5 +110,13 @@ export class Turret extends Phaser.GameObjects.Image {
     	{
         	bullet.fire(x, y, angle, this.isFire, this.isIce);
     	}
+	}
+
+	private addPunch(x: number, y: number, angle: number): void {
+		const punch = this.punches.get()
+		if (punch) {
+			punch.setDepth(1)
+			punch.fire(x, y, angle, this.isFire, this.isIce)
+		}
 	}
 }

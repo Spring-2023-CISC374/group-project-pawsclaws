@@ -56,12 +56,13 @@ export class Punch extends Phaser.GameObjects.Image {
 	isIce: boolean;
 
 	constructor(scene: Phaser.Scene) {
-		  super(scene, 0, 0, 'bullet');
+		  super(scene, 0, 0, 'fists');
 		  this.isFire = false;
 		  this.isIce = false;
 	}
 
 	fire(x: number, y: number, angle: number, isFire: boolean, isIce: boolean): void {
+		console.log(this)
 		  this.setActive(true);
 		  this.setVisible(true);
 		  // Bullets fire from the middle of the screen to the given x/y

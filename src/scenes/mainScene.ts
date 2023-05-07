@@ -5,7 +5,7 @@ import Phaser from 'phaser'
 import eventsCenter from '../EventsCenter';
 import { Enemy } from '../componets/enemy';
 import { Turret } from '../componets/units';
-import { Bullet } from '../componets/attack';
+import { Bullet, Punch } from '../componets/attack';
 
 const BULLET_DAMAGE = 50;
 const NEXT_BALLOON_SPAWN = 650; //in milliseconds
@@ -40,6 +40,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	//donuts! : Phaser.GameObjects.Group;
 	enemies!: Phaser.GameObjects.Group;
 	bullets!: Phaser.GameObjects.Group;
+	punches!: Phaser.GameObjects.Group;
 	waveNumber!: number;
 	money!: number;
 	moneyText!: Phaser.GameObjects.Text;
@@ -61,6 +62,8 @@ export default class HelloWorldScene extends Phaser.Scene {
         this.load.image('bulldog','/assets/bulldog.png');
 		this.load.image('bar', '/assets/menu.PNG')
 		this.load.audio("pop", ["/assets/Pops.mp3"])
+		this.load.image('punch', '/assets/punch.png')
+		this.load.image('fists', '/assets/fists.png')
 	}
   
 	create()  {
@@ -100,11 +103,13 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.turrets = this.add.group({ classType: Turret, runChildUpdate: true });
   
 		this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
+		this.punches = this.physics.add.group({ classType: Punch, runChildUpdate: true })
   
 		this.nextEnemy = 0;
 
 		// its underlined in red but still works
 		this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy, undefined, this.scene);
+		this.physics.add.overlap(this.enemies, this.punches, this.damageEnemy, undefined, this.scene);
   
 		/*
 		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
@@ -192,8 +197,19 @@ export default class HelloWorldScene extends Phaser.Scene {
 		
 		if (enemy.active === true && bullet.active === true) {
 	 		// we remove the bullet right away
-	  		bullet.setActive(false);
-	  		bullet.setVisible(false);
+			if(bullet.texture.key === "fists"){
+				bullet.setDepth(1).setScale(1.5)
+				bullet.setActive(false);
+				//bullet.x = enemy.x
+				//bullet.y = enemy.y
+				setTimeout(() => {
+					bullet.setVisible(false);
+				}, 150)
+			}
+			else{
+				bullet.setActive(false);
+	  			bullet.setVisible(false);
+			}
   
 	  		// decrease the enemy hp with BULLET_DAMAGE
 	  		enemy.receiveDamage(BULLET_DAMAGE, this.scene, bullet.isFire, bullet.isIce);
