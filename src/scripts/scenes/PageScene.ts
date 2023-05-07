@@ -176,7 +176,7 @@ export class PageScene extends Phaser.Scene {
             background_cowboy.setVisible(false)
             
             //"cowboy"
-            eventsCenter.emit("tower-place?", "cowboy")
+            eventsCenter.emit("tower-place?", "cowboy", "bigbill")
         })
 
         // Buff Doge Unit
@@ -226,7 +226,7 @@ export class PageScene extends Phaser.Scene {
             background_buff.setVisible(false)
 
             //"buff"
-            eventsCenter.emit("tower-place?", "buff")
+            eventsCenter.emit("tower-place?", "buff", "fists")
         })
 
           // Big M Unit
@@ -276,7 +276,7 @@ export class PageScene extends Phaser.Scene {
             background_bigm.setVisible(false)
 
             var bigm_text = "bigm"
-            eventsCenter.emit("tower-place?", bigm_text)
+            eventsCenter.emit("tower-place?", bigm_text, "rootbeers")
         })
 
         // Bulldog Unit
@@ -326,7 +326,7 @@ export class PageScene extends Phaser.Scene {
             background_bulldog.setVisible(false)
 
             var bulldog_text = "bulldog"
-            eventsCenter.emit("tower-place?", bulldog_text)
+            eventsCenter.emit("tower-place?", bulldog_text, "chomp")
         })
 
         var cowboy_cat_title = this.rexUI.add.sizer({

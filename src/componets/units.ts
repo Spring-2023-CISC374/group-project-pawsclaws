@@ -20,16 +20,13 @@ export class Turret extends Phaser.GameObjects.Image {
 	private projectiles: Phaser.GameObjects.Group;
 
 	// for the edit menu
-	turret_png?: string;
-	turret_class_type?: string;
-	turret_name?: string;
-	turret_horizontal?: number;
-	turret_vertical?: number;
 	isFire: boolean;
 	isIce: boolean;
 
+	projectile_texture!: string;
+
 	constructor(scene: HelloWorldScene) {
-		super(scene, 0, 0, 'unitsprites', 'turret');
+		super(scene, 0, 0, 'unitsprites');
 		var enemymaybe = scene.enemies
 		var projectilesmaybe = scene.projectiles
 		
@@ -46,30 +43,10 @@ export class Turret extends Phaser.GameObjects.Image {
 	}
 
 	fire(): void {
-		// if(this.texture.key === "buff"){
-		// 	const enemy = this.getEnemy(this.x, this.y, 100);
-		// 	if (enemy) {
-		// 		console.log("yeahhh")
-		// 		const angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
-		// 		this.addPunch(this.x, this.y, angle);
-		// 		//this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
-		// 		console.log("yeahhh")
-		// 		return
-
-		// 	}
-		// }
-		// else{
-		// 	const enemy = this.getEnemy(this.x, this.y, 200);
-		// 	if (enemy) {
-		// 		const angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
-		// 		this.addBullet(this.x, this.y, angle);
-		// 		this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
-		// }
-		// }
 		  const enemy = this.getEnemy(this.x, this.y, 200);
 		  if (enemy) {
 			const angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
-			this.addProjectile(this.x, this.y, angle);
+			this.addProjectile(this.x, this.y, angle, this.projectile_texture);
 			this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
 		  }
 	}
@@ -107,11 +84,12 @@ export class Turret extends Phaser.GameObjects.Image {
 		}
 		return false;
 	}
-	private addProjectile(x: number, y: number, angle: number): void {
+	private addProjectile(x: number, y: number, angle: number, projectile_texture: string): void {
     	const projectile = this.projectiles.get();
+		projectile.setTexture('projectile', projectile_texture).setDepth(1)
     	if (projectile)
     	{
-        	projectile.fire(x, y, angle, this.isFire, this.isIce);
+        	projectile.fire(x, y, angle, this.isFire, this.isIce, projectile_texture);
     	}
 	}
 }

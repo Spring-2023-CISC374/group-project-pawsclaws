@@ -52,15 +52,13 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.image('background', 'assets/map.png');
 		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json');
 		this.load.atlas('balloons', 'assets/balloonspritesheet.png', 'assets/balloons.json');
-		this.load.atlas('projectile','assets/spritesheetprojectile.png', 'assets/projectiles.json');
+		this.load.atlas('projectile','assets/spritesheetprojectiles.png', 'assets/projectiles.json');
 		this.load.image('cowboy', '/assets/cowboy_cat.png');
 		this.load.image('buff', '/assets/buff_doge.png');
 		this.load.image('bigm','/assets/rootbeer_cat.png');
         this.load.image('bulldog','/assets/bulldog.png');
 		this.load.image('bar', '/assets/menu.PNG')
 		this.load.audio("pop", ["/assets/Pops.mp3"])
-		this.load.image('punch', '/assets/punch.png')
-		this.load.image('fists', '/assets/fists.png')
 	}
   
 	create()  {
@@ -140,8 +138,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 		// event listener 
 		// waits for the event "tower-place?"" to be called in the buy menu in PageScene
-		eventsCenter.on("tower-place?", (text: any) => {
-			this.placeTurret(this.input.mousePointer, this.turrets, text, this.projectiles,text)})
+		eventsCenter.on("tower-place?", (text: any, projectile_text: any) => {
+			this.placeTurret(this.input.mousePointer, this.turrets, text, this.projectiles, projectile_text)})
 		
 		eventsCenter.on("canplace", (pointer: any) => {
 			console.log("wipppiee")
@@ -178,6 +176,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 			}, 100)
 		})
 		
+		console.log(this.textures)
 
 	}
 
@@ -263,43 +262,40 @@ export default class HelloWorldScene extends Phaser.Scene {
 				if(texture == "cowboy"){
 					// I thought it made sense for the projectiles to go within the if and or 
 					// into another if statement spritesheetprojectile.json
-					if (textureP == "bigbill") {
-						if (this.money >= 150) {
-							this.money -= 150
-						} else {
-							return 
-						}
+					if (this.money >= 150) {
+						this.money -= 150
+					} else {
+						return 
 					}
 				}
 				if (texture == "buff") {
-					if (textureP == "fists") {
-						if (this.money >= 175) {
-							this.money -= 175
-						} else {
-							return
-						}
+					
+					if (this.money >= 175) {
+						this.money -= 175
+					} else {
+						return
 					}
+					
 				}
 				if (texture == "bigm") {
-					if (textureP == "rootbeers") {
-						if (this.money >= 225) {
-							this.money -= 225
-						} else {
-							return
-						}
+					
+					if (this.money >= 225) {
+						this.money -= 225
+					} else {
+						return
 					}
+					
 				}
 				if (texture == "bulldog") {
-					if (textureP == "chomp") {
-						if (this.money >= 275) {
-							this.money -= 275
-						} else {
-							return
-						}
+					
+					if (this.money >= 275) {
+						this.money -= 275
+					} else {
+						return
 					}
+					
 				}
 				const turret = turrets.get()
-				const projectile = projectiles.get()
 				console.log("texture of tower: ",texture)
 				turret.setTexture(texture)
 				turret.setScale(0.04)
@@ -307,7 +303,7 @@ export default class HelloWorldScene extends Phaser.Scene {
             	turret.setVisible(true);
             	turret.place(i, j);
 
-				projectile.setTexture('projectile',textureP)
+				turret.projectile_texture = textureP
 
 				//added to update the map in mainScene
 				map[i][j] = 1
