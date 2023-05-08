@@ -64,7 +64,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
   
 	create()  {
-
+		this.scene.launch("PageScene")
 		this.add.image(415, 320, 'background').setScale(0.89);
 		this.add.image(380, 760, 'bar')
 
