@@ -1,16 +1,16 @@
 const DISTANCE_OF_BULLET_PER_SECOND = 600;
-const DISTANCE_OF_PUNCH_PER_SECOND = 300;
-const DISTANCE_OF_CHOMP_PER_SECOND = 300;
-const DISTANCE_OF_BEER_PER_SECOND = 600;
+//const DISTANCE_OF_PUNCH_PER_SECOND = 300;
+//const DISTANCE_OF_CHOMP_PER_SECOND = 300;
+//const DISTANCE_OF_BEER_PER_SECOND = 600;
 
 export class Projectile extends Phaser.GameObjects.Image {
-	private incX = 0;
-	private incY = 0;
+	//private incX = 0;
+	//private incY = 0;
 	private lifespan = 0;
 	private speed = Phaser.Math.GetSpeed(DISTANCE_OF_BULLET_PER_SECOND, 1);
-	private speed1 = Phaser.Math.GetSpeed(DISTANCE_OF_PUNCH_PER_SECOND, 1);
-	private speed2 = Phaser.Math.GetSpeed(DISTANCE_OF_CHOMP_PER_SECOND, 1);
-	private speed3 = Phaser.Math.GetSpeed(DISTANCE_OF_BEER_PER_SECOND, 1);
+	//private speed1 = Phaser.Math.GetSpeed(DISTANCE_OF_PUNCH_PER_SECOND, 1);
+	//private speed2 = Phaser.Math.GetSpeed(DISTANCE_OF_CHOMP_PER_SECOND, 1);
+	//private speed3 = Phaser.Math.GetSpeed(DISTANCE_OF_BEER_PER_SECOND, 1);
 	private dx = 0;
 	private dy = 0;
 	gotbullet: boolean;
@@ -28,7 +28,7 @@ export class Projectile extends Phaser.GameObjects.Image {
 		  this.gotbullet = false;
 	}
 
-	fire(x: number, y: number, angle: number, isFire: boolean, isIce: boolean, projectile_texture: string): void {
+	fire(x: number, y: number, angle: number, isFire: boolean, isIce: boolean): void {
 		  //console.log(this.scene.textures)
 		  //this.setTexture('projectile', projectile_texture)
 		  this.setActive(true);
@@ -47,6 +47,7 @@ export class Projectile extends Phaser.GameObjects.Image {
 		}
 
 	update(time: number, delta: number): void {
+		  time;
 		  this.lifespan -= delta;
 
 		  // If cases will be needed

@@ -183,7 +183,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 	}
 
-	update(time: number, delta: number): void {  
+	update(): void {  
 
 		this.moneyText.setText("Money: " + this.money)
 		

@@ -1,5 +1,5 @@
 import { Enemy } from './enemy'
-import { CollisionGroup, default as HelloWorldScene } from '../scenes/mainScene';
+import { default as HelloWorldScene } from '../scenes/mainScene';
 
 const DELAY_BETWEEN_SHOTS = 1000; //in milliseconds
 const map: number[][] = [
@@ -51,7 +51,7 @@ export class Turret extends Phaser.GameObjects.Image {
 		  }
 	}
 
-	update(time: number, delta: number): void {
+	update(time: number): void {
 		  if (time > this.nextTic) {
 			this.fire();
 			this.nextTic = time + DELAY_BETWEEN_SHOTS;
@@ -75,7 +75,7 @@ export class Turret extends Phaser.GameObjects.Image {
 
 	private getEnemy(x: number, y: number, distance: number) {
 		const enemyUnits = this.enemies.getChildren();
-		const maybe = enemyUnits.entries()
+		//const maybe = enemyUnits.entries()
 		for (let i = 0; i < enemyUnits.length; i++) {
 	  		const enemy = enemyUnits[i] as Enemy;
 	  		if (enemy.active && Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y) < distance) {

@@ -1,5 +1,5 @@
 import eventsCenter from '../EventsCenter';
-import { CollisionGroup, default as HelloWorldScene } from '../scenes/mainScene';
+import { default as HelloWorldScene } from '../scenes/mainScene';
 
 const PURPLE_SPEED = 1 / 7500; //speed to complete at this color is 7.5 seconds
 const GREEN_SPEED = 1 / 8500; //speed to complete at this color is 8.5 seconds
@@ -99,6 +99,7 @@ export class Enemy extends Phaser.GameObjects.Image {
 	}
 
 	update(time: number, delta: number) {
+		time;
 		if (this.frozen == false){
 			if(this.hp > 150){ //purple
 				this.follower.t += PURPLE_SPEED * delta;

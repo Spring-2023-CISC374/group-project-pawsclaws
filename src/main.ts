@@ -2,8 +2,6 @@ import Phaser from 'phaser'
 import startScene from './scenes/startScene'
 import HelloWorldScene from './scenes/mainScene'
 import { InstructionsScene } from './scripts/scenes/InstructionsScene';
-
-//import { Controller, SceneA, SceneB, SceneC } from './scripts/scenes/SideMenu'
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import { PageScene } from './scripts/scenes/PageScene';
 
