@@ -1,10 +1,73 @@
 {
     "frames":[
         {
-            "filename": "fists",
+            "filename":"bigbill",
+            "frame":{
+                "x":31,
+                "y":31,
+                "w":30,
+                "h":25
+            },
+            "rotated":false,
+            "trimmed":false,
+            "spriteSourceSize":{
+                "x":0,
+                "y":0,
+                "w":30,
+                "h":25
+            },
+            "sourceSize":{
+                "w":30,
+                "h":25
+            }
+        },
+        {
+            "filename":"rootbeers",
+            "frame":{
+                "x":62,
+                "y":0,
+                "w":30,
+                "h":30
+            },
+            "rotated":false,
+            "trimmed":false,
+            "spriteSourceSize":{
+                "x":0,
+                "y":0,
+                "w":30,
+                "h":30
+            },
+            "sourceSize":{
+                "w":30,
+                "h":30
+            }
+        },
+        {
+            "filename":"slash",
             "frame":{
                 "x":0,
-                "y":29,
+                "y":59,
+                "w":40,
+                "h":25
+            },
+            "rotated":false,
+            "trimmed":false,
+            "spriteSourceSize":{
+                "x":0,
+                "y":0,
+                "w":40,
+                "h":25
+            },
+            "sourceSize":{
+                "w":40,
+                "h":25
+            }
+        },
+        {
+            "filename":"fists",
+            "frame":{
+                "x":0,
+                "y":0,
                 "w":30,
                 "h":30
             },
@@ -23,10 +86,11 @@
         },
         {
             "filename":"chomp",
-            "frame":{"x":0,
-            "y":0,
-            "w":30,
-            "h":27
+            "frame":{
+                "x":0,
+                "y":31,
+                "w":30,
+                "h":27
             },
             "rotated":false,
             "trimmed":false,
@@ -42,10 +106,10 @@
             }
         },
         {
-            "filename":"rootbeers",
+            "filename":"catus",
             "frame":{
-                "x":32,
-                "y":27,
+                "x":31,
+                "y":0,
                 "w":30,
                 "h":30
             },
@@ -63,12 +127,12 @@
             }
         },
         {
-            "filename":"bigbill",
+            "filename":"music",
             "frame":{
-                "x":32,
-                "y":0,
+                "x":62,
+                "y":31,
                 "w":30,
-                "h":25
+                "h":33
             },
             "rotated":false,
             "trimmed":false,
@@ -76,12 +140,12 @@
                 "x":0,
                 "y":0,
                 "w":30,
-                "h":25
+                "h":33
             },
             "sourceSize":{
                 "w":30,
-                "h":25
-            }    
+                "h":33
+            }
         }
     ],
     "meta":{
@@ -89,8 +153,8 @@
         "version":"Leshy SpriteSheet Tool v0.8.4",
         "image":"spritesheetprojectiles.png",
         "size":{
-            "w":62,
-            "h":59
+            "w":92,
+            "h":84
         },
         "scale":1
     }

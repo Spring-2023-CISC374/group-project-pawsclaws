@@ -57,6 +57,9 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.image('buff', '/assets/buff_doge.png');
 		this.load.image('bigm','/assets/rootbeer_cat.png');
         this.load.image('bulldog','/assets/bulldog.png');
+		this.load.image('dogurai', '/assets/dogurai.png');
+		this.load.image('reaper', '/assets/reaper_cat.png');
+		this.load.image('mark', '/assets/marks.png');
 		this.load.image('bar', '/assets/menu.PNG')
 		this.load.audio("pop", ["/assets/Pops.mp3"])
 	}
@@ -128,7 +131,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.money = 300
 		this.moneyText = this.add.text(50, 657, "Money: " + this.money)
 
-		var instructionsButton = this.add.text(600,650, 'Instructions')
+		var instructionsButton = this.add.image(700,665, 'mark')
         instructionsButton.setInteractive()
         instructionsButton.on('pointerdown',  () => {
 			console.log("clicked button")
@@ -139,7 +142,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		// event listener 
 		// waits for the event "tower-place?"" to be called in the buy menu in PageScene
 		eventsCenter.on("tower-place?", (text: any, projectile_text: any) => {
-			this.placeTurret(this.input.mousePointer, this.turrets, text, this.projectiles, projectile_text)})
+			this.placeTurret(this.input.mousePointer, this.turrets, text, projectile_text)})
 		
 		eventsCenter.on("canplace", (pointer: any) => {
 			console.log("wipppiee")
@@ -252,8 +255,7 @@ export default class HelloWorldScene extends Phaser.Scene {
     	return map[i][j] === 0;
 	}
 
-	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group, texture: string,
-						projectiles: Phaser.GameObjects.Group, textureP: string): void {
+	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group, texture: string, textureP: string): void {
     	const i = Math.floor(pointer.y/64);
     	const j = Math.floor(pointer.x/64);
 		// I need to make something that specifies the thing that I need
@@ -290,6 +292,22 @@ export default class HelloWorldScene extends Phaser.Scene {
 					
 					if (this.money >= 275) {
 						this.money -= 275
+					} else {
+						return
+					}
+					
+				}
+				if (texture == "reaper") {					
+					if (this.money >= 350) {
+						this.money -= 350
+					} else {
+						return
+					}
+					
+				}
+				if (texture == "dogurai") {
+					if (this.money >= 375) {
+						this.money -= 375
 					} else {
 						return
 					}
