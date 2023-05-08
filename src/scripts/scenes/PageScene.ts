@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
-import { TabPages, Sizer, FadeIn, } from 'phaser3-rex-plugins/templates/ui/ui-components'
+import { TabPages, Sizer, GridSizer} from 'phaser3-rex-plugins/templates/ui/ui-components'
 import Drag from 'phaser3-rex-plugins/plugins/drag.js';
 import eventsCenter from "../../EventsCenter";
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
@@ -16,7 +16,7 @@ export class PageScene extends Phaser.Scene {
     tabPages!: TabPages;
 
     editMenuSizer!: Sizer;
-    buyMenuSizer!: Sizer;
+    buyMenuSizer!: GridSizer;
     upgradeMenuSizer!: Sizer;
     
     numberOfUnits = 0;
@@ -36,16 +36,18 @@ export class PageScene extends Phaser.Scene {
     preload ()
     {
        this.load.html("UnitEditor", "assets/html/UnitEditor.html")
-       this.load.image("doge", "/assets/buff_doge.png")
-       this.load.atlas("unitsprites", '/assets/cowboy.png', '/assets/spritesheet.json');
+       this.load.image('buff', '/assets/buff_doge.png')
+       this.load.image('cowboy', '/assets/cowboy_cat.png')
+       this.load.image('bigm','/assets/rootbeer_cat.png')
+       this.load.image('bulldog','/assets/bulldog.png')
     }
 
     create ()
     {
         this.scene.bringToTop("PageScene")
         this.tabPages = this.rexUI.add.tabPages({
-            x: 890, y: 260,
-            width: 500, height: 520,
+            x: 1028, y: 359,
+            width: 500, height: 720,
             background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 0, COLOR_DARK),
         
             tabs: {
@@ -58,20 +60,20 @@ export class PageScene extends Phaser.Scene {
         
             space: { left: 5, right: 5, top: 5, bottom: 5, item: 10 }
         
-        })
+        }).setMinWidth(520);
 
         this.CreateSizers();
 
         this.tabPages
             .addPage({
-                key: 'Edit',
-                tab: this.CreateLabel(this, 'Edit'),
-                page: this.CreateScrollablePanel(this, this.editMenuSizer)
-            })
-            .addPage({
                 key: 'Buy',
                 tab: this.CreateLabel(this, 'Buy'),
                 page: this.CreateScrollablePanel(this, this.buyMenuSizer)
+            })
+            .addPage({
+                key: 'Edit',
+                tab: this.CreateLabel(this, 'Edit'),
+                page: this.CreateScrollablePanel(this, this.editMenuSizer)
             })
             .addPage({
                 key: 'Upgrade',
@@ -86,10 +88,10 @@ export class PageScene extends Phaser.Scene {
         this.AddUpgradeMenuChild();
         this.placedTowers = this.physics.add.group({ runChildUpdate: true });
 
-        eventsCenter.on("tower-placed-successfully", (turret: any) => {
+        eventsCenter.on("tower-placed-successfully", (turret: any, texture: any) => {
             console.log("in event for edit menu")
             console.log(turret)
-            this.AddEditMenuChild(this, turret)
+            this.AddEditMenuChild(this, turret, texture)
             this.placedTowers.add(turret)
         })
     }
@@ -99,76 +101,419 @@ export class PageScene extends Phaser.Scene {
     }
     
     // Currently being called at the end of the create function (keep if you want the content to be static)
-    AddBuyMenuChild(texture: string){
-        var text = this.CreateLabel(this, 'cost: 125')
-        if(texture == "doge") {
-            var tower_object = this.add.image(0,0, texture).setScale(0.1)
-            var background_object = this.add.image(tower_object.x,tower_object.y, texture).setScale(0.1).setVisible(false)
-            var background_object_2 = this.add.image(tower_object.x,tower_object.y, texture).setScale(0.04).setVisible(false).setDepth(1)
-        }
-        else {
-            var tower_object = this.add.image(0,0, texture).setScale(2)
-            var background_object = this.add.image(tower_object.x,tower_object.y, texture).setScale(2).setVisible(false)
-            var background_object_2 = this.add.image(tower_object.x,tower_object.y, texture).setScale(1).setVisible(false).setDepth(1)
-        }
-        var draggable_object = new Drag(tower_object)
-        tower_object.setInteractive()
+    AddBuyMenuChild() {
+        var text = this.add.text(0,0, 'cost: 125')
+        var text2 = this.add.text(0,0, 'cost: 150')
+        var text3 = this.add.text(0,0, 'cost: 225')
+        var text4 = this.add.text(0,0, 'cost: 275')
+        var cowboy = this.add.image(0,0, 'cowboy').setScale(0.1)
+        var buff = this.add.image(0,0, 'buff').setScale(0.1)
+        var bigm = this.add.image(0,0,'bigm').setScale(0.1)
+        var bulldog = this.add.image(0,0,'bulldog').setScale(0.1)
+        var background_cowboy = this.add.image(cowboy.x,cowboy.y, 'cowboy').setScale(0.1).setVisible(false)
+        var background_buff = this.add.image(buff.x,buff.y, 'buff').setScale(0.1).setVisible(false)
+        var background_bigm = this.add.image(bigm.x,bigm.y,'bigm').setScale(0.1).setVisible(false)
+        var background_bulldog = this.add.image(bulldog.x,bulldog.y,'bulldog').setScale(0.1).setVisible(false)
+        var draggable_cowboy = new Drag(cowboy)
+        var draggable_buff = new Drag(buff)
+        var draggable_bigm = new Drag(bigm)
+        var draggable_bulldog = new Drag(bulldog)
+        cowboy.setInteractive()
+        buff.setInteractive()
+        bigm.setInteractive()
+        bulldog.setInteractive()
 
-        // 200 is the radius of the circle because the range for the turret is 200
-        var range_circle = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+        // Long Range
+        var range_circle1 = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+        // Meduim Range
+        var range_circle2 = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+        // Short Range
+        var range_circle3 = this.add.circle(0, 0, 150, 0xff0000, 0.2).setVisible(false).setDepth(-1)
 
-        tower_object.on('dragstart', (pointer: any) => {
-            range_circle.x = pointer.x
-            range_circle.y = pointer.y
-            range_circle.setVisible(true)
+        // Cowboy Cat Unit
+        cowboy.on('dragstart', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            range_circle2.setVisible(true)
+            // make the background cowboy appear
+            background_cowboy.x = cowboy.x
+            background_cowboy.y = cowboy.y
+            background_cowboy.setVisible(true)
 
-            // make the background object in shop appear
-            background_object.x = tower_object.x
-            background_object.y = tower_object.y
-            background_object.setVisible(true)
-
-            // make the object that follows the pointer while dragging appear
-            background_object_2.x = pointer.x
-            background_object_2.y = pointer.y
-            background_object_2.setVisible(true)
-
-            tower_object.setVisible(false)
-            
+            // make the draggable cowboy smaller so its easier to place
+            cowboy.setScale(0.04).setDepth(1)
+            // set the draggable cowboy x and y to wherever the mouse is
+            cowboy.x = pointer.x
+            cowboy.y = pointer.y 
         })
-
-        // updates the dragging background objects x and y when being dragged
-        tower_object.on('drag', (pointer: any) => {
-            range_circle.x = pointer.x
-            range_circle.y = pointer.y
+        // updates the cowboys x and y when being dragged
+        cowboy.on('drag', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
             eventsCenter.emit("canplace", pointer)
             eventsCenter.on("returnplace", (bool: any) => {
                 if(!bool){
-                    range_circle.setFillStyle(0xff0000, 0.2)
+                    range_circle2.setFillStyle(0xff0000, 0.2)
                 }
                 else{
-                    range_circle.setFillStyle(0xDCDCDC, 0.2)
+                    range_circle2.setFillStyle(0xDCDCDC, 0.2)
                 }
             })
 
-            background_object_2.x = pointer.x
-            background_object_2.y = pointer.y
+            cowboy.x = pointer.x
+            cowboy.y = pointer.y 
         })
-        tower_object.on('dragend', () => {
-            range_circle.setVisible(false)
+        cowboy.on('dragend', (pointer: any) => {
+            range_circle2.setVisible(false)
 
-            tower_object.x = background_object.x
-            tower_object.y = background_object.y
-            tower_object.setVisible(true)
+            // set the scale of the cowboy back to 0.1 for the shop
+            // set the cowboy x and y to the background cowboy x and y
+            cowboy.setScale(0.1).setDepth(0)
+            cowboy.x = background_cowboy.x
+            cowboy.y = background_cowboy.y
 
-            // make the background objects disappear
-            background_object.setVisible(false)
-            background_object_2.setVisible(false)
-
-            eventsCenter.emit("tower-place?", texture)
+            // make the background cowboy disappear
+            background_cowboy.setVisible(false)
+            
+            //"cowboy"
+            eventsCenter.emit("tower-place?", "cowboy")
         })
 
-        this.buyMenuSizer.add(text).layout();
-        this.buyMenuSizer.add(tower_object).layout();
+        // Buff Doge Unit
+        buff.on('dragstart', (pointer: any) => {
+            range_circle3.x = pointer.x
+            range_circle3.y = pointer.y
+            range_circle3.setVisible(true)
+
+            // make the background cowboy appear
+            background_buff.x = buff.x
+            background_buff.y = buff.y
+            background_buff.setVisible(true)
+
+            // make the draggable buff smaller so its easier to place
+            buff.setScale(0.04).setDepth(1)
+            // set the draggable buff x and y to wherever the mouse is
+            buff.x = pointer.x
+            buff.y = pointer.y 
+        })
+        // updates the buffs x and y when being dragged
+        buff.on('drag', (pointer: any) => {
+            range_circle3.x = pointer.x
+            range_circle3.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle3.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle3.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            buff.x = pointer.x
+            buff.y = pointer.y 
+        })
+        buff.on('dragend', (pointer: any) => {
+            range_circle3.setVisible(false)
+
+            // set the scale of the buff back to 0.1 for the shop
+            // set the buff x and y to the background buff x and y
+            buff.setScale(0.1).setDepth(0)
+            buff.x = background_buff.x
+            buff.y = background_buff.y
+
+            // make the background buff disappear
+            background_buff.setVisible(false)
+
+            //"buff"
+            eventsCenter.emit("tower-place?", "buff")
+        })
+
+          // Big M Unit
+          bigm.on('dragstart', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            range_circle2.setVisible(true)
+
+            // make the background Big M appear
+            background_bigm.x = bigm.x
+            background_bigm.y = bigm.y
+            background_bigm.setVisible(true)
+
+            // make the draggable Big M smaller so its easier to place
+            bigm.setScale(0.04)
+            // set the draggable Big M x and y to wherever the mouse is
+            bigm.x = bigm.x
+            bigm.y = bigm.y 
+        })
+        // updates the Big M x and y when being dragged
+        bigm.on('drag', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle2.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle2.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            bigm.x = pointer.x
+            bigm.y = pointer.y 
+        })
+        bigm.on('dragend', (pointer: any) => {
+            range_circle2.setVisible(false)
+
+            // set the scale of the Big M back to 0.1 for the shop
+            // set the Big M x and y to the background Big M x and y
+            bigm.setScale(0.1)
+            bigm.x = background_bigm.x
+            bigm.y = background_bigm.y
+
+            // make the background Big M disappear
+            background_bigm.setVisible(false)
+
+            var bigm_text = "bigm"
+            eventsCenter.emit("tower-place?", bigm_text)
+        })
+
+        // Bulldog Unit
+        bulldog.on('dragstart', (pointer: any) => {
+            range_circle3.x = pointer.x
+            range_circle3.y = pointer.y
+            range_circle3.setVisible(true)
+
+            // make the background cowboy appear
+            background_bulldog.x = bulldog.x
+            background_bulldog.y = bulldog.y
+            background_bulldog.setVisible(true)
+
+            // make the draggable Bulldog smaller so its easier to place
+            bulldog.setScale(0.04)
+            // set the draggable Bulldog x and y to wherever the mouse is
+            bulldog.x = bulldog.x
+            bulldog.y = bulldog.y 
+        })
+        // updates the  Bulldog x and y when being dragged
+        bulldog.on('drag', (pointer: any) => {
+            range_circle3.x = pointer.x
+            range_circle3.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle3.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle3.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            bulldog.x = pointer.x
+            bulldog.y = pointer.y 
+        })
+        bulldog.on('dragend', (pointer: any) => {
+            range_circle3.setVisible(false)
+
+            // set the scale of the  Bulldog back to 0.1 for the shop
+            // set the  Bulldog x and y to the background  Bulldog x and y
+            bulldog.setScale(0.1)
+            bulldog.x = background_bulldog.x
+            bulldog.y = background_bulldog.y
+
+            // make the background  Bulldog disappear
+            background_bulldog.setVisible(false)
+
+            var bulldog_text = "bulldog"
+            eventsCenter.emit("tower-place?", bulldog_text)
+        })
+
+        var cowboy_cat_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        cowboy_cat_title.add(this.CreateLabel(this, 'Cowboy Cat:'));
+        cowboy_cat_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+            button.scaleYoyo(500, 1.2);
+            cowboy_cat_card.toggleFace();
+        }));
+
+        var cowboy_cat_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);
+        cowboy_cat_buy.add(text).layout();
+        cowboy_cat_buy.add(cowboy).layout();
+
+        var cowboy_cat_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        cowboy_cat_info.add(this.add.text(0,0,"\nAttack Speed: 5/10\n\nAttack Damage: 5/10\n\nRange: 6/10").setFontSize(17))
+
+        var cowboy_cat_card = this.rexUI.add.perspectiveCard({
+            front: cowboy_cat_buy,
+            back: cowboy_cat_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+        var buff_doge_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        }).setMinWidth(245);
+        buff_doge_title.add(this.CreateLabel(this, 'Buff Doge:'));
+        buff_doge_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+            button.scaleYoyo(500, 1.2);
+            buff_doge_card.toggleFace();
+        }), {align: 'right'});
+        var buff_doge_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);;
+        buff_doge_buy.add(text2).layout();
+        buff_doge_buy.add(buff).layout();
+
+        var buff_doge_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        buff_doge_info.add(this.add.text(0,0,"\nAttack Speed: 5/10 \n\nAttack Damage: 7/10\n\nRange: 3/10").setFontSize(17));
+
+        var buff_doge_card = this.rexUI.add.perspectiveCard({
+            front: buff_doge_buy,
+            back: buff_doge_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+        var bigm_cat_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        bigm_cat_title.add(this.CreateLabel(this, 'RootBeer Cat:'));
+        bigm_cat_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+            button.scaleYoyo(500, 1.3);
+            bigm_cat_card.toggleFace();
+        }));
+
+        var bigm_cat_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);
+        bigm_cat_buy.add(text3).layout();
+        bigm_cat_buy.add(bigm).layout();
+
+        var bigm_cat_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        bigm_cat_info.add(this.add.text(0,0,"\nAttack Speed: 3/10\n\nAttack Damage: 8/10\n\nRange: 6/10").setFontSize(17))
+
+        var bigm_cat_card = this.rexUI.add.perspectiveCard({
+            front: bigm_cat_buy,
+            back: bigm_cat_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+        var bulldog_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        bulldog_title.add(this.CreateLabel(this, 'Bulldog Spike:'));
+        bulldog_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+            button.scaleYoyo(500, 1.4);
+            bulldog_card.toggleFace();
+        }));
+
+        var bulldog_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);
+        bulldog_buy.add(text4).layout();
+        bulldog_buy.add(bulldog).layout();
+
+        var bulldog_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        bulldog_info.add(this.add.text(0,0,"\nAttack Speed: 7/10\n\nAttack Damage: 8/10\n\nRange: 3/10").setFontSize(17))
+
+        var bulldog_card = this.rexUI.add.perspectiveCard({
+            front: bulldog_buy,
+            back: bulldog_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+        //this.buyMenuSizer.add(this.CreateLabel(this, 'Cowboy Cat:'), 0, 0, 'left', 0, true).layout();
+        this.buyMenuSizer.add(cowboy_cat_title, 0, 0, 'center', 0, true).layout();
+        this.buyMenuSizer.add(cowboy_cat_card, 0 , 1, 'center', 0, true).layout();
+        this.buyMenuSizer.add(buff_doge_title, 1, 0, 'center', 0, true).layout();
+        this.buyMenuSizer.add(buff_doge_card, 1 , 1, 'center', 0, true).layout();
+        this.buyMenuSizer.add(bigm_cat_title, 0, 2, 'center', 0, true).layout();
+        this.buyMenuSizer.add(bigm_cat_card, 0, 3, 'center', 0, true).layout();
+        this.buyMenuSizer.add(bulldog_title, 1, 2, 'center', 0, true).layout();
+        this.buyMenuSizer.add(bulldog_card, 1, 3, 'center', 0, true).layout();
+        this.buyMenuSizer.layout();
     }
 
     AddUpgradeMenuChild(){
@@ -183,7 +528,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -193,7 +538,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         burnDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -208,7 +553,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -218,7 +563,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         burnDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -234,7 +579,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -244,7 +589,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         frozenDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -260,7 +605,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -270,7 +615,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         lightningAdditionTargetsSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -285,7 +630,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -295,7 +640,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         lightningDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -311,7 +656,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -321,7 +666,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         puddleDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -336,7 +681,7 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, '+').setOrigin(0.5, 1),
+                this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
 
             space: {
@@ -346,7 +691,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button, index, pointer, event) {
+        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         acidDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -389,15 +734,24 @@ export class PageScene extends Phaser.Scene {
         }).layout();
     }
 
-    AddEditMenuChild(scene: any, turret: any){
+    AddEditMenuChild(scene: any, turret: any, texture: string){
         var name: string;
         var horizontal: string;
         var vertical: string;
         var size: string;
         var classType: string;
+        var unitNumber: integer;
+        var unitType: string;
+        
+        //Get unit number
+        this.numberOfUnits++;
+        unitNumber = this.numberOfUnits;
 
-        //this.numberOfUnits++;
-        var title = this.CreateLabel(this,"Unit #" + this.numberOfUnits);
+        //
+        unitType = texture;
+
+        var title = this.CreateLabel(this,"Unit #" + unitNumber + ": (" + unitType + ")");
+        title.setMinWidth(420);
         var child = this.rexUI.add.sizer({
             orientation: 'y',
             space: { item: 10 }
@@ -413,17 +767,20 @@ export class PageScene extends Phaser.Scene {
             .setInteractive()
             .on('pointerdown', function () {
                 var config = {
-                    onTextChanged: function(textObject, text) {
+                    onTextChanged: function(textObject: any, text: any) {
                         name = text;
                         textObject.text = text;
                         console.log(name);
+                        title.text = "Unit #" + unitNumber + ": " + name.substring(0,8) + " (" + unitType + ")";
+                        title.layout();
+                        editor.layout();
                     }
                 }
                 scene.rexUI.edit(nameField.getElement('text'), config);
             });
             
 
-
+        
         // HORIZONTAL PLACEMENT UI
         var horizLabel = this.add.text(0,0,'Horizontal Position:').setFontSize(20);
         var horizField = this.rexUI.add.label({
@@ -435,9 +792,9 @@ export class PageScene extends Phaser.Scene {
         .setInteractive().setText(turret.x)
         .on('pointerdown', function () {
             var config = {
-                onTextChanged: function(textObject, text) {
+                onTextChanged: function(textObject: any, text: any) {
                     var newCord = Math.floor((text as unknown as number) / 64)
-                    if(newCord < 10 && newCord >= 0) {
+                    if(newCord < 12 && newCord >= 0) {
                         eventsCenter.emit("changeHorizontally", [turret, newCord])
                     }
                     textObject.text = turret.x
@@ -457,7 +814,7 @@ export class PageScene extends Phaser.Scene {
         .setInteractive().setText(turret.y)
         .on('pointerdown', function () {
             var config = {
-                onTextChanged: function(textObject, text) {
+                onTextChanged: function(textObject: any, text: any) {
                     var newCord = Math.floor((text as unknown as number) / 64)
                     if(newCord < 8 && newCord >= 0) {
                         eventsCenter.emit("changeVertically", [turret, newCord])
@@ -467,33 +824,7 @@ export class PageScene extends Phaser.Scene {
             }
             scene.rexUI.edit(vertField.getElement('text'),config);
         });
-        
-        // SIZE UI
-        var sizeLabel = this.add.text(0,0,'Size:').setFontSize(20);
-        var sizeField = this.rexUI.add.buttons({
-            x: 400, y: 400,
-            orientation: 'x',
-            buttons: [
-                this.createButton(this, 'Small').setOrigin(0.5, 1),
-                this.createButton(this, 'Medium').setOrigin(0.5, 1),
-                this.createButton(this, 'Large').setOrigin(0.5, 1),
-            ],
 
-            space: {
-                left: 10, right: 10, top: 10, bottom: 10,
-                item: 6
-            }
-        })
-        .setOrigin(0.5, 1)
-        .layout()
-
-        sizeField
-            .on('button.click', function (button, index, pointer, event) {
-                button.scaleYoyo(500, 1.2);
-                size = button.text;
-                sizeLabel.text = 'Size: ' + size;
-                console.log(size);
-            })
 
         // CLASS TYPE UI
         var classLabel = this.add.text(0,0,'Class Type: (5 gp to Unlock)').setFontSize(20);
@@ -501,10 +832,10 @@ export class PageScene extends Phaser.Scene {
             x: 400, y: 400,
             orientation: 'x',
             buttons: [
-                this.createButton(this, 'Fire').setOrigin(0.5, 1),
-                this.createButton(this, 'Ice').setOrigin(0.5, 1),
-                this.createButton(this, 'Poison').setOrigin(0.5, 1),
-                this.createButton(this, 'Lightning').setOrigin(0.5, 1)
+                this.createButton(this, 'Fire', 20).setOrigin(0.5, 1),
+                this.createButton(this, 'Ice', 20).setOrigin(0.5, 1),
+                this.createButton(this, 'Poison', 20).setOrigin(0.5, 1),
+                this.createButton(this, 'Lightning', 20).setOrigin(0.5, 1)
             ],
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
@@ -515,10 +846,11 @@ export class PageScene extends Phaser.Scene {
         .layout()
 
         classField
-            .on('button.click', function (button, index, pointer, event) {
+            .on('button.click', function (button: any, index: any, pointer: any, event: any) {
                 button.scaleYoyo(500, 1.2);
                 classType = button.text;
                 classLabel.text = 'Class: ' + classType;
+                turret.setClassTypes(classType)
                 console.log(classType);
             })
         
@@ -541,12 +873,12 @@ export class PageScene extends Phaser.Scene {
         child.add(vertField, {
             align: "left"
         });
-        child.add(sizeLabel, {
-            align: "left"
-        });
-        child.add(sizeField, {
-            align: "left"
-        })
+        // child.add(sizeLabel, {
+        //     align: "left"
+        // });
+        // child.add(sizeField, {
+        //     align: "left"
+        // })
         child.add(classLabel, {
             align: "left"
         });
@@ -573,14 +905,15 @@ export class PageScene extends Phaser.Scene {
         }).collapse(0);
         editor.setMinWidth(430)
         this.editMenuSizer.add(editor).layout();
+        this.tabPages.layout();
     }
 
-    CreateLabel(scene, text) {
+    CreateLabel(scene: any, text: any) {
         return scene.rexUI.add.label({
         width: 40, height: 40,
         
         background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 5, COLOR_LIGHT),
-        text: scene.add.text(0, 0, text, { fontSize: 24 }),
+        text: scene.add.text(0, 0, text, { fontSize: 20 }),
         
         space: { left: 10, right: 10, top: 10, bottom: 10 }
         })
@@ -588,26 +921,26 @@ export class PageScene extends Phaser.Scene {
 
     // Function used often to create a button. Scene is always set to 'this' and 
     // text is set to what you want written on the button
-    createButton(scene, text) {
+    createButton(scene: any, text: any, fontSize: any) {
         return scene.rexUI.add.label({
-            width: 60,
-            height: 30,
+            width: 25,
+            height: 25,
             background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_LIGHT),
             text: scene.add.text(0, 0, text, {
-                fontSize: 18
+                fontSize: fontSize
             }),
             align: 'center',
             space: {
                 left: 10,
                 right: 10,
             }
-        });
+        }).setInnerPadding(5);
     }
 
     // Function to create Scrollable Panel, needs a child sizer (basically just a container) to hold anything that
     // will be added. Function below is a basic setting of an empty sizer. Scene is alway set to 'this'. 
     // To add to child sizer after the fact, just have it as a variable and perform a .add().layout().
-    CreateScrollablePanel(scene, childSizer) {
+    CreateScrollablePanel(scene: any, childSizer: any) {
         
         return scene.rexUI.add.scrollablePanel({
             x: 400,
@@ -659,9 +992,11 @@ export class PageScene extends Phaser.Scene {
         })
         .layout();
 
-        this.buyMenuSizer = this.rexUI.add.sizer({
-            width: 200,
-            orientation: 'y'
+        this.buyMenuSizer = this.rexUI.add.gridSizer({
+            column: 2,
+            row: 5,
+
+            columnProportions: 1,
         })
         .layout();
 
