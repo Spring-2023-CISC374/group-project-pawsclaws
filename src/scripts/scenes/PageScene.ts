@@ -1260,7 +1260,7 @@ export class PageScene extends Phaser.Scene {
 
         this.buyMenuSizer = this.rexUI.add.gridSizer({
             column: 2,
-            row: 5,
+            row: 10,
 
             columnProportions: 1,
         })
