@@ -5,7 +5,7 @@ import Drag from 'phaser3-rex-plugins/plugins/drag.js';
 import eventsCenter from "../../EventsCenter";
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 import { Rectangle } from "phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms";
-import HelloWorldScene from '../../HelloWorldScene'
+//import HelloWorldScene from '../../HelloWorldScene'
 
 const COLOR_PRIMARY = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
@@ -83,8 +83,8 @@ export class PageScene extends Phaser.Scene {
             .layout()
             .swapPage('Buy')
 
-        this.AddBuyMenuChild("unitsprites");
-        this.AddBuyMenuChild("doge");
+        this.AddBuyMenuChild();
+        this.AddBuyMenuChild();
         this.AddUpgradeMenuChild();
         this.placedTowers = this.physics.add.group({ runChildUpdate: true });
 
@@ -769,6 +769,7 @@ export class PageScene extends Phaser.Scene {
                 var config = {
                     onTextChanged: function(textObject: any, text: any) {
                         name = text;
+                        turret.name = text
                         textObject.text = text;
                         console.log(name);
                         title.text = "Unit #" + unitNumber + ": " + name.substring(0,8) + " (" + unitType + ")";
@@ -778,7 +779,6 @@ export class PageScene extends Phaser.Scene {
                 }
                 scene.rexUI.edit(nameField.getElement('text'), config);
             });
-            
 
         
         // HORIZONTAL PLACEMENT UI

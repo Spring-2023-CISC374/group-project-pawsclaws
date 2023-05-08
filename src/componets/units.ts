@@ -28,6 +28,9 @@ export class Turret extends Phaser.GameObjects.Image {
 	isFire: boolean;
 	isIce: boolean;
 
+	range: any
+	range_circle: any
+
 	constructor(scene: HelloWorldScene) {
 		super(scene, 0, 0, 'unitsprites', 'turret');
 		var enemymaybe = scene.enemies
@@ -37,11 +40,16 @@ export class Turret extends Phaser.GameObjects.Image {
 		this.bullets = bulletsmaybe;
 		this.isFire = false;
 		this.isIce = false;
+
+		this.range = 200
+		this.range_circle = scene.add.circle(this.x, this.y, this.range, 0xDCDCDC, 0.2).setVisible(false).setDepth(.5)
 	}
 
 	place(i: number, j: number): void {
 		this.y = i * 64 + 64 / 2; // Please check into this
 		this.x = j * 64 + 64 / 2;
+		this.range_circle.x = this.x
+		this.range_circle.y = this.y
 		map[i][j] = 1;
 	}
 
