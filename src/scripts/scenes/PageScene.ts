@@ -3,9 +3,6 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import { TabPages, Sizer, GridSizer} from 'phaser3-rex-plugins/templates/ui/ui-components'
 import Drag from 'phaser3-rex-plugins/plugins/drag.js';
 import eventsCenter from "../../EventsCenter";
-import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
-import { Rectangle } from "phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms";
-//import HelloWorldScene from '../../HelloWorldScene'
 
 const COLOR_PRIMARY = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
@@ -84,7 +81,6 @@ export class PageScene extends Phaser.Scene {
             .swapPage('Buy')
 
         this.AddBuyMenuChild();
-        this.AddBuyMenuChild();
         this.AddUpgradeMenuChild();
         this.placedTowers = this.physics.add.group({ runChildUpdate: true });
 
@@ -93,6 +89,10 @@ export class PageScene extends Phaser.Scene {
             console.log(turret)
             this.AddEditMenuChild(this, turret, texture)
             this.placedTowers.add(turret)
+        })
+        eventsCenter.on("Restart", ()=>{
+            this.editMenuSizer.clear(true)
+            this.numberOfUnits = 0
         })
     }
 
@@ -241,10 +241,10 @@ export class PageScene extends Phaser.Scene {
             background_bigm.setVisible(true)
 
             // make the draggable Big M smaller so its easier to place
-            bigm.setScale(0.04)
+            bigm.setScale(0.04).setDepth(1)
             // set the draggable Big M x and y to wherever the mouse is
-            bigm.x = bigm.x
-            bigm.y = bigm.y 
+            bigm.x = pointer.x
+            bigm.y = pointer.y 
         })
         // updates the Big M x and y when being dragged
         bigm.on('drag', (pointer: any) => {
@@ -268,7 +268,7 @@ export class PageScene extends Phaser.Scene {
 
             // set the scale of the Big M back to 0.1 for the shop
             // set the Big M x and y to the background Big M x and y
-            bigm.setScale(0.1)
+            bigm.setScale(0.1).setDepth(0)
             bigm.x = background_bigm.x
             bigm.y = background_bigm.y
 
@@ -291,10 +291,10 @@ export class PageScene extends Phaser.Scene {
             background_bulldog.setVisible(true)
 
             // make the draggable Bulldog smaller so its easier to place
-            bulldog.setScale(0.04)
+            bulldog.setScale(0.04).setDepth(1)
             // set the draggable Bulldog x and y to wherever the mouse is
-            bulldog.x = bulldog.x
-            bulldog.y = bulldog.y 
+            bulldog.x = pointer.x
+            bulldog.y = pointer.y 
         })
         // updates the  Bulldog x and y when being dragged
         bulldog.on('drag', (pointer: any) => {
@@ -318,7 +318,7 @@ export class PageScene extends Phaser.Scene {
 
             // set the scale of the  Bulldog back to 0.1 for the shop
             // set the  Bulldog x and y to the background  Bulldog x and y
-            bulldog.setScale(0.1)
+            bulldog.setScale(0.1).setDepth(0)
             bulldog.x = background_bulldog.x
             bulldog.y = background_bulldog.y
 

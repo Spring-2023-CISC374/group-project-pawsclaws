@@ -42,12 +42,17 @@ export default class HelloWorldScene extends Phaser.Scene {
 	enemies!: Phaser.GameObjects.Group;
 	bullets!: Phaser.GameObjects.Group;
 	waveNumber!: number;
+	waveText!: any;
 	money!: number;
 	moneyText!: Phaser.GameObjects.Text;
 	rexUI!: RexUIPlugin;
+	gameOver!: boolean
+	map!: any;
+	bestRound!: string;
 	
 	constructor() {
 		super('helloworldscene')
+		this.bestRound = '0'
 	}
 
 	preload() {
@@ -67,8 +72,12 @@ export default class HelloWorldScene extends Phaser.Scene {
   
 	create()  {
 		this.scene.launch("PageScene")
+		//this.map = []
+		console.log(this.map)
+		this.map = JSON.parse(JSON.stringify(map))
+		console.log(this.map)
 
-		var background = this.add.image(415, 320, 'background').setScale(0.89);
+		var background = this.add.image(415, 320, 'background').setScale(0.89)
 		this.add.image(380, 760, 'bar')
 
 		// Only used for visualization
@@ -116,7 +125,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		*/
 
 		this.waveNumber = 0
-		var waveText = this.add.text(50, 640, "Wave: " + this.waveNumber)
+		this.waveText = this.add.text(50, 640, "Wave: " + this.waveNumber)
 		var startWaveButton = this.add.text(50,675, 'Start Next Wave')
 		startWaveButton.setInteractive()
 		startWaveButton.on('pointerdown', () => {
@@ -124,7 +133,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 			//fucntion called start wave
 			if(this.enemies.getLength() == 0){
 				this.waveNumber++
-				waveText.setText("Wave: " + this.waveNumber)
 				this.startWave(this.waveNumber)
 			}
 
@@ -147,7 +155,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 			this.placeTurret(this.input.mousePointer, this.turrets, text)})
 		
 		eventsCenter.on("canplace", (pointer: any) => {
-			console.log("wipppiee")
 			eventsCenter.emit("returnplace", this.canPlace(Math.floor(pointer.y/64), Math.floor(pointer.x/64)))
 		})
 
@@ -157,8 +164,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 			var original_i = Math.floor(turret.y/64)
 			var original_j = Math.floor(turret.x/64)
 			if(this.canPlace(original_i, newCord)){
-				map[original_i][newCord] = 1
-				map[original_i][original_j] = 0
+				this.map[original_i][newCord] = 1
+				this.map[original_i][original_j] = 0
 				turret.x = newCord * 64 + 64 / 2
 				turret.range_circle.x = turret.x
 				tower_title.x = turret.x
@@ -170,8 +177,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 			var original_i = Math.floor(turret.y/64)
 			var original_j = Math.floor(turret.x/64)
 			if(this.canPlace(newCord, original_j)){
-				map[newCord][original_j] = 1
-				map[original_i][original_j] = 0
+				this.map[newCord][original_j] = 1
+				this.map[original_i][original_j] = 0
 				turret.y = newCord * 64 + 64 / 2
 				turret.range_circle.y = turret.y
 				tower_title.y = turret.y - 64
@@ -185,7 +192,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		eventsCenter.on("popsound", () => {
 			setTimeout(() => {
 				popSound.play()
-			}, 100)
+			}, 50)
 		})
 
 		
@@ -234,6 +241,34 @@ export default class HelloWorldScene extends Phaser.Scene {
 			})
 			tower_title.setVisible(false)
 		})
+
+		this.gameOver = false
+		eventsCenter.on("GameOver", () => {
+			if(!this.gameOver){
+				console.log("yeah boi")
+				this.gameOver = true
+				this.scene.pause("HelloWorldScene")
+				this.scene.pause("PageScene")
+				this.scene.launch("GameOverScene", {currRound: this.waveNumber, bestRound: this.bestRound})
+			}
+		})
+		eventsCenter.on("Restart", ()=>{
+			this.scene.stop("GameOverScene")
+			this.scene.resume("PageScene")
+			this.scene.resume("HelloWorldScene")
+			this.enemies.clear(true, true)
+			this.turrets.getChildren().forEach((child: any) =>{
+				child.range_circle.setVisible(false)
+			})
+			tower_title.setVisible(false)
+			this.turrets.clear(true, true)
+			this.bullets.clear(true, true)
+			this.waveNumber = 0
+			this.money = 300
+			this.nextEnemy = 0
+			this.map = JSON.parse(JSON.stringify(map))
+			this.gameOver = false
+		})
 		
 
 	}
@@ -241,6 +276,16 @@ export default class HelloWorldScene extends Phaser.Scene {
 	update(time: number, delta: number): void {  
 
 		this.moneyText.setText("Money: " + this.money)
+		this.waveText.setText("Wave: " + this.waveNumber)
+
+		var bestRound = localStorage.getItem("highscore")
+		if(bestRound !== null){
+			this.bestRound = bestRound
+		}
+		if(this.waveNumber > (this.bestRound as unknown as number)){
+			localStorage.setItem("highscore", this.waveNumber as unknown as string)
+		}
+
 		
 	}
 
@@ -291,7 +336,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		if(i < 0 || j < 0){
 			return false
 		}
-    	return map[i][j] === 0;
+    	return this.map[i][j] === 0;
 	}
 
 	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group, texture: string): void {
@@ -336,7 +381,7 @@ export default class HelloWorldScene extends Phaser.Scene {
             	turret.setVisible(true);
             	turret.place(i, j);
 				//added to update the map in mainScene
-				map[i][j] = 1
+				this.map[i][j] = 1
 				//console.log("about to emit tower success")
 				eventsCenter.emit("tower-placed-successfully", turret, texture)
 				

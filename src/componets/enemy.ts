@@ -148,6 +148,7 @@ export class Enemy extends Phaser.GameObjects.Image {
 
 		if (this.follower.t >= 1) {
 			console.log(this.timeOnPath)
+			eventsCenter.emit("GameOver")
 			this.setActive(false);
 			this.setVisible(false);
 		}

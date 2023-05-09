@@ -1,18 +1,7 @@
+import HelloWorldScene from '../scenes/mainScene';
 import { Enemy } from './enemy'
-import { CollisionGroup, default as HelloWorldScene } from '../scenes/mainScene';
 
 const DELAY_BETWEEN_SHOTS = 1000; //in milliseconds
-const map: number[][] = [
-	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, -1, 0, 0, 0, 0, 0, -1, -1, -1, 0, 0],
-	[0, -1, 0, 0, 0, 0, -1, 0, -1, 0, 0],
-	[0, -1, 0, -1, -1, -1, -1, -1, -1, -1, 0, 0],
-	[0, -1, 0, -1, 0, 0, 0, -1, 0, 0, 0, 0],
-	[0, -1, -1, -1, 0, 0, 0, -1, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, -1, -1, -1, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0]
-];
 
 export class Turret extends Phaser.GameObjects.Image {
 	private nextTic = 0;
@@ -50,7 +39,6 @@ export class Turret extends Phaser.GameObjects.Image {
 		this.x = j * 64 + 64 / 2;
 		this.range_circle.x = this.x
 		this.range_circle.y = this.y
-		map[i][j] = 1;
 	}
 
 	fire(): void {
