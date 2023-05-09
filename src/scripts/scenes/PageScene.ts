@@ -3,8 +3,6 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import { TabPages, Sizer, GridSizer} from 'phaser3-rex-plugins/templates/ui/ui-components'
 import Drag from 'phaser3-rex-plugins/plugins/drag.js';
 import eventsCenter from "../../EventsCenter";
-import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
-import { Rectangle } from "phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms";
 
 const COLOR_PRIMARY = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
@@ -122,12 +120,12 @@ export class PageScene extends Phaser.Scene {
         var background_bulldog = this.add.image(bulldog.x,bulldog.y,'bulldog').setScale(0.1).setVisible(false)
         var background_reaper = this.add.image(reaper.x,reaper.y,'reaper').setScale(0.1).setVisible(false)
         var background_dogurai = this.add.image(dogurai.x,dogurai.y,'dogurai').setScale(0.1).setVisible(false)
-        var draggable_cowboy = new Drag(cowboy)
-        var draggable_buff = new Drag(buff)
-        var draggable_bigm = new Drag(bigm)
-        var draggable_bulldog = new Drag(bulldog)
-        var draggable_reaper = new Drag(reaper)
-        var draggable_dogurai = new Drag(dogurai)
+        new Drag(cowboy)
+        new Drag(buff)
+        new Drag(bigm)
+        new Drag(bulldog)
+        new Drag(reaper)
+        new Drag(dogurai)
         cowboy.setInteractive()
         buff.setInteractive()
         bigm.setInteractive()
@@ -136,7 +134,7 @@ export class PageScene extends Phaser.Scene {
         dogurai.setInteractive()
 
         // Long Range
-        var range_circle1 = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
+        // var range_circle1 = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
         // Meduim Range
         var range_circle2 = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
         // Short Range
@@ -175,7 +173,7 @@ export class PageScene extends Phaser.Scene {
             cowboy.x = pointer.x
             cowboy.y = pointer.y 
         })
-        cowboy.on('dragend', (pointer: any) => {
+        cowboy.on('dragend', () => {
             range_circle2.setVisible(false)
 
             // set the scale of the cowboy back to 0.1 for the shop
@@ -225,7 +223,7 @@ export class PageScene extends Phaser.Scene {
             buff.x = pointer.x
             buff.y = pointer.y 
         })
-        buff.on('dragend', (pointer: any) => {
+        buff.on('dragend', () => {
             range_circle3.setVisible(false)
 
             // set the scale of the buff back to 0.1 for the shop
@@ -275,7 +273,7 @@ export class PageScene extends Phaser.Scene {
             bigm.x = pointer.x
             bigm.y = pointer.y 
         })
-        bigm.on('dragend', (pointer: any) => {
+        bigm.on('dragend', () => {
             range_circle2.setVisible(false)
 
             // set the scale of the Big M back to 0.1 for the shop
@@ -325,7 +323,7 @@ export class PageScene extends Phaser.Scene {
             bulldog.x = pointer.x
             bulldog.y = pointer.y 
         })
-        bulldog.on('dragend', (pointer: any) => {
+        bulldog.on('dragend', () => {
             range_circle3.setVisible(false)
 
             // set the scale of the  Bulldog back to 0.1 for the shop
@@ -374,7 +372,7 @@ export class PageScene extends Phaser.Scene {
             reaper.x = pointer.x
             reaper.y = pointer.y 
         })
-        reaper.on('dragend', (pointer: any) => {
+        reaper.on('dragend', () => {
             range_circle3.setVisible(false)
 
             // set the scale of the buff back to 0.1 for the shop
@@ -423,7 +421,7 @@ export class PageScene extends Phaser.Scene {
             dogurai.x = pointer.x
             dogurai.y = pointer.y 
         })
-        dogurai.on('dragend', (pointer: any) => {
+        dogurai.on('dragend', () => {
             range_circle3.setVisible(false)
 
             // set the scale of the buff back to 0.1 for the shop
@@ -459,7 +457,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
             cowboy_cat_card.toggleFace();
         }));
@@ -503,7 +501,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
             buff_doge_card.toggleFace();
         }), {align: 'right'});
@@ -546,7 +544,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.3);
             bigm_cat_card.toggleFace();
         }));
@@ -590,7 +588,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.4);
             bulldog_card.toggleFace();
         }));
@@ -634,7 +632,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.5);
             reaper_card.toggleFace();
         }));
@@ -678,7 +676,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.6);
             dogurai_card.toggleFace();
         }));
@@ -742,7 +740,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         burnDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -767,7 +765,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         burnDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -793,7 +791,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         frozenDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -819,7 +817,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         lightningAdditionTargetsSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -844,7 +842,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         lightningDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -870,7 +868,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         puddleDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -895,7 +893,7 @@ export class PageScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 1)
         .layout()
-        .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+        .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
         })).layout;
         acidDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
@@ -940,9 +938,6 @@ export class PageScene extends Phaser.Scene {
 
     AddEditMenuChild(scene: any, turret: any, texture: string){
         var name: string;
-        var horizontal: string;
-        var vertical: string;
-        var size: string;
         var classType: string;
         var unitNumber: integer;
         var unitType: string;
@@ -1112,7 +1107,7 @@ export class PageScene extends Phaser.Scene {
         .layout()
 
         classField
-            .on('button.click', function (button: any, index: any, pointer: any, event: any) {
+            .on('button.click', function (button: any) {
                 button.scaleYoyo(500, 1.2);
                 classType = button.text;
                 classLabel.text = 'Class: ' + classType;
