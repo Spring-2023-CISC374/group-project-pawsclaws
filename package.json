@@ -3,9 +3,12 @@
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
+	"homepage": "https://spring-2023-cisc374.github.io/group-project-pawsclaws/",
 	"scripts": {
 		"start": "vite",
 		"build": "tsc && vite build",
+		"predeploy": "npm run build",
+		"deploy": "gh-pages -d dist",
 		"preview": "vite preview"
 	},
 	"devDependencies": {
