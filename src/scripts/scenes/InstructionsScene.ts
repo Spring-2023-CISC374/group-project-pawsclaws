@@ -59,6 +59,7 @@ Good luck defending your territory!`;
             fixedHeight: 350,
         })
         .start(content, 50);
+        instructionsBox;
 
         //close button, right now just a big red x
         var closeBtn = this.add.text(600, 40 + 10, "X")
@@ -133,7 +134,7 @@ Good luck defending your territory!`;
                 var icon = textBox.getElement('action').setVisible(true);
                 textBox.resetChildVisibleState(icon);
                 icon.y -= 30;
-                var tween = scene.tweens.add({
+                scene.tweens.add({
                     targets: icon,
                     y: '+=30', // '+=100'
                     ease: 'Bounce', // 'Cubic', 'Elastic', 'Bounce', 'Back'
