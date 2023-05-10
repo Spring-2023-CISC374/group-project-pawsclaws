@@ -965,7 +965,7 @@ export class PageScene extends Phaser.Scene {
         var nameField = this.rexUI.add.label({
             orientation: 'x',
             background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
-            text: this.rexUI.add.BBCodeText(0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
+            text: new BBCodeText(this, 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
             space: { top: 5, bottom: 5, left: 5, right: 5, }
         })
             .setInteractive()
@@ -1026,7 +1026,7 @@ export class PageScene extends Phaser.Scene {
         var horizField = this.rexUI.add.label({
             orientation: 'x',
             background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
-            text: this.rexUI.add.BBCodeText(0, 0, '', { fixedWidth: 300, fixedHeight: 18, halign: 'left' }),
+            text: new BBCodeText(this, 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, },
         })
         .setInteractive().setText((Math.ceil(turret.x / 64)).toString())
@@ -1048,7 +1048,7 @@ export class PageScene extends Phaser.Scene {
         var vertField = this.rexUI.add.label({
             orientation: 'x',
             background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
-            text: this.rexUI.add.BBCodeText(0, 0, '', { fixedWidth: 300, fixedHeight: 18, halign: 'left' }),
+            text: new BBCodeText(this, 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, }
         })
         .setInteractive().setText((Math.ceil(turret.y / 64)).toString())
@@ -1058,12 +1058,12 @@ export class PageScene extends Phaser.Scene {
                     if(isNaN(text)){ // If not a number
                         if(text.substring(0,6) == 'Above ')
                         {   
-                            var setAboveUnitName = text.substring(7);
+                            //var setAboveUnitName = text.substring(7);
                             textObject.text = text;
                         }
                         else if(text.substring(0,6) == 'Below ')
                         {
-                            var setBelowUnitName = text.substring(7);
+                            //var setBelowUnitName = text.substring(7);
                             textObject.text = text;
                         }
                         else{
