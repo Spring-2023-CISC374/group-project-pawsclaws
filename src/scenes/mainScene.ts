@@ -276,7 +276,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 			})
 			tower_title.setVisible(false)
 			this.turrets.clear(true, true)
-			this.bullets.clear(true, true)
+			this.projectiles.clear(true, true)
 			this.waveNumber = 0
 			this.money = 300
 			this.nextEnemy = 0
