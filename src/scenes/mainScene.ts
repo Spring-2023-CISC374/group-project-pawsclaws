@@ -6,6 +6,12 @@ import eventsCenter from '../EventsCenter';
 import { Enemy } from '../componets/enemy';
 import { Turret } from '../componets/units';
 import { Projectile } from '../componets/attack';
+import buff_doge from '/assets/buff_doge.png';
+import cowboy_cat from '/assets/cowboy_cat.png';
+import rootbeer_cat from '/assets/rootbeer_cat.png';
+import bulldog from '/assets/bulldog.png';
+import doguari from '/assets/dogurai.png';
+import reaper_cat from '/assets/reaper_cat.png';
 
 const BULLET_DAMAGE = 50;
 const NEXT_BALLOON_SPAWN = 650; //in milliseconds
@@ -53,15 +59,17 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json');
 		this.load.atlas('balloons', 'assets/balloonspritesheet.png', 'assets/balloons.json');
 		this.load.atlas('projectile','assets/spritesheetprojectiles.png', 'assets/projectiles.json');
-		this.load.image('cowboy', 'assets/cowboy_cat.png');
-		this.load.image('buff', 'assets/buff_doge.png');
-		this.load.image('bigm','assets/rootbeer_cat.png');
-        this.load.image('bulldog','assets/bulldog.png');
-		this.load.image('dogurai', 'assets/dogurai.png');
-		this.load.image('reaper', 'assets/reaper_cat.png');
+
 		this.load.image('mark', 'assets/marks.png');
-		this.load.image('bar', 'assets/menu.PNG')
-		this.load.audio("pop", ["assets/Pops.mp3"])
+		this.load.image('bar', 'assets/menu.PNG');
+		this.load.audio("pop", ["assets/Pops.mp3"]);
+
+		this.load.image('cowboy', cowboy_cat);
+		this.load.image('buff', buff_doge);
+		this.load.image('bigm', rootbeer_cat);
+        this.load.image('bulldog', bulldog);
+		this.load.image('dogurai', doguari);
+		this.load.image('reaper', reaper_cat);
 	}
   
 	create()  {
@@ -173,7 +181,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		})
 		eventsCenter.on("checkIfNameExists", (name: any) => {
 			var result = this.turrets.getChildren().find(v => v.name === name);
-			console.log(result.name)
+			console.log(result)
 		})
 
 		var popSound = this.sound.add("pop")

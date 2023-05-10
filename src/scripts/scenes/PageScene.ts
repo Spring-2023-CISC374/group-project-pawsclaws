@@ -38,13 +38,12 @@ export class PageScene extends Phaser.Scene {
 
     preload ()
     {
-       this.load.html("UnitEditor", buff_doge)
-       this.load.image('buff', cowboy_cat)
-       this.load.image('cowboy', rootbeer_cat)
-       this.load.image('bigm', rootbeer_cat)
-       this.load.image('bulldog', bulldog)
-       this.load.image('dogurai', doguari)
-       this.load.image('reaper', reaper_cat)
+       this.load.image('buffs', buff_doge)
+       this.load.image('cowboys', cowboy_cat)
+       this.load.image('bigms', rootbeer_cat)
+       this.load.image('bulldogs', bulldog)
+       this.load.image('dogurais', doguari)
+       this.load.image('reapers', reaper_cat)
     }
 
     create ()
