@@ -31,7 +31,7 @@ export class GameOverScene extends Phaser.Scene {
 
     create ()
     {
-
+        
         this.gameOverSizer = this.rexUI.add.sizer(385, 300, 700, 430, {
             orientation: 'y',
             space:{top: 40}
@@ -105,6 +105,8 @@ export class GameOverScene extends Phaser.Scene {
         this.gameOverSizer.add(resetButton, {
             padding: {top: 20}
         }).layout()
+
+        this.rexUI.fadeIn(this.gameOverSizer, 1500)
     }
 
     update () 
