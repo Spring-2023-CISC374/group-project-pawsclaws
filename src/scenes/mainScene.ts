@@ -192,9 +192,9 @@ export default class HelloWorldScene extends Phaser.Scene {
 				}
 			}
 		})
-		eventsCenter.on("checkIfNameExists", (name: any) => {
-			var result = this.turrets.getChildren().find(v => v.name === name);
-		})
+		// eventsCenter.on("checkIfNameExists", (name: any) => {
+		// 	var result = this.turrets.getChildren().find(v => v.name === name);
+		// })
 
 		var popSound = this.sound.add("pop")
 		eventsCenter.on("popsound", () => {

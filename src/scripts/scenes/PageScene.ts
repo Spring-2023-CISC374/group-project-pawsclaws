@@ -975,6 +975,7 @@ export class PageScene extends Phaser.Scene {
                         name = text;
                         turret.name = text
                         textObject.text = text;
+                        nameField.setText(text)
                         title.text = "Unit #" + unitNumber + ": " + name.substring(0,8) + " (" + unitType + ")";
                         turret.name(textObject.text);
                         title.layout();
