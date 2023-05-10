@@ -12,7 +12,7 @@ import rootbeer_cat from '/assets/rootbeer_cat.png';
 import bulldog from '/assets/bulldog.png';
 import doguari from '/assets/dogurai.png';
 import reaper_cat from '/assets/reaper_cat.png';
-import background from 'assets/map.png';
+import background from '/assets/map.png';
 
 const BULLET_DAMAGE = 50;
 const NEXT_BALLOON_SPAWN = 650; //in milliseconds
