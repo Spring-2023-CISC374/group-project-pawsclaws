@@ -53,15 +53,15 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.atlas('sprites', 'assets/redballoon_up.png', 'assets/spritesheet.json');
 		this.load.atlas('balloons', 'assets/balloonspritesheet.png', 'assets/balloons.json');
 		this.load.atlas('projectile','assets/spritesheetprojectiles.png', 'assets/projectiles.json');
-		this.load.image('cowboy', '/assets/cowboy_cat.png');
-		this.load.image('buff', '/assets/buff_doge.png');
-		this.load.image('bigm','/assets/rootbeer_cat.png');
-        this.load.image('bulldog','/assets/bulldog.png');
-		this.load.image('dogurai', '/assets/dogurai.png');
-		this.load.image('reaper', '/assets/reaper_cat.png');
-		this.load.image('mark', '/assets/marks.png');
-		this.load.image('bar', '/assets/menu.PNG')
-		this.load.audio("pop", ["/assets/Pops.mp3"])
+		this.load.image('cowboy', 'assets/cowboy_cat.png');
+		this.load.image('buff', 'assets/buff_doge.png');
+		this.load.image('bigm','assets/rootbeer_cat.png');
+        this.load.image('bulldog','assets/bulldog.png');
+		this.load.image('dogurai', 'assets/dogurai.png');
+		this.load.image('reaper', 'assets/reaper_cat.png');
+		this.load.image('mark', 'assets/marks.png');
+		this.load.image('bar', 'assets/menu.PNG')
+		this.load.audio("pop", ["assets/Pops.mp3"])
 	}
   
 	create()  {
@@ -182,9 +182,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 				popSound.play()
 			}, 100)
 		})
-		
-		console.log(this.textures)
-
 	}
 
 	update(): void {  
@@ -262,10 +259,11 @@ export default class HelloWorldScene extends Phaser.Scene {
 	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group, texture: string, textureP: string): void {
     	const i = Math.floor(pointer.y/64);
     	const j = Math.floor(pointer.x/64);
+		console.log(texture)
 		// I need to make something that specifies the thing that I need
     	if(this.canPlace(i, j)) {
 				// if the texutre passed is doge, scale it down because the original is massive and covers the screen
-				if(texture == "cowboy"){
+				if(texture == "cowboy" || texture == "cowboys"){
 					// I thought it made sense for the projectiles to go within the if and or 
 					// into another if statement spritesheetprojectile.json
 					if (this.money >= 150) {
@@ -274,7 +272,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 						return 
 					}
 				}
-				if (texture == "buff") {
+				if (texture == "buff" || texture == "buffs") {
 					
 					if (this.money >= 175) {
 						this.money -= 175
@@ -283,7 +281,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 					}
 					
 				}
-				if (texture == "bigm") {
+				if (texture == "bigm" || texture == "bigms") {
 					
 					if (this.money >= 225) {
 						this.money -= 225
@@ -292,7 +290,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 					}
 					
 				}
-				if (texture == "bulldog") {
+				if (texture == "bulldog" || texture == "bulldogs") {
 					
 					if (this.money >= 275) {
 						this.money -= 275
@@ -301,7 +299,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 					}
 					
 				}
-				if (texture == "reaper") {					
+				if (texture == "reaper" || texture == "reapers") {					
 					if (this.money >= 350) {
 						this.money -= 350
 					} else {
@@ -309,7 +307,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 					}
 					
 				}
-				if (texture == "dogurai") {
+				if (texture == "dogurai" || texture == "dogurais") {
 					if (this.money >= 375) {
 						this.money -= 375
 					} else {
