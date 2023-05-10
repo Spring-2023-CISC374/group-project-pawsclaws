@@ -82,10 +82,7 @@ export default class HelloWorldScene extends Phaser.Scene {
   
 	create()  {
 		this.scene.launch("PageScene")
-		//this.map = []
-		console.log(this.map)
 		this.map = JSON.parse(JSON.stringify(map))
-		console.log(this.map)
 
 		var background = this.add.image(415, 320, 'background').setScale(0.89)
 		this.add.image(380, 760, 'bar')
@@ -116,7 +113,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 
   
 		this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true, repeat: 0 });
-		// console.log(this.enemies)
 
 		// Units
 		this.turrets = this.add.group({ classType: Turret, runChildUpdate: true });
@@ -154,7 +150,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 		var instructionsButton = this.add.image(700,665, 'mark')
         instructionsButton.setInteractive()
         instructionsButton.on('pointerdown',  () => {
-			console.log("clicked button")
             this.scene.launch("InstructionsScene")
         }
         )
@@ -199,7 +194,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 		})
 		eventsCenter.on("checkIfNameExists", (name: any) => {
 			var result = this.turrets.getChildren().find(v => v.name === name);
-			console.log(result)
 		})
 
 		var popSound = this.sound.add("pop")
@@ -222,7 +216,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 		}).layout().setVisible(false).setDepth(2);
 
 		eventsCenter.on("selected_tower", (turret: Turret, turrets: Phaser.GameObjects.Group) => {
-			console.log(turret.name)
 			if(!(turret.range_circle.visible)){
 				tower_title.x = turret.x
 				tower_title.y = turret.y - 60
@@ -259,7 +252,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.gameOver = false
 		eventsCenter.on("GameOver", () => {
 			if(!this.gameOver){
-				console.log("yeah boi")
 				this.gameOver = true
 				this.scene.pause("HelloWorldScene")
 				this.scene.pause("PageScene")
@@ -294,6 +286,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		if(bestRound !== null){
 			this.bestRound = bestRound
 		}
+		else{bestRound = "0"}
 		if(this.waveNumber > (this.bestRound as unknown as number)){
 			localStorage.setItem("highscore", this.waveNumber as unknown as string)
 		}
@@ -370,7 +363,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group, texture: string, textureP: string): void {
     	const i = Math.floor(pointer.y/64);
     	const j = Math.floor(pointer.x/64);
-		console.log(texture)
 		// I need to make something that specifies the thing that I need
     	if(this.canPlace(i, j)) {
 				// if the texutre passed is doge, scale it down because the original is massive and covers the screen
@@ -427,7 +419,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 					
 				}
 				const turret = turrets.get()
-				console.log("texture of tower: ",texture)
 				turret.setTexture(texture)
 				turret.setScale(0.04)
             	turret.setActive(true);
@@ -438,12 +429,10 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 				//added to update the map in mainScene
 				this.map[i][j] = 1
-				//console.log("about to emit tower success")
 				eventsCenter.emit("tower-placed-successfully", turret, texture)
 				
 				turret.setInteractive()
 				turret.on("pointerdown", () => {
-					console.log("tower selected")
 					eventsCenter.emit("selected_tower", turret, turrets)
 				})
         	}

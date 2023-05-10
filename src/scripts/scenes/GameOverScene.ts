@@ -98,7 +98,6 @@ export class GameOverScene extends Phaser.Scene {
 
         var resetButton = this.add.image(0,0, "reset").setScale(0.5)
         resetButton.setInteractive().on('pointerdown',  () => {
-			console.log("clicked button")
             eventsCenter.emit("Restart")
             //this.scene.sleep("InstructionsScene")
         }

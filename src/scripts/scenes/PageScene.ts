@@ -92,8 +92,6 @@ export class PageScene extends Phaser.Scene {
         this.placedTowers = this.physics.add.group({ runChildUpdate: true });
 
         eventsCenter.on("tower-placed-successfully", (turret: any, texture: any) => {
-            console.log("in event for edit menu")
-            console.log(turret)
             this.AddEditMenuChild(this, turret, texture)
             this.placedTowers.add(turret)
         })
@@ -158,7 +156,7 @@ export class PageScene extends Phaser.Scene {
             background_cowboys.setVisible(true)
 
             // make the draggable cowboys smaller so its easier to place
-            cowboys.setScale(0.04).setDepth(1)
+            cowboys.setScale(0.04).setDepth(5)
             // set the draggable cowboys x and y to wherever the mouse is
             cowboys.x = pointer.x
             cowboys.y = pointer.y 
@@ -1074,7 +1072,6 @@ export class PageScene extends Phaser.Scene {
                 classType = button.text;
                 classLabel.text = 'Class: ' + classType;
                 turret.setClassTypes(classType)
-                console.log(classType);
             })
         
         // ADDING ALL COMPONENTS TO FOLDER SIZER
