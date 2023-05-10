@@ -3,6 +3,12 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import { TabPages, Sizer, GridSizer, BBCodeText} from 'phaser3-rex-plugins/templates/ui/ui-components'
 import Drag from 'phaser3-rex-plugins/plugins/drag.js';
 import eventsCenter from "../../EventsCenter";
+import buff_doge from '/assets/buff_doge.png';
+import cowboy_cat from '/assets/cowboy_cat.png';
+import rootbeer_cat from '/assets/rootbeer_cat.png';
+import bulldog from '/assets/bulldog.png';
+import doguari from '/assets/dogurai.png';
+import reaper_cat from '/assets/reaper_cat.png';
 
 const COLOR_PRIMARY = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
@@ -32,13 +38,13 @@ export class PageScene extends Phaser.Scene {
 
     preload ()
     {
-       this.load.html("UnitEditor", "assets/html/UnitEditor.html")
-       this.load.image('buffs', '/assets/buff_doge.png')
-       this.load.image('cowboys', '/assets/cowboy_cat.png')
-       this.load.image('bigms','/assets/rootbeer_cat.png')
-       this.load.image('bulldogs','/assets/bulldog.png')
-       this.load.image('dogurais', '/assets/dogurai.png')
-       this.load.image('reapers', '/assets/reaper_cat.png')
+       this.load.html("UnitEditor", buff_doge)
+       this.load.image('buff', cowboy_cat)
+       this.load.image('cowboy', rootbeer_cat)
+       this.load.image('bigm', rootbeer_cat)
+       this.load.image('bulldog', bulldog)
+       this.load.image('dogurai', doguari)
+       this.load.image('reaper', reaper_cat)
     }
 
     create ()
@@ -960,7 +966,7 @@ export class PageScene extends Phaser.Scene {
         var nameField = this.rexUI.add.label({
             orientation: 'x',
             background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
-            text: this.rexUI.add.BBCodeText(0, 0,'', { fixedWidth: 300, fixedHeight: 18, halign: 'left' }),
+            text: this.rexUI.add.BBCodeText(0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
             space: { top: 5, bottom: 5, left: 5, right: 5, }
         })
             .setInteractive()
@@ -969,8 +975,8 @@ export class PageScene extends Phaser.Scene {
                     onTextChanged: function(textObject: any, text: any) {
                         name = text;
                         textObject.text = text;
-                        console.log(name);
                         title.text = "Unit #" + unitNumber + ": " + name.substring(0,8) + " (" + unitType + ")";
+                        turret.name(textObject.text);
                         title.layout();
                         editor.layout();
                     }
@@ -1024,15 +1030,15 @@ export class PageScene extends Phaser.Scene {
             text: this.rexUI.add.BBCodeText(0, 0, '', { fixedWidth: 300, fixedHeight: 18, halign: 'left' }),
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, },
         })
-        .setInteractive().setText(turret.x)
+        .setInteractive().setText((Math.ceil(turret.x / 64)).toString())
         .on('pointerdown', function () {
             var config = {
                 onTextChanged: function(textObject: any, text: any) {
-                    var newCord = Math.floor((text as unknown as number) / 64)
+                    var newCord = Math.floor((text as unknown as number)-1)
                     if(newCord < 12 && newCord >= 0) {
                         eventsCenter.emit("changeHorizontally", [turret, newCord])
                     }
-                    textObject.text = turret.x
+                    textObject.text = Math.ceil(turret.x / 64)
                 }
             }
             scene.rexUI.edit(horizField.getElement('text'), config);
@@ -1046,15 +1052,32 @@ export class PageScene extends Phaser.Scene {
             text: this.rexUI.add.BBCodeText(0, 0, '', { fixedWidth: 300, fixedHeight: 18, halign: 'left' }),
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, }
         })
-        .setInteractive().setText(turret.y)
+        .setInteractive().setText((Math.ceil(turret.y / 64)).toString())
         .on('pointerdown', function () {
             var config = {
                 onTextChanged: function(textObject: any, text: any) {
-                    var newCord = Math.floor((text as unknown as number) / 64)
-                    if(newCord < 8 && newCord >= 0) {
-                        eventsCenter.emit("changeVertically", [turret, newCord])
+                    if(isNaN(text)){ // If not a number
+                        if(text.substring(0,6) == 'Above ')
+                        {   
+                            var setAboveUnitName = text.substring(7);
+                            textObject.text = text;
+                        }
+                        else if(text.substring(0,6) == 'Below ')
+                        {
+                            var setBelowUnitName = text.substring(7);
+                            textObject.text = text;
+                        }
+                        else{
+                            textObject.text = Math.ceil(turret.y / 64);
+                        }
                     }
-                    textObject.text = turret.y
+                    else {
+                        var newCord = Math.floor((text as unknown as number)-1)
+                        if(newCord < 8 && newCord >= 0) {
+                            eventsCenter.emit("changeVertically", [turret, newCord])
+                        }
+                        textObject.text = Math.ceil(turret.y / 64);
+                    }
                 }
             }
             scene.rexUI.edit(vertField.getElement('text'),config);
