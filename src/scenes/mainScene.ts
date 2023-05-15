@@ -243,8 +243,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 				if(tower_title.y < 0) {
 					tower_title.y = turret.y + 60
 				}
-				if(turret.name){
-					tower_title.setText(turret.name.substring(0,8)).setVisible(true)
+				if(turret.nameTurret){
+					tower_title.setText(turret.nameTurret.substring(0,8)).setVisible(true)
 				}
 				
 				turret.range_circle.setRadius(turret.range)
