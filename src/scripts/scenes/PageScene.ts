@@ -9,6 +9,13 @@ import rootbeer_cat from '/assets/rootbeer_cat.png';
 import bulldog from '/assets/bulldog.png';
 import doguari from '/assets/dogurai.png';
 import reaper_cat from '/assets/reaper_cat.png';
+import lucky_cat from '/assets/lucky.png';
+import king from '/assets/benji.png';
+import bugs from '/assets/bunny.png';
+import foxy from '/assets/foxy.png';
+import bango from '/assets/bango_croc.png';
+import OG from '/assets/OG.png'
+
 
 const COLOR_PRIMARY = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
@@ -44,6 +51,12 @@ export class PageScene extends Phaser.Scene {
        this.load.image('bulldogs', bulldog)
        this.load.image('dogurais', doguari)
        this.load.image('reapers', reaper_cat)
+       this.load.image('luckys', lucky_cat)
+       this.load.image('kings',king)
+       this.load.image('bunnys', bugs)
+       this.load.image('foxes', foxy)
+       this.load.image('crocs', bango)
+       this.load.image('OGs',OG)
     }
 
     create ()
@@ -113,30 +126,60 @@ export class PageScene extends Phaser.Scene {
         var text4 = this.add.text(0,0, 'cost: 275')
         var text5 = this.add.text(0,0, 'cost: 350')
         var text6 = this.add.text(0,0, 'cost: 375')
+        var text7 = this.add.text(0,0, 'cost: 450')
+        var text8 = this.add.text(0,0, 'cost: 475')
+        var text9 = this.add.text(0,0, 'cost: 525')
+        var text10 = this.add.text(0,0, 'cost: 600')
+        var text11 = this.add.text(0,0, 'cost: 650')
+        var text12 = this.add.text(0,0, 'cost: 1000')
         var cowboys = this.add.image(0,0, 'cowboys').setScale(0.1)
         var buffs = this.add.image(0,0, 'buffs').setScale(0.1)
         var bigms = this.add.image(0,0,'bigms').setScale(0.1)
         var bulldogs = this.add.image(0,0,'bulldogs').setScale(0.1)
         var reapers = this.add.image(0,0,'reapers').setScale(0.1)
         var dogurais = this.add.image(0,0,'dogurais').setScale(0.1)
+        var luckys = this.add.image(0,0, 'luckys').setScale(0.1)
+        var kings = this.add.image(0,0, 'kings').setScale(0.1)
+        var bunnys = this.add.image(0,0,'bunnys').setScale(0.1)
+        var foxes = this.add.image(0,0,'foxes').setScale(0.1)
+        var crocs = this.add.image(0,0,'crocs').setScale(0.1)
+        var OGs = this.add.image(0,0,'OGs').setScale(0.1)
         var background_cowboys = this.add.image(cowboys.x,cowboys.y, 'cowboys').setScale(0.1).setVisible(false)
         var background_buffs = this.add.image(buffs.x,buffs.y, 'buffs').setScale(0.1).setVisible(false)
         var background_bigms = this.add.image(bigms.x,bigms.y,'bigms').setScale(0.1).setVisible(false)
         var background_bulldogs = this.add.image(bulldogs.x,bulldogs.y,'bulldogs').setScale(0.1).setVisible(false)
         var background_reapers = this.add.image(reapers.x,reapers.y,'reapers').setScale(0.1).setVisible(false)
         var background_dogurais = this.add.image(dogurais.x,dogurais.y,'dogurais').setScale(0.1).setVisible(false)
+        var background_luckys = this.add.image(luckys.x,luckys.y, 'luckys').setScale(0.1).setVisible(false)
+        var background_kings = this.add.image(kings.x,kings.y,'kings').setScale(0.1).setVisible(false)
+        var background_bunnys = this.add.image(bunnys.x,bunnys.y, 'bunnys').setScale(0.1).setVisible(false)
+        var background_foxes = this.add.image(foxes.x,foxes.y,'foxes').setScale(0.1).setVisible(false)
+        var background_crocs = this.add.image(crocs.x,crocs.y,'crocs').setScale(0.1).setVisible(false)
+        var background_OGs = this.add.image(OGs.x,OGs.y,'OGs').setScale(0.1).setVisible(false)
         new Drag(cowboys)
         new Drag(buffs)
         new Drag(bigms)
         new Drag(bulldogs)
         new Drag(reapers)
         new Drag(dogurais)
+        new Drag(luckys)
+        new Drag(kings)
+        new Drag(bunnys)
+        new Drag(foxes)
+        new Drag(crocs)
+        new Drag(OGs)
         cowboys.setInteractive()
         buffs.setInteractive()
         bigms.setInteractive()
         bulldogs.setInteractive()
         reapers.setInteractive()
         dogurais.setInteractive()
+        luckys.setInteractive()
+        kings.setInteractive()
+        bunnys.setInteractive()
+        foxes.setInteractive()
+        crocs.setInteractive()
+        OGs.setInteractive() 
 
         // Long Range
         // var range_circle1 = this.add.circle(0, 0, 200, 0xff0000, 0.2).setVisible(false).setDepth(-1)
@@ -191,7 +234,7 @@ export class PageScene extends Phaser.Scene {
             background_cowboys.setVisible(false)
             
             //"cowboys"
-            eventsCenter.emit("tower-place?", "cowboys", "bigbill")
+            eventsCenter.emit("tower-place?", "cowboys", "bill")
         })
 
         // buffs Doge Unit
@@ -443,6 +486,310 @@ export class PageScene extends Phaser.Scene {
         })
 
 
+        // New Units Begin Here 
+
+        luckys.on('dragstart', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            range_circle2.setVisible(true)
+
+            // make the background cowboys appear
+            background_luckys.x = luckys.x
+            background_luckys.y = luckys.y
+            background_luckys.setVisible(true)
+
+            // make the draggable buffs smaller so its easier to place
+            luckys.setScale(0.04).setDepth(1)
+            // set the draggable buffs x and y to wherever the mouse is
+            luckys.x = pointer.x
+            luckys.y = pointer.y 
+        })
+        // updates the buffss x and y when being dragged
+        luckys.on('drag', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle2.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle2.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            luckys.x = pointer.x
+            luckys.y = pointer.y 
+        })
+        luckys.on('dragend', () => {
+            range_circle2.setVisible(false)
+
+            // set the scale of the buffs back to 0.1 for the shop
+            // set the buffs x and y to the background buffs x and y
+            luckys.setScale(0.1).setDepth(0)
+            luckys.x = background_luckys.x
+            luckys.y = background_luckys.y
+
+            // make the background buffs disappear
+            background_luckys.setVisible(false)
+
+            //"still needs a attack"
+            eventsCenter.emit("tower-place?", "luckys", "coin")
+        })
+
+
+        kings.on('dragstart', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            range_circle2.setVisible(true)
+
+            // make the background cowboys appear
+            background_kings.x = kings.x
+            background_kings.y = kings.y
+            background_kings.setVisible(true)
+
+            // make the draggable buffs smaller so its easier to place
+            kings.setScale(0.04).setDepth(1)
+            // set the draggable buffs x and y to wherever the mouse is
+            kings.x = pointer.x
+            kings.y = pointer.y 
+        })
+        // updates the buffss x and y when being dragged
+        kings.on('drag', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle2.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle2.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            kings.x = pointer.x
+            kings.y = pointer.y 
+        })
+        kings.on('dragend', () => {
+            range_circle2.setVisible(false)
+
+            // set the scale of the buffs back to 0.1 for the shop
+            // set the buffs x and y to the background buffs x and y
+            kings.setScale(0.1).setDepth(0)
+            kings.x = background_kings.x
+            kings.y = background_kings.y
+
+            // make the background buffs disappear
+            background_kings.setVisible(false)
+
+            //"still needs a attack"
+            eventsCenter.emit("tower-place?", "kings", "diamon")
+        })
+
+        // NEXT ROW OF NEW UNITS
+
+        bunnys.on('dragstart', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            range_circle2.setVisible(true)
+
+            // make the background cowboys appear
+            background_bunnys.x = bunnys.x
+            background_bunnys.y = bunnys.y
+            background_bunnys.setVisible(true)
+
+            // make the draggable buffs smaller so its easier to place
+            bunnys.setScale(0.04).setDepth(1)
+            // set the draggable buffs x and y to wherever the mouse is
+            bunnys.x = pointer.x
+            bunnys.y = pointer.y 
+        })
+        // updates the buffss x and y when being dragged
+        bunnys.on('drag', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle2.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle2.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            bunnys.x = pointer.x
+            bunnys.y = pointer.y 
+        })
+        bunnys.on('dragend', () => {
+            range_circle2.setVisible(false)
+
+            // set the scale of the buffs back to 0.1 for the shop
+            // set the buffs x and y to the background buffs x and y
+            bunnys.setScale(0.1).setDepth(0)
+            bunnys.x = background_bunnys.x
+            bunnys.y = background_bunnys.y
+
+            // make the background buffs disappear
+            background_bunnys.setVisible(false)
+
+            //"still needs a attack"
+            eventsCenter.emit("tower-place?", "bunnys", "carrot")
+        })
+
+
+        foxes.on('dragstart', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            range_circle2.setVisible(true)
+
+            // make the background cowboys appear
+            background_foxes.x = foxes.x
+            background_foxes.y = foxes.y
+            background_foxes.setVisible(true)
+
+            // make the draggable buffs smaller so its easier to place
+            foxes.setScale(0.04).setDepth(1)
+            // set the draggable buffs x and y to wherever the mouse is
+            foxes.x = pointer.x
+            foxes.y = pointer.y 
+        })
+        // updates the buffss x and y when being dragged
+        foxes.on('drag', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle2.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle2.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            foxes.x = pointer.x
+            foxes.y = pointer.y 
+        })
+        foxes.on('dragend', () => {
+            range_circle2.setVisible(false)
+
+            // set the scale of the buffs back to 0.1 for the shop
+            // set the buffs x and y to the background buffs x and y
+            foxes.setScale(0.1).setDepth(0)
+            foxes.x = background_foxes.x
+            foxes.y = background_foxes.y
+
+            // make the background buffs disappear
+            background_foxes.setVisible(false)
+
+            //"still needs a attack"
+            eventsCenter.emit("tower-place?", "foxes", "clover")
+        })
+
+
+        // FINAL ROW OF NEW UNITS
+
+        crocs.on('dragstart', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            range_circle2.setVisible(true)
+
+            // make the background cowboys appear
+            background_crocs.x = crocs.x
+            background_crocs.y = crocs.y
+            background_crocs.setVisible(true)
+
+            // make the draggable buffs smaller so its easier to place
+            crocs.setScale(0.04).setDepth(1)
+            // set the draggable buffs x and y to wherever the mouse is
+            crocs.x = pointer.x
+            crocs.y = pointer.y 
+        })
+        // updates the buffss x and y when being dragged
+        crocs.on('drag', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle2.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle2.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            crocs.x = pointer.x
+            crocs.y = pointer.y 
+        })
+        crocs.on('dragend', () => {
+            range_circle2.setVisible(false)
+
+            // set the scale of the buffs back to 0.1 for the shop
+            // set the buffs x and y to the background buffs x and y
+            crocs.setScale(0.1).setDepth(0)
+            crocs.x = background_crocs.x
+            crocs.y = background_crocs.y
+
+            // make the background buffs disappear
+            background_crocs.setVisible(false)
+
+            //"still needs a attack"
+            eventsCenter.emit("tower-place?", "crocs", "notes")
+        })
+
+
+        OGs.on('dragstart', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            range_circle2.setVisible(true)
+
+            // make the background cowboys appear
+            background_OGs.x = OGs.x
+            background_OGs.y = OGs.y
+            background_OGs.setVisible(true)
+
+            // make the draggable buffs smaller so its easier to place
+            OGs.setScale(0.04).setDepth(1)
+            // set the draggable buffs x and y to wherever the mouse is
+            OGs.x = pointer.x
+            OGs.y = pointer.y 
+        })
+        // updates the buffss x and y when being dragged
+        OGs.on('drag', (pointer: any) => {
+            range_circle2.x = pointer.x
+            range_circle2.y = pointer.y
+            eventsCenter.emit("canplace", pointer)
+            eventsCenter.on("returnplace", (bool: any) => {
+                if(!bool){
+                    range_circle2.setFillStyle(0xff0000, 0.2)
+                }
+                else{
+                    range_circle2.setFillStyle(0xDCDCDC, 0.2)
+                }
+            })
+
+            OGs.x = pointer.x
+            OGs.y = pointer.y 
+        })
+        OGs.on('dragend', () => {
+            range_circle2.setVisible(false)
+
+            // set the scale of the buffs back to 0.1 for the shop
+            // set the buffs x and y to the background buffs x and y
+            OGs.setScale(0.1).setDepth(0)
+            OGs.x = background_OGs.x
+            OGs.y = background_OGs.y
+
+            // make the background buffs disappear
+            background_OGs.setVisible(false)
+
+            //"still needs a attack"
+            eventsCenter.emit("tower-place?", "OGs", "catus")
+        })
+
         var cowboys_cat_title = this.rexUI.add.sizer({
             width: 200,
             orientation: 'x'
@@ -666,7 +1013,7 @@ export class PageScene extends Phaser.Scene {
             width: 200,
             orientation: 'x'
         });
-        dogurais_title.add(this.CreateLabel(this, 'dogurais:'));
+        dogurais_title.add(this.CreateLabel(this, 'Dogurai:'));
         dogurais_title.add(this.rexUI.add.buttons({
             x: 400, y: 400,
             orientation: 'x',
@@ -705,6 +1052,282 @@ export class PageScene extends Phaser.Scene {
             orientation: 0,
             snapshotPadding: 3,
         }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+
+        // NEW TITLES
+
+        var luckys_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        luckys_title.add(this.CreateLabel(this, 'Lucky Cat:'));
+        luckys_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any) {
+            button.scaleYoyo(500, 1.6);
+            luckys_card.toggleFace();
+        }));
+
+        var luckys_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);
+        luckys_buy.add(text7).layout();
+        luckys_buy.add(luckys).layout();
+
+        var luckys_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        luckys_info.add(this.add.text(0,0,"\nAttack Speed: 6/10\n\nAttack Damage: 6/10\n\nRange: 7/10").setFontSize(17))
+
+        var luckys_card = this.rexUI.add.perspectiveCard({
+            front: luckys_buy,
+            back: luckys_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+        /// KINGS
+
+        var kings_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        kings_title.add(this.CreateLabel(this, 'Benji Da King:'));
+        kings_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any) {
+            button.scaleYoyo(500, 1.6);
+            kings_card.toggleFace();
+        }));
+
+        var kings_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);
+        kings_buy.add(text8).layout();
+        kings_buy.add(kings).layout();
+
+        var kings_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        kings_info.add(this.add.text(0,0,"\nAttack Speed: 8/10\n\nAttack Damage: 8/10\n\nRange: 4/10").setFontSize(17))
+
+        var kings_card = this.rexUI.add.perspectiveCard({
+            front: kings_buy,
+            back: kings_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+
+        // Bunny
+        var bunnys_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        bunnys_title.add(this.CreateLabel(this, 'Snow Bunny:'));
+        bunnys_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any) {
+            button.scaleYoyo(500, 1.6);
+            bunnys_card.toggleFace();
+        }));
+
+        var bunnys_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);
+        bunnys_buy.add(text9).layout();
+        bunnys_buy.add(bunnys).layout();
+
+        var bunnys_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        bunnys_info.add(this.add.text(0,0,"\nAttack Speed: 8/10\n\nAttack Damage: 4/10\n\nRange: 6/10").setFontSize(17))
+
+        var bunnys_card = this.rexUI.add.perspectiveCard({
+            front: bunnys_buy,
+            back: bunnys_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+        // Fox
+        var foxes_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        foxes_title.add(this.CreateLabel(this, 'Good Omen Foxy:'));
+        foxes_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any) {
+            button.scaleYoyo(500, 1.6);
+            foxes_card.toggleFace();
+        }));
+
+        var foxes_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);
+        foxes_buy.add(text10).layout();
+        foxes_buy.add(foxes).layout();
+
+        var foxes_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        foxes_info.add(this.add.text(0,0,"\nAttack Speed: 6/10\n\nAttack Damage: 10/10\n\nRange: 4/10").setFontSize(17))
+
+        var foxes_card = this.rexUI.add.perspectiveCard({
+            front: foxes_buy,
+            back: foxes_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+
+        // Croc
+        var crocs_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        crocs_title.add(this.CreateLabel(this, 'Bango Croc:'));
+        crocs_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any) {
+            button.scaleYoyo(500, 1.6);
+            crocs_card.toggleFace();
+        }));
+
+        var crocs_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);
+        crocs_buy.add(text11).layout();
+        crocs_buy.add(crocs).layout();
+
+        var crocs_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        crocs_info.add(this.add.text(0,0,"\nAttack Speed: 8/10\n\nAttack Damage: 6/10\n\nRange: 6/10").setFontSize(17))
+
+        var crocs_card = this.rexUI.add.perspectiveCard({
+            front: crocs_buy,
+            back: crocs_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
+
+
+        // OG
+        var OGs_title = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'x'
+        });
+        OGs_title.add(this.CreateLabel(this, 'The Legend:'));
+        OGs_title.add(this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, '↻', 22).setOrigin(0.5, 1),
+            ],
+
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+        .on('button.click', function (button: any) {
+            button.scaleYoyo(500, 1.6);
+            OGs_card.toggleFace();
+        }));
+
+        var OGs_buy = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        }).setInnerPadding(8);
+        OGs_buy.add(text12).layout();
+        OGs_buy.add(OGs).layout();
+
+        var OGs_info = this.rexUI.add.sizer({
+            width: 200,
+            orientation: 'y'
+        });
+        OGs_info.add(this.add.text(0,0,"\nAttack Speed: 8/10\n\nAttack Damage: 6/10\n\nRange: 6/10").setFontSize(17))
+
+        var OGs_card = this.rexUI.add.perspectiveCard({
+            front: OGs_buy,
+            back: OGs_info,
+            orientation: 0,
+            snapshotPadding: 3,
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(2, COLOR_LIGHT));
         
 
         //this.buyMenuSizer.add(this.CreateLabel(this, 'cowboys Cat:'), 0, 0, 'left', 0, true).layout();
@@ -720,6 +1343,19 @@ export class PageScene extends Phaser.Scene {
         this.buyMenuSizer.add(reapers_card, 0, 5, 'center', 0, true).layout();
         this.buyMenuSizer.add(dogurais_title, 1, 4, 'center', 0, true).layout();
         this.buyMenuSizer.add(dogurais_card, 1, 5, 'center', 0, true).layout();
+        // New Units
+        this.buyMenuSizer.add(luckys_title, 0, 6, 'center', 0, true).layout();
+        this.buyMenuSizer.add(luckys_card, 0, 7, 'center', 0, true).layout();
+        this.buyMenuSizer.add(kings_title, 1, 6, 'center', 0, true).layout();
+        this.buyMenuSizer.add(kings_card, 1, 7, 'center', 0, true).layout();
+        this.buyMenuSizer.add(bunnys_title, 0, 8, 'center', 0, true).layout();
+        this.buyMenuSizer.add(bunnys_card, 0, 9, 'center', 0, true).layout();
+        this.buyMenuSizer.add(foxes_title, 1, 8, 'center', 0, true).layout();
+        this.buyMenuSizer.add(foxes_card, 1, 9, 'center', 0, true).layout();
+        this.buyMenuSizer.add(crocs_title, 0, 10, 'center', 0, true).layout();
+        this.buyMenuSizer.add(crocs_card, 0, 11, 'center', 0, true).layout();
+        this.buyMenuSizer.add(OGs_title, 1, 10, 'center', 0, true).layout();
+        this.buyMenuSizer.add(OGs_card, 1, 11, 'center', 0, true).layout();
         this.buyMenuSizer.layout();
     }
 
@@ -1277,7 +1913,7 @@ export class PageScene extends Phaser.Scene {
 
         this.buyMenuSizer = this.rexUI.add.gridSizer({
             column: 2,
-            row: 10,
+            row: 15,
 
             columnProportions: 1,
         })
