@@ -16,6 +16,7 @@ export default class startScene extends Phaser.Scene {
         startButton.on('pointerdown', () => {
             this.scene.start("helloworldscene")
             this.scene.start("PageScene")
+            this.scene.launch("InstructionsScene")
         })
     }
 
