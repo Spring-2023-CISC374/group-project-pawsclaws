@@ -1759,7 +1759,7 @@ export class PageScene extends Phaser.Scene {
         sizeField
             .on('button.click', function (button: any) {
                 button.scaleYoyo(500, 1.2);
-                classLabel.text = 'Size: ' + button.text;
+                sizeLabel.text = 'Size: ' + button.text;
                 if(button.text == 'Small'){
                     turret.setScale(0.025);
                 }
