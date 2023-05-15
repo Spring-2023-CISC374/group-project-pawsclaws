@@ -13,6 +13,12 @@ import bulldog from '/assets/bulldog.png';
 import doguari from '/assets/dogurai.png';
 import reaper_cat from '/assets/reaper_cat.png';
 import background from '/assets/map.png';
+import lucky_cat from '/assets/lucky.png';
+import king from '/assets/benji.png';
+import bugs from '/assets/bunny.png';
+import foxy from '/assets/foxy.png';
+import bango from '/assets/bango_croc.png';
+import OG from '/assets/OG.png'
 
 const BULLET_DAMAGE = 50;
 const NEXT_BALLOON_SPAWN = 650; //in milliseconds
@@ -64,6 +70,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.image('mark', 'assets/marks.png');
 		this.load.image('bar', 'assets/menu.PNG');
 		this.load.audio("pop", ["assets/Pops.mp3"]);
+		this.load.audio("music", ["assets/Main.mp3"]);
 
 		this.load.image('cowboy', cowboy_cat);
 		this.load.image('buff', buff_doge);
@@ -71,12 +78,25 @@ export default class HelloWorldScene extends Phaser.Scene {
         this.load.image('bulldog', bulldog);
 		this.load.image('dogurai', doguari);
 		this.load.image('reaper', reaper_cat);
+		this.load.image('lucky', lucky_cat);
+       	this.load.image('king',king);
+      	this.load.image('bunny', bugs);
+       	this.load.image('fox', foxy);
+       	this.load.image('croc', bango);
+       	this.load.image('OG',OG);
 	}
   
 	create()  {
 
 		this.add.image(415, 320, 'background').setScale(0.89);
 		this.add.image(380, 760, 'bar')
+
+		// Game Over & Restart Screen
+		//var restart = this.add.text(400, 300, 'Restart', {fontSize: '32px', color: '#000'})
+		//restart.setInteractive
+		//restart.on('pointerdown', () => {
+		//	this.scene.restart()
+		//})
 
 		// Only used for visualization
 		const graphics = this.add.graphics();
@@ -190,6 +210,12 @@ export default class HelloWorldScene extends Phaser.Scene {
 			setTimeout(() => {
 				popSound.play()
 			}, 100)
+		})
+
+		// Music not working?????
+		var musicConfig = this.sound.add("music")
+		eventsCenter.on("mainsound", () => {
+			musicConfig.play()
 		})
 	}
 
@@ -324,6 +350,63 @@ export default class HelloWorldScene extends Phaser.Scene {
 					}
 					
 				}
+
+				// New Units
+
+				if(texture == "lucky" || texture == "luckys"){
+					// I thought it made sense for the projectiles to go within the if and or 
+					// into another if statement spritesheetprojectile.json
+					if (this.money >= 450) {
+						this.money -= 450
+					} else {
+						return 
+					}
+				}
+				if (texture == "king" || texture == "kings") {
+					
+					if (this.money >= 475) {
+						this.money -= 475
+					} else {
+						return
+					}
+					
+				}
+				if (texture == "bunny" || texture == "bunnys") {
+					
+					if (this.money >= 525) {
+						this.money -= 525
+					} else {
+						return
+					}
+					
+				}
+				if (texture == "fox" || texture == "foxes") {
+					
+					if (this.money >= 600) {
+						this.money -= 600
+					} else {
+						return
+					}
+					
+				}
+				if (texture == "croc" || texture == "crocs") {					
+					if (this.money >= 650) {
+						this.money -= 650
+					} else {
+						return
+					}
+					
+				}
+				if (texture == "OG" || texture == "OGs") {
+					if (this.money >= 1000) {
+						this.money -= 1000
+					} else {
+						return
+					}
+					
+				}
+
+
 				const turret = turrets.get()
 				console.log("texture of tower: ",texture)
 				turret.setTexture(texture)
