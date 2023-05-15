@@ -113,12 +113,7 @@ export class PageScene extends Phaser.Scene {
             this.numberOfUnits = 0
         })
     }
-
-    update () 
-    {
-    }
     
-    // Currently being called at the end of the create function (keep if you want the content to be static)
     AddBuyMenuChild() {
         var text = this.add.text(0,0, 'cost: 150')
         var text2 = this.add.text(0,0, 'cost: 175')
@@ -801,10 +796,13 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '↻', 22).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
@@ -845,10 +843,13 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '↻', 22).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
@@ -888,16 +889,19 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '↻', 22).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
         .layout()
         .on('button.click', function (button: any) {
-            button.scaleYoyo(500, 1.3);
+            button.scaleYoyo(500, 1.2);
             bigms_cat_card.toggleFace();
         }));
 
@@ -932,16 +936,19 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '↻', 22).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
         .layout()
         .on('button.click', function (button: any) {
-            button.scaleYoyo(500, 1.4);
+            button.scaleYoyo(500, 1.2);
             bulldogs_card.toggleFace();
         }));
 
@@ -976,16 +983,19 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '↻', 22).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
         .layout()
         .on('button.click', function (button: any) {
-            button.scaleYoyo(500, 1.5);
+            button.scaleYoyo(500, 1.2);
             reapers_card.toggleFace();
         }));
 
@@ -1020,16 +1030,19 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '↻', 22).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
         .layout()
         .on('button.click', function (button: any) {
-            button.scaleYoyo(500, 1.6);
+            button.scaleYoyo(500, 1.2);
             dogurais_card.toggleFace();
         }));
 
@@ -1373,10 +1386,13 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
@@ -1398,10 +1414,13 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
@@ -1424,10 +1443,13 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
@@ -1450,10 +1472,13 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
@@ -1475,10 +1500,13 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
@@ -1501,10 +1529,13 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
@@ -1526,10 +1557,13 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, '+', 14).setOrigin(0.5, 1),
             ],
-
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
@@ -1601,7 +1635,7 @@ export class PageScene extends Phaser.Scene {
         var nameField = this.rexUI.add.label({
             orientation: 'x',
             background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
-            text: new BBCodeText(this, 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
+            text: this.rexUI.add.BBCodeText( 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
             space: { top: 5, bottom: 5, left: 5, right: 5, }
         })
             .setInteractive()
@@ -1627,7 +1661,7 @@ export class PageScene extends Phaser.Scene {
         var horizField = this.rexUI.add.label({
             orientation: 'x',
             background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
-            text: new BBCodeText(this, 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
+            text: this.rexUI.add.BBCodeText( 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, },
         })
         .setInteractive().setText((Math.ceil(turret.x / 64)).toString())
@@ -1649,7 +1683,7 @@ export class PageScene extends Phaser.Scene {
         var vertField = this.rexUI.add.label({
             orientation: 'x',
             background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
-            text: new BBCodeText(this, 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
+            text: this.rexUI.add.BBCodeText( 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, }
         })
         .setInteractive().setText((Math.ceil(turret.y / 64)).toString())
@@ -1692,12 +1726,15 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, 'Fire', 20).setOrigin(0.5, 1),
                 this.createButton(this, 'Ice', 20).setOrigin(0.5, 1),
-                this.createButton(this, 'Poison', 20).setOrigin(0.5, 1),
                 this.createButton(this, 'Lightning', 20).setOrigin(0.5, 1)
             ],
             space: {
                 left: 10, right: 10, top: 10, bottom: 10,
                 item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
             }
         })
         .setOrigin(0.5, 1)
