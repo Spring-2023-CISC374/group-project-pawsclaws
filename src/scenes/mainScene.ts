@@ -152,7 +152,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		*/
 
 		this.waveNumber = 0
-		this.waveText = this.add.text(25, 640, "Wave: " + this.waveNumber).setFontSize("28px")
+		this.waveText = this.add.text(25, 640, "Wave: " + this.waveNumber).setFontSize(28)
 		var startWaveButton = this.add.image(385,672, 'start').setScale(.8,.8)
 		startWaveButton.setInteractive()
 		startWaveButton.on('pointerdown', () => {
@@ -166,7 +166,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		})
 
 		this.money = 300
-		this.moneyText = this.add.text(25, 665, "Money: " + this.money).setFontSize("28px")
+		this.moneyText = this.add.text(25, 665, "Money: " + this.money).setFontSize(28)
 
 		var instructionsButton = this.add.image(700,665, 'mark')
         instructionsButton.setInteractive()
