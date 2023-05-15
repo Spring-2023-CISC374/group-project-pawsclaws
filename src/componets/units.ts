@@ -2,17 +2,6 @@ import { Enemy } from './enemy'
 import { default as HelloWorldScene } from '../scenes/mainScene';
 
 const DELAY_BETWEEN_SHOTS = 1000; //in milliseconds
-const map: number[][] = [
-	[0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, -1, 0, 0, 0, 0, 0, -1, -1, -1, 0, 0],
-	[0, -1, 0, 0, 0, 0, -1, 0, -1, 0, 0],
-	[0, -1, 0, -1, -1, -1, -1, -1, -1, -1, 0, 0],
-	[0, -1, 0, -1, 0, 0, 0, -1, 0, 0, 0, 0],
-	[0, -1, -1, -1, 0, 0, 0, -1, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, -1, -1, -1, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0]
-];
 
 export class Turret extends Phaser.GameObjects.Image {
 	private nextTic = 0;
@@ -23,6 +12,8 @@ export class Turret extends Phaser.GameObjects.Image {
 	isFire: boolean;
 	isIce: boolean;
 
+	range: any
+	range_circle: any
 	projectile_texture!: string;
 
 	constructor(scene: HelloWorldScene) {
@@ -34,12 +25,16 @@ export class Turret extends Phaser.GameObjects.Image {
 		this.projectiles = projectilesmaybe;
 		this.isFire = false;
 		this.isIce = false;
+
+		this.range = 200
+		this.range_circle = scene.add.circle(this.x, this.y, this.range, 0xDCDCDC, 0.2).setVisible(false).setDepth(.5)
 	}
 
 	place(i: number, j: number): void {
 		this.y = i * 64 + 64 / 2; // Please check into this
 		this.x = j * 64 + 64 / 2;
-		map[i][j] = 1;
+		this.range_circle.x = this.x
+		this.range_circle.y = this.y
 	}
 
 	fire(): void {

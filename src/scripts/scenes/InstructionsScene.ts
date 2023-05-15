@@ -67,7 +67,6 @@ Good luck defending your territory!`;
         closeBtn.setInteractive()
 
         closeBtn.on('pointerdown',  () => {
-			console.log("clicked button")
             this.scene.sleep("InstructionsScene")
         }
         )
