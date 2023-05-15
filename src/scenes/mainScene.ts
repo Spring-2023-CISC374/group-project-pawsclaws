@@ -301,10 +301,16 @@ export default class HelloWorldScene extends Phaser.Scene {
 		})
 
 		// Music not working?????
-		var musicConfig = this.sound.add("music")
-		eventsCenter.on("mainsound", () => {
-			musicConfig.play()
+		var musicConfig = this.sound.add("music", {
+			mute: false,
+			volume: .5,
+			rate: 1,
+			detune: 0,
+			seek: 0,
+			loop: true,
+			delay: 0
 		})
+		musicConfig.play()
 	}
 
 	update(): void {  
