@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
-import { TabPages, Sizer, GridSizer, BBCodeText} from 'phaser3-rex-plugins/templates/ui/ui-components'
+import { TabPages, Sizer, GridSizer} from 'phaser3-rex-plugins/templates/ui/ui-components'
 import Drag from 'phaser3-rex-plugins/plugins/drag.js';
 import eventsCenter from "../../EventsCenter";
 import buff_doge from '/assets/buff_doge.png';
