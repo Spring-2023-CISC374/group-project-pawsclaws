@@ -152,7 +152,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		*/
 
 		this.waveNumber = 0
-		this.waveText = this.add.text(25, 640, "Wave: " + this.waveNumber).setFontSize("28px")
+		this.waveText = this.add.text(25, 640, "Wave: " + this.waveNumber).setFontSize(28)
 		var startWaveButton = this.add.image(385,672, 'start').setScale(.8,.8)
 		startWaveButton.setInteractive()
 		startWaveButton.on('pointerdown', () => {
@@ -166,7 +166,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		})
 
 		this.money = 300
-		this.moneyText = this.add.text(25, 665, "Money: " + this.money).setFontSize("28px")
+		this.moneyText = this.add.text(25, 665, "Money: " + this.money).setFontSize(28)
 
 		var instructionsButton = this.add.image(700,665, 'mark')
         instructionsButton.setInteractive()
@@ -243,8 +243,11 @@ export default class HelloWorldScene extends Phaser.Scene {
 				if(tower_title.y < 0) {
 					tower_title.y = turret.y + 60
 				}
-				tower_title.setText(turret.name.substring(0,8)).setVisible(true)
+				if(turret.nameTurret){
+					tower_title.setText(turret.nameTurret.substring(0,8)).setVisible(true)
+				}
 				
+				turret.range_circle.setRadius(turret.range)
 				turret.range_circle.setVisible(true)
 				turret.setDepth(1)
 			}
@@ -398,12 +401,14 @@ export default class HelloWorldScene extends Phaser.Scene {
     	const j = Math.floor(pointer.x/64);
 		// I need to make something that specifies the thing that I need
     	if(this.canPlace(i, j)) {
+				var range;
 				// if the texutre passed is doge, scale it down because the original is massive and covers the screen
 				if(texture == "cowboy" || texture == "cowboys"){
 					// I thought it made sense for the projectiles to go within the if and or 
 					// into another if statement spritesheetprojectile.json
 					if (this.money >= 150) {
 						this.money -= 150
+						range = 200
 					} else {
 						return 
 					}
@@ -412,6 +417,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 					
 					if (this.money >= 175) {
 						this.money -= 175
+						range = 150
 					} else {
 						return
 					}
@@ -421,6 +427,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 					
 					if (this.money >= 225) {
 						this.money -= 225
+						range = 200
 					} else {
 						return
 					}
@@ -430,6 +437,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 					
 					if (this.money >= 275) {
 						this.money -= 275
+						range = 150
 					} else {
 						return
 					}
@@ -438,6 +446,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 				if (texture == "reaper" || texture == "reapers") {					
 					if (this.money >= 350) {
 						this.money -= 350
+						range = 150
 					} else {
 						return
 					}
@@ -446,6 +455,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 				if (texture == "dogurai" || texture == "dogurais") {
 					if (this.money >= 375) {
 						this.money -= 375
+						range = 150
 					} else {
 						return
 					}
@@ -459,6 +469,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 					// into another if statement spritesheetprojectile.json
 					if (this.money >= 450) {
 						this.money -= 450
+						range = 200
 					} else {
 						return 
 					}
@@ -467,6 +478,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 					
 					if (this.money >= 475) {
 						this.money -= 475
+						range = 200
 					} else {
 						return
 					}
@@ -476,6 +488,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 					
 					if (this.money >= 525) {
 						this.money -= 525
+						range = 200
 					} else {
 						return
 					}
@@ -485,6 +498,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 					
 					if (this.money >= 600) {
 						this.money -= 600
+						range = 200
 					} else {
 						return
 					}
@@ -493,6 +507,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 				if (texture == "croc" || texture == "crocs") {					
 					if (this.money >= 650) {
 						this.money -= 650
+						range = 200
 					} else {
 						return
 					}
@@ -501,6 +516,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 				if (texture == "OG" || texture == "OGs") {
 					if (this.money >= 1000) {
 						this.money -= 1000
+						range = 350
 					} else {
 						return
 					}
@@ -514,6 +530,7 @@ export default class HelloWorldScene extends Phaser.Scene {
             	turret.setActive(true);
             	turret.setVisible(true);
             	turret.place(i, j);
+				turret.range = range
 
 				turret.projectile_texture = textureP
 
