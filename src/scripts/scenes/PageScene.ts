@@ -1784,7 +1784,6 @@ export class PageScene extends Phaser.Scene {
             buttons: [
                 this.createButton(this, 'Fire', 20).setOrigin(0.5, 1),
                 this.createButton(this, 'Ice', 20).setOrigin(0.5, 1),
-                this.createButton(this, 'Poison', 20).setOrigin(0.5, 1),
                 this.createButton(this, 'Lightning', 20).setOrigin(0.5, 1)
             ],
             space: {
