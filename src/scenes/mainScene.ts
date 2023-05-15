@@ -316,7 +316,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		if(bestRound !== null){
 			this.bestRound = bestRound
 		}
-		else{bestRound = "0"}
+		else{this.bestRound = "0"}
 		if(this.waveNumber > (this.bestRound as unknown as number)){
 			localStorage.setItem("highscore", this.waveNumber as unknown as string)
 		}
