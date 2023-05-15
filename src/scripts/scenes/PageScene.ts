@@ -1799,6 +1799,15 @@ export class PageScene extends Phaser.Scene {
                 classType = button.text;
                 classLabel.text = 'Class: ' + classType;
                 turret.setClassTypes(classType)
+                if(button.text == 'Ice'){
+                    turret.setTint(Phaser.Display.Color.GetColor(130, 160, 230))
+                }
+                else if(button.text == 'Fire'){
+                    turret.setTint(Phaser.Display.Color.GetColor(255, 165, 0))
+                }
+                else {
+                    turret.setTint(Phaser.Display.Color.GetColor(255,233,0))
+                }
             })
         
         // ADDING ALL COMPONENTS TO FOLDER SIZER
