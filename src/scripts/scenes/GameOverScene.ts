@@ -2,6 +2,8 @@ import Phaser from "phaser";
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components";
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import eventsCenter from "../../EventsCenter";
+import GameOver from '/assets/gameover.png';
+import Reset from '/assets/reset.png'
 
 const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x260e04;
@@ -25,8 +27,8 @@ export class GameOverScene extends Phaser.Scene {
 
     preload ()
     {
-        this.load.image("gameover", '/assets/gameover.png')
-        this.load.image("reset", '/assets/reset.png')
+        this.load.image("gameover", GameOver)
+        this.load.image("reset", Reset)
     }
 
     create ()
