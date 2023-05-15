@@ -15,6 +15,7 @@ export class Turret extends Phaser.GameObjects.Image {
 	range: any
 	range_circle: any
 	projectile_texture!: string;
+	nameTurret: any;
 
 	constructor(scene: HelloWorldScene) {
 		super(scene, 0, 0, 'unitsprites');
@@ -26,7 +27,6 @@ export class Turret extends Phaser.GameObjects.Image {
 		this.isFire = false;
 		this.isIce = false;
 
-		this.range = 200
 		this.range_circle = scene.add.circle(this.x, this.y, this.range, 0xDCDCDC, 0.2).setVisible(false).setDepth(.5)
 	}
 
