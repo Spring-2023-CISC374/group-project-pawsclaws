@@ -61,6 +61,7 @@ export class PageScene extends Phaser.Scene {
 
     create ()
     {
+        this.scene.bringToTop("PageScene")
         this.tabPages = this.rexUI.add.tabPages({
             x: 1028, y: 359,
             width: 500, height: 720,
@@ -97,17 +98,19 @@ export class PageScene extends Phaser.Scene {
                 page: this.CreateScrollablePanel(this, this.upgradeMenuSizer)
             })
             .layout()
-            .swapFirstPage()
+            .swapPage('Buy')
 
         this.AddBuyMenuChild();
         this.AddUpgradeMenuChild();
         this.placedTowers = this.physics.add.group({ runChildUpdate: true });
 
         eventsCenter.on("tower-placed-successfully", (turret: any, texture: any) => {
-            console.log("in event for edit menu")
-            console.log(turret)
             this.AddEditMenuChild(this, turret, texture)
             this.placedTowers.add(turret)
+        })
+        eventsCenter.on("Restart", ()=>{
+            this.editMenuSizer.clear(true)
+            this.numberOfUnits = 0
         })
     }
     
@@ -191,7 +194,7 @@ export class PageScene extends Phaser.Scene {
             background_cowboys.setVisible(true)
 
             // make the draggable cowboys smaller so its easier to place
-            cowboys.setScale(0.04).setDepth(1)
+            cowboys.setScale(0.04).setDepth(5)
             // set the draggable cowboys x and y to wherever the mouse is
             cowboys.x = pointer.x
             cowboys.y = pointer.y 
@@ -291,10 +294,10 @@ export class PageScene extends Phaser.Scene {
             background_bigms.setVisible(true)
 
             // make the draggable Big M smaller so its easier to place
-            bigms.setScale(0.04)
+            bigms.setScale(0.04).setDepth(1)
             // set the draggable Big M x and y to wherever the mouse is
-            bigms.x = bigms.x
-            bigms.y = bigms.y 
+            bigms.x = pointer.x
+            bigms.y = pointer.y 
         })
         // updates the Big M x and y when being dragged
         bigms.on('drag', (pointer: any) => {
@@ -318,7 +321,7 @@ export class PageScene extends Phaser.Scene {
 
             // set the scale of the Big M back to 0.1 for the shop
             // set the Big M x and y to the background Big M x and y
-            bigms.setScale(0.1)
+            bigms.setScale(0.1).setDepth(0)
             bigms.x = background_bigms.x
             bigms.y = background_bigms.y
 
@@ -341,10 +344,10 @@ export class PageScene extends Phaser.Scene {
             background_bulldogs.setVisible(true)
 
             // make the draggable bulldogs smaller so its easier to place
-            bulldogs.setScale(0.04)
+            bulldogs.setScale(0.04).setDepth(1)
             // set the draggable bulldogs x and y to wherever the mouse is
-            bulldogs.x = bulldogs.x
-            bulldogs.y = bulldogs.y 
+            bulldogs.x = pointer.x
+            bulldogs.y = pointer.y
         })
         // updates the  bulldogs x and y when being dragged
         bulldogs.on('drag', (pointer: any) => {
@@ -368,7 +371,7 @@ export class PageScene extends Phaser.Scene {
 
             // set the scale of the  bulldogs back to 0.1 for the shop
             // set the  bulldogs x and y to the background  bulldogs x and y
-            bulldogs.setScale(0.1)
+            bulldogs.setScale(0.1).setDepth(0)
             bulldogs.x = background_bulldogs.x
             bulldogs.y = background_bulldogs.y
 
@@ -1635,57 +1638,22 @@ export class PageScene extends Phaser.Scene {
             text: this.rexUI.add.BBCodeText( 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
             space: { top: 5, bottom: 5, left: 5, right: 5, }
         })
-        .setInteractive()
-        .on('pointerdown', function () {
-            var config = {
-                onTextChanged: function(textObject: any, text: any) {
-                    name = text;
-                    textObject.text = text;
-                    title.text = "Unit #" + unitNumber + ": " + name.substring(0,8) + " (" + unitType + ")";
-                    turret.name = text;
-                    title.layout();
-                    editor.layout();
+            .setInteractive()
+            .on('pointerdown', function () {
+                var config = {
+                    onTextChanged: function(textObject: any, text: any) {
+                        name = text;
+                        turret.name = text
+                        textObject.text = text;
+                        nameField.setText(text)
+                        title.text = "Unit #" + unitNumber + ": " + name.substring(0,8) + " (" + unitType + ")";
+                        turret.name(textObject.text);
+                        title.layout();
+                        editor.layout();
+                    }
                 }
-            }
-            scene.rexUI.edit(nameField.getElement('text'), config);
-        });
-            
-
-        // var inputText = new InputText(this, 100, 100, 300, 100, {
-        //     type: 'number',
-        //     text: turret.x as string,
-        //     fontSize: '40px'
-
-        // })
-        // .on('textchange', () => {
-        //     var newCord = Math.floor((inputText.text as unknown as number) / 64)
-        //     if(newCord < 10 && newCord >= 0) {
-        //         turret.x = newCord * 64 + 64 / 2
-        //         turret.x = inputText.text as unknown as number
-        //         console.log(newCord)
-        //         console.log(turret.x)
-        //     }
-        // })
-        // var isFocused = inputText.isFocused
-        // this.add.existing(inputText);
-        // var printText = this.add.text(400, 200, '', {
-        //     fontSize: '12px',
-        //     fixedWidth: 100,
-        //     fixedHeight: 100,
-        // }).setOrigin(0.5);
-        // scene.add.rexInputText
-        // this.scene.add.rexInputText()
-        // var inputText = scene.add.rexInputText(400, 400, 10, 10, {
-        //     id: 'myNumberInput',
-        //     type: 'number',
-        //     text: '0',
-        //     fontSize: '12px',
-        // })
-        // .resize(100, 100)
-        // .setOrigin(0.5)
-        // .on('textchange', function (inputText: any) {
-        //     printText.text = inputText.text;
-        // })
+                scene.rexUI.edit(nameField.getElement('text'), config);
+            });
 
         
         // HORIZONTAL PLACEMENT UI
@@ -1748,33 +1716,7 @@ export class PageScene extends Phaser.Scene {
             }
             scene.rexUI.edit(vertField.getElement('text'),config);
         });
-        
-        // // SIZE UI
-        // var sizeLabel = this.add.text(0,0,'Size:').setFontSize(20);
-        // var sizeField = this.rexUI.add.buttons({
-        //     x: 400, y: 400,
-        //     orientation: 'x',
-        //     buttons: [
-        //         this.createButton(this, 'Small').setOrigin(0.5, 1),
-        //         this.createButton(this, 'Medium').setOrigin(0.5, 1),
-        //         this.createButton(this, 'Large').setOrigin(0.5, 1),
-        //     ],
 
-        //     space: {
-        //         left: 10, right: 10, top: 10, bottom: 10,
-        //         item: 6
-        //     }
-        // })
-        // .setOrigin(0.5, 1)
-        // .layout()
-
-        // sizeField
-        //     .on('button.click', function (button, index, pointer, event) {
-        //         button.scaleYoyo(500, 1.2);
-        //         size = button.text;
-        //         sizeLabel.text = 'Size: ' + size;
-        //         console.log(size);
-        //     })
 
         // CLASS TYPE UI
         var classLabel = this.add.text(0,0,'Class Type: (5 gp to Unlock)').setFontSize(20);
@@ -1804,7 +1746,6 @@ export class PageScene extends Phaser.Scene {
                 classType = button.text;
                 classLabel.text = 'Class: ' + classType;
                 turret.setClassTypes(classType)
-                console.log(classType);
             })
         
         // ADDING ALL COMPONENTS TO FOLDER SIZER
