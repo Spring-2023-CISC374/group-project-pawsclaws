@@ -1631,11 +1631,12 @@ export class PageScene extends Phaser.Scene {
             space: { item: 10 }
             
         });
+        var text2 = new BBCodeText(this, 0, 0,'', { fixedWidth: 300, fixedHeight: 18 })
         var nameLabel = this.add.text(0,0,'Name:').setFontSize(20);
         var nameField = this.rexUI.add.label({
             orientation: 'x',
             background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
-            text: this.rexUI.add.BBCodeText( 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
+            text: text2,
             space: { top: 5, bottom: 5, left: 5, right: 5, }
         })
             .setInteractive()
@@ -1655,13 +1656,13 @@ export class PageScene extends Phaser.Scene {
                 scene.rexUI.edit(nameField.getElement('text'), config);
             });
 
-        
+         var text3 = new BBCodeText(this, 0, 0,'', { fixedWidth: 300, fixedHeight: 18 })
         // HORIZONTAL PLACEMENT UI
         var horizLabel = this.add.text(0,0,'Horizontal Position:').setFontSize(20);
         var horizField = this.rexUI.add.label({
             orientation: 'x',
             background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
-            text: this.rexUI.add.BBCodeText( 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
+            text: text3,
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, },
         })
         .setInteractive().setText((Math.ceil(turret.x / 64)).toString())
@@ -1679,11 +1680,12 @@ export class PageScene extends Phaser.Scene {
         });
         
         // VERTICAL PLACEMENT UI
+        var text1 = new BBCodeText(this, 0, 0,'', { fixedWidth: 300, fixedHeight: 18 })
         var vertLabel = this.add.text(0,0,'Vertical Position:').setFontSize(20);
         var vertField = this.rexUI.add.label({
             orientation: 'x',
             background: this.rexUI.add.roundRectangle(0, 0, 10, 10, 10).setStrokeStyle(3, COLOR_LIGHT),
-            text: this.rexUI.add.BBCodeText( 0, 0,'', { fixedWidth: 300, fixedHeight: 18 }),
+            text: text1,
             space: { top: 5, bottom: 5, left: 5, right: 5, icon: 10, }
         })
         .setInteractive().setText((Math.ceil(turret.y / 64)).toString())
