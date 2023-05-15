@@ -68,6 +68,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.load.atlas('projectile','assets/spritesheetprojectiles.png', 'assets/projectiles.json');
 
 		this.load.image('mark', 'assets/marks.png');
+		this.load.image('start', 'assets/startbutton.png');
 		this.load.image('bar', 'assets/menu.PNG');
 		this.load.audio("pop", ["assets/Pops.mp3"]);
 		this.load.audio("music", ["assets/Main.mp3"]);
@@ -143,8 +144,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 		*/
 
 		this.waveNumber = 0
-		var waveText = this.add.text(50, 640, "Wave: " + this.waveNumber)
-		var startWaveButton = this.add.text(50,675, 'Start Next Wave')
+		var waveText = this.add.text(25, 640, "Wave: " + this.waveNumber).setFontSize("28px")
+		var startWaveButton = this.add.image(385,672, 'start').setScale(.8,.8)
 		startWaveButton.setInteractive()
 		startWaveButton.on('pointerdown', () => {
 			
@@ -158,7 +159,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		})
 
 		this.money = 300
-		this.moneyText = this.add.text(50, 657, "Money: " + this.money)
+		this.moneyText = this.add.text(25, 665, "Money: " + this.money).setFontSize("28px")
 
 		var instructionsButton = this.add.image(700,665, 'mark')
         instructionsButton.setInteractive()
