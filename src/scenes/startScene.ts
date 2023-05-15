@@ -15,7 +15,8 @@ export default class startScene extends Phaser.Scene {
         startButton.setInteractive()
         startButton.on('pointerdown', () => {
             this.scene.start("helloworldscene")
-            //this.scene.start("PageScene")
+            this.scene.start("PageScene")
+            this.scene.launch("InstructionsScene")
         })
     }
 
