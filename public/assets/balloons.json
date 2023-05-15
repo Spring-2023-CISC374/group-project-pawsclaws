@@ -1,0 +1,98 @@
+{
+    "frames": [
+        {
+            "filename": "red",
+            "frame": {
+                "x": 4,
+                "y": 3,
+                "w": 56,
+                "h": 67
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 56,
+                "h": 67
+            },
+            "sourceSize": {
+                "w": 56,
+                "h": 67
+            }
+        },
+        {
+            "filename": "green",
+            "frame": {
+                "x": 68,
+                "y": 4,
+                "w": 56,
+                "h": 67
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 56,
+                "h": 67
+            },
+            "sourceSize": {
+                "w": 56,
+                "h": 67
+            }
+        },
+        {
+            "filename": "blue",
+            "frame": {
+                "x": 131,
+                "y": 5,
+                "w": 57,
+                "h": 66
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 57,
+                "h": 66
+            },
+            "sourceSize": {
+                "w": 57,
+                "h": 66
+            }
+        },
+        {
+            "filename": "purple",
+            "frame": {
+                "x": 196,
+                "y": 5,
+                "w": 56,
+                "h": 66
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 56,
+                "h": 66
+            },
+            "sourceSize": {
+                "w": 56,
+                "h": 66
+            }
+        }
+    ],
+    "meta": {
+        "app": "https://www.leshylabs.com/apps/sstool/",
+        "version": "Leshy SpriteSheet Tool v0.8.4",
+        "image": "balloonspritesheet.png",
+        "size": {
+            "w": 265,
+            "h": 75
+        },
+        "scale": 1
+    }
+}
