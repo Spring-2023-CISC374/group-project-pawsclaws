@@ -5,6 +5,7 @@ import Phaser from 'phaser'
 import eventsCenter from '../EventsCenter';
 import { Enemy } from '../componets/enemy';
 import { Turret } from '../componets/units';
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import { Projectile } from '../componets/attack';
 import buff_doge from '/assets/buff_doge.png';
 import cowboy_cat from '/assets/cowboy_cat.png';
@@ -54,11 +55,17 @@ export default class HelloWorldScene extends Phaser.Scene {
 	enemies!: Phaser.GameObjects.Group;
 	projectiles!: Phaser.GameObjects.Group;
 	waveNumber!: number;
+	waveText!: any;
 	money!: number;
 	moneyText!: Phaser.GameObjects.Text;
+	rexUI!: RexUIPlugin;
+	gameOver!: boolean
+	map!: any;
+	bestRound!: string;
 	
 	constructor() {
 		super('helloworldscene')
+		this.bestRound = '0'
 	}
 
 	preload() {
@@ -88,8 +95,10 @@ export default class HelloWorldScene extends Phaser.Scene {
 	}
   
 	create()  {
+		this.scene.launch("PageScene")
+		this.map = JSON.parse(JSON.stringify(map))
 
-		this.add.image(415, 320, 'background').setScale(0.89);
+		var background = this.add.image(415, 320, 'background').setScale(0.89)
 		this.add.image(380, 760, 'bar')
 
 		// Game Over & Restart Screen
@@ -125,7 +134,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 
   
 		this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true, repeat: 0 });
-		// console.log(this.enemies)
 
 		// Units
 		this.turrets = this.add.group({ classType: Turret, runChildUpdate: true });
@@ -144,7 +152,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		*/
 
 		this.waveNumber = 0
-		var waveText = this.add.text(25, 640, "Wave: " + this.waveNumber).setFontSize("28px")
+		this.waveText = this.add.text(25, 640, "Wave: " + this.waveNumber).setFontSize("28px")
 		var startWaveButton = this.add.image(385,672, 'start').setScale(.8,.8)
 		startWaveButton.setInteractive()
 		startWaveButton.on('pointerdown', () => {
@@ -152,7 +160,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 			//fucntion called start wave
 			if(this.enemies.getLength() == 0){
 				this.waveNumber++
-				waveText.setText("Wave: " + this.waveNumber)
 				this.startWave(this.waveNumber)
 			}
 
@@ -164,7 +171,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 		var instructionsButton = this.add.image(700,665, 'mark')
         instructionsButton.setInteractive()
         instructionsButton.on('pointerdown',  () => {
-			console.log("clicked button")
             this.scene.launch("InstructionsScene")
         }
         )
@@ -175,7 +181,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 			this.placeTurret(this.input.mousePointer, this.turrets, text, projectile_text)})
 		
 		eventsCenter.on("canplace", (pointer: any) => {
-			console.log("wipppiee")
 			eventsCenter.emit("returnplace", this.canPlace(Math.floor(pointer.y/64), Math.floor(pointer.x/64)))
 		})
 
@@ -185,9 +190,11 @@ export default class HelloWorldScene extends Phaser.Scene {
 			var original_i = Math.floor(turret.y/64)
 			var original_j = Math.floor(turret.x/64)
 			if(this.canPlace(original_i, newCord)){
-				map[original_i][newCord] = 1
-				map[original_i][original_j] = 0
+				this.map[original_i][newCord] = 1
+				this.map[original_i][original_j] = 0
 				turret.x = newCord * 64 + 64 / 2
+				turret.range_circle.x = turret.x
+				tower_title.x = turret.x
 			}
 		})
 		eventsCenter.on("changeVertically", (lst: any) => {
@@ -196,21 +203,98 @@ export default class HelloWorldScene extends Phaser.Scene {
 			var original_i = Math.floor(turret.y/64)
 			var original_j = Math.floor(turret.x/64)
 			if(this.canPlace(newCord, original_j)){
-				map[newCord][original_j] = 1
-				map[original_i][original_j] = 0
+				this.map[newCord][original_j] = 1
+				this.map[original_i][original_j] = 0
 				turret.y = newCord * 64 + 64 / 2
+				turret.range_circle.y = turret.y
+				tower_title.y = turret.y - 64
+				if(tower_title.y < 0){
+					tower_title.y = turret.y + 60
+				}
 			}
 		})
-		eventsCenter.on("checkIfNameExists", (name: any) => {
-			var result = this.turrets.getChildren().find(v => v.name === name);
-			console.log(result)
-		})
+		// eventsCenter.on("checkIfNameExists", (name: any) => {
+		// 	var result = this.turrets.getChildren().find(v => v.name === name);
+		// })
 
 		var popSound = this.sound.add("pop")
 		eventsCenter.on("popsound", () => {
 			setTimeout(() => {
 				popSound.play()
-			}, 100)
+			}, 50)
+		})
+
+		
+        var tower_title = this.rexUI.add.label({
+			width: 80, 
+			height: 30,
+			x: 0,
+			y: 0,
+			space: {left: 1},
+			
+			background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 1, 0x7b5e57),
+			text: this.add.text(0, 0, "").setFontSize(16),
+		}).layout().setVisible(false).setDepth(2);
+
+		eventsCenter.on("selected_tower", (turret: Turret, turrets: Phaser.GameObjects.Group) => {
+			if(!(turret.range_circle.visible)){
+				tower_title.x = turret.x
+				tower_title.y = turret.y - 60
+				if(tower_title.y < 0) {
+					tower_title.y = turret.y + 60
+				}
+				tower_title.setText(turret.name.substring(0,8)).setVisible(true)
+				
+				turret.range_circle.setVisible(true)
+				turret.setDepth(1)
+			}
+			else {
+				tower_title.setVisible(false)
+				turret.range_circle.setVisible(false)
+				turret.setDepth(0)
+			}
+			var all_turrets = turrets.getChildren()
+			all_turrets.forEach((turret_lst: any) => {
+				if(turret_lst !== turret){
+					turret_lst.range_circle.setVisible(false)
+					turret_lst.setDepth(0)
+				}
+			})
+		})
+		background.setInteractive()
+		background.on("pointerdown", () => {
+			this.turrets.getChildren().forEach((turret: any) => {
+				turret.range_circle.setVisible(false)
+				turret.setDepth(0)
+			})
+			tower_title.setVisible(false)
+		})
+
+		this.gameOver = false
+		eventsCenter.on("GameOver", () => {
+			if(!this.gameOver){
+				this.gameOver = true
+				this.scene.pause("HelloWorldScene")
+				this.scene.pause("PageScene")
+				this.scene.launch("GameOverScene", {currRound: this.waveNumber, bestRound: this.bestRound})
+			}
+		})
+		eventsCenter.on("Restart", ()=>{
+			this.scene.stop("GameOverScene")
+			this.scene.resume("PageScene")
+			this.scene.resume("HelloWorldScene")
+			this.enemies.clear(true, true)
+			this.turrets.getChildren().forEach((child: any) =>{
+				child.range_circle.setVisible(false)
+			})
+			tower_title.setVisible(false)
+			this.turrets.clear(true, true)
+			this.projectiles.clear(true, true)
+			this.waveNumber = 0
+			this.money = 300
+			this.nextEnemy = 0
+			this.map = JSON.parse(JSON.stringify(map))
+			this.gameOver = false
 		})
 
 		// Music not working?????
@@ -223,6 +307,17 @@ export default class HelloWorldScene extends Phaser.Scene {
 	update(): void {  
 
 		this.moneyText.setText("Money: " + this.money)
+		this.waveText.setText("Wave: " + this.waveNumber)
+
+		var bestRound = localStorage.getItem("highscore")
+		if(bestRound !== null){
+			this.bestRound = bestRound
+		}
+		else{bestRound = "0"}
+		if(this.waveNumber > (this.bestRound as unknown as number)){
+			localStorage.setItem("highscore", this.waveNumber as unknown as string)
+		}
+
 		
 	}
 
@@ -289,13 +384,12 @@ export default class HelloWorldScene extends Phaser.Scene {
 		if(i < 0 || j < 0){
 			return false
 		}
-    	return map[i][j] === 0;
+    	return this.map[i][j] === 0;
 	}
 
 	private placeTurret(pointer: Phaser.Input.Pointer, turrets: Phaser.GameObjects.Group, texture: string, textureP: string): void {
     	const i = Math.floor(pointer.y/64);
     	const j = Math.floor(pointer.x/64);
-		console.log(texture)
 		// I need to make something that specifies the thing that I need
     	if(this.canPlace(i, j)) {
 				// if the texutre passed is doge, scale it down because the original is massive and covers the screen
@@ -409,7 +503,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 
 
 				const turret = turrets.get()
-				console.log("texture of tower: ",texture)
 				turret.setTexture(texture)
 				turret.setScale(0.04)
             	turret.setActive(true);
@@ -419,12 +512,13 @@ export default class HelloWorldScene extends Phaser.Scene {
 				turret.projectile_texture = textureP
 
 				//added to update the map in mainScene
-				map[i][j] = 1
-				//console.log("about to emit tower success")
+				this.map[i][j] = 1
 				eventsCenter.emit("tower-placed-successfully", turret, texture)
+				
 				turret.setInteractive()
-				turret.on("pointerdown", () => {console.log("selected unit ")})
-
+				turret.on("pointerdown", () => {
+					eventsCenter.emit("selected_tower", turret, turrets)
+				})
         	}
     	}
 	

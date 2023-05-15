@@ -29,7 +29,6 @@ export class Projectile extends Phaser.GameObjects.Image {
 	}
 
 	fire(x: number, y: number, angle: number, isFire: boolean, isIce: boolean): void {
-		  //console.log(this.scene.textures)
 		  //this.setTexture('projectile', projectile_texture)
 		  this.setActive(true);
 		  this.setVisible(true);

@@ -49,10 +49,7 @@ export class Enemy extends Phaser.GameObjects.Image {
 	}
 
 	receiveDamage(damage: number, gameScene: any, fireShot: boolean, iceShot: boolean) {
-		//console.log(damage)
-		//console.log(this.hp)
 		this.hp -= damage;
-		//console.log(this.hp)
 
 		if(fireShot && this.onFire == false){
 			this.onFire = true;
@@ -127,13 +124,11 @@ export class Enemy extends Phaser.GameObjects.Image {
 		if(this.onFire == true && this.fireTimer % 25 < 5 && this.fireTimer < this.fireMax){
 			this.fireTimer++;
 			this.receiveDamage(2,this.gameScene,false,false)
-			console.log(this.hp);
 			this.setTintFill(Phaser.Display.Color.GetColor(255, 165, 0))
 		}
 		else if (this.fireTimer >= this.fireMax){
 			this.onFire = false;
 			this.fireTimer = 0;
-			console.log("done");
 			this.clearTint();
 		}
 		else if(this.onFire == true){
@@ -147,7 +142,7 @@ export class Enemy extends Phaser.GameObjects.Image {
 		this.setPosition(this.follower.vec.x, this.follower.vec.y);
 
 		if (this.follower.t >= 1) {
-			console.log(this.timeOnPath)
+			eventsCenter.emit("GameOver")
 			this.setActive(false);
 			this.setVisible(false);
 		}
