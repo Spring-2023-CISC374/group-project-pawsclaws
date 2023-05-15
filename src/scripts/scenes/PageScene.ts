@@ -1378,7 +1378,8 @@ export class PageScene extends Phaser.Scene {
             width: 200,
             orientation: 'x',
         }).layout();
-        var burnDurationLabel = this.add.text(0,0,'BURN DURATION: 2 sec').setFontSize(20);
+        var burnDuration = 2;
+        var burnDurationLabel = this.add.text(0,0,'BURN TIME: 2 sec').setFontSize(20);
         burnDurationSizer.add(burnDurationLabel);
         burnDurationSizer.add(this.rexUI.add.buttons({
             x: 400, y: 400,
@@ -1399,6 +1400,8 @@ export class PageScene extends Phaser.Scene {
         .layout()
         .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
+            burnDuration += 1;
+            burnDurationLabel.text = 'BURN TIME: ' + burnDuration + ' sec';
         })).layout;
         burnDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
 
@@ -1406,6 +1409,7 @@ export class PageScene extends Phaser.Scene {
             width: 200,
             orientation: 'x',
         }).layout();
+        var burnDamage = 10;
         var burnDamageLabel = this.add.text(0,0,'BURN DAMAGE: 10 dmg/sec').setFontSize(20);
         burnDamageSizer.add(burnDamageLabel);
         burnDamageSizer.add(this.rexUI.add.buttons({
@@ -1427,6 +1431,8 @@ export class PageScene extends Phaser.Scene {
         .layout()
         .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
+            burnDamage += 2;
+            burnDamageLabel.text = 'BURN DAMAGE: ' + burnDamage + ' dmg/sec';
         })).layout;
         burnDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
 
@@ -1435,7 +1441,8 @@ export class PageScene extends Phaser.Scene {
             width: 200,
             orientation: 'x',
         }).layout();
-        var frozenDurationLabel = this.add.text(0,0,'FROZEN DURATION: 2 sec').setFontSize(20);
+        var frozenDuration = 2;
+        var frozenDurationLabel = this.add.text(0,0,'FROZEN TIME: 2 sec').setFontSize(20);
         frozenDurationSizer.add(frozenDurationLabel);
         frozenDurationSizer.add(this.rexUI.add.buttons({
             x: 400, y: 400,
@@ -1456,6 +1463,8 @@ export class PageScene extends Phaser.Scene {
         .layout()
         .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
+            frozenDuration += 1;
+            frozenDurationLabel.text = "FROZEN TIME: " + frozenDuration + " sec";
         })).layout;
         frozenDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
 
@@ -1464,6 +1473,7 @@ export class PageScene extends Phaser.Scene {
             width: 200,
             orientation: 'x',
         }).layout();
+        var additionalTarget = 1;
         var additionalTargetLabel = this.add.text(0,0,'ADDITIONAL TARGETS: 1').setFontSize(20);
         lightningAdditionTargetsSizer.add(additionalTargetLabel);
         lightningAdditionTargetsSizer.add(this.rexUI.add.buttons({
@@ -1485,6 +1495,9 @@ export class PageScene extends Phaser.Scene {
         .layout()
         .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
+            additionalTarget += 1;
+            additionalTargetLabel.text = 'ADDITIONAL TARGETS: ' + additionalTarget;
+
         })).layout;
         lightningAdditionTargetsSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
 
@@ -1492,6 +1505,7 @@ export class PageScene extends Phaser.Scene {
             width: 200,
             orientation: 'x',
         }).layout();
+        var shockDamage = 10;
         var lightningDamageLabel = this.add.text(0,0,'SHOCK DAMAGE: 10 dmg').setFontSize(20);
         lightningDamageSizer.add(lightningDamageLabel);
         lightningDamageSizer.add(this.rexUI.add.buttons({
@@ -1513,65 +1527,67 @@ export class PageScene extends Phaser.Scene {
         .layout()
         .on('button.click', function (button: any) {
             button.scaleYoyo(500, 1.2);
+            shockDamage += 2;
+            lightningDamageLabel.text = 'SHOCK DAMAGE: ' + shockDamage + ' dmg';
         })).layout;
         lightningDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
 
-        var acidClassLabel = this.CreateLabel(this, 'Acid Class:')
-        var puddleDurationSizer = this.rexUI.add.sizer({
-            width: 200,
-            orientation: 'x',
-        }).layout();
-        var puddleDurationLabel = this.add.text(0,0,'PUDDLE DURATION: 2 sec').setFontSize(20);
-        puddleDurationSizer.add(puddleDurationLabel);
-        puddleDurationSizer.add(this.rexUI.add.buttons({
-            x: 400, y: 400,
-            orientation: 'x',
-            buttons: [
-                this.createButton(this, '+', 14).setOrigin(0.5, 1),
-            ],
-            space: {
-                left: 10, right: 10, top: 10, bottom: 10,
-                item: 6
-            },
-            click: {
-                mode: 'pointerup',
-                clickInterval: 500
-            }
-        })
-        .setOrigin(0.5, 1)
-        .layout()
-        .on('button.click', function (button: any) {
-            button.scaleYoyo(500, 1.2);
-        })).layout;
-        puddleDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
+        // var acidClassLabel = this.CreateLabel(this, 'Acid Class:')
+        // var puddleDurationSizer = this.rexUI.add.sizer({
+        //     width: 200,
+        //     orientation: 'x',
+        // }).layout();
+        // var puddleDurationLabel = this.add.text(0,0,'PUDDLE DURATION: 2 sec').setFontSize(20);
+        // puddleDurationSizer.add(puddleDurationLabel);
+        // puddleDurationSizer.add(this.rexUI.add.buttons({
+        //     x: 400, y: 400,
+        //     orientation: 'x',
+        //     buttons: [
+        //         this.createButton(this, '+', 14).setOrigin(0.5, 1),
+        //     ],
+        //     space: {
+        //         left: 10, right: 10, top: 10, bottom: 10,
+        //         item: 6
+        //     },
+        //     click: {
+        //         mode: 'pointerup',
+        //         clickInterval: 500
+        //     }
+        // })
+        // .setOrigin(0.5, 1)
+        // .layout()
+        // .on('button.click', function (button: any) {
+        //     button.scaleYoyo(500, 1.2);
+        // })).layout;
+        // puddleDurationSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
 
-        var acidDamageSizer = this.rexUI.add.sizer({
-            width: 200,
-            orientation: 'x',
-        }).layout();
-        var acidDamageLabel = this.add.text(0,0,'ACID DAMAGE: 10 dmg/sec').setFontSize(20);
-        acidDamageSizer.add(acidDamageLabel);
-        acidDamageSizer.add(this.rexUI.add.buttons({
-            x: 400, y: 400,
-            orientation: 'x',
-            buttons: [
-                this.createButton(this, '+', 14).setOrigin(0.5, 1),
-            ],
-            space: {
-                left: 10, right: 10, top: 10, bottom: 10,
-                item: 6
-            },
-            click: {
-                mode: 'pointerup',
-                clickInterval: 500
-            }
-        })
-        .setOrigin(0.5, 1)
-        .layout()
-        .on('button.click', function (button: any) {
-            button.scaleYoyo(500, 1.2);
-        })).layout;
-        acidDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
+        // var acidDamageSizer = this.rexUI.add.sizer({
+        //     width: 200,
+        //     orientation: 'x',
+        // }).layout();
+        // var acidDamageLabel = this.add.text(0,0,'ACID DAMAGE: 10 dmg/sec').setFontSize(20);
+        // acidDamageSizer.add(acidDamageLabel);
+        // acidDamageSizer.add(this.rexUI.add.buttons({
+        //     x: 400, y: 400,
+        //     orientation: 'x',
+        //     buttons: [
+        //         this.createButton(this, '+', 14).setOrigin(0.5, 1),
+        //     ],
+        //     space: {
+        //         left: 10, right: 10, top: 10, bottom: 10,
+        //         item: 6
+        //     },
+        //     click: {
+        //         mode: 'pointerup',
+        //         clickInterval: 500
+        //     }
+        // })
+        // .setOrigin(0.5, 1)
+        // .layout()
+        // .on('button.click', function (button: any) {
+        //     button.scaleYoyo(500, 1.2);
+        // })).layout;
+        // acidDamageSizer.add(this.add.text(0,0,'20 gp').setFontSize(20));
     
         this.upgradeMenuSizer.add(fireClassLabel, {
             align: "left"
@@ -1600,15 +1616,15 @@ export class PageScene extends Phaser.Scene {
             align: "left"
         }).layout();
 
-        this.upgradeMenuSizer.add(acidClassLabel, {
-            align: "left"
-        }).layout();
-        this.upgradeMenuSizer.add(puddleDurationSizer, {
-            align: "left"
-        }).layout();
-        this.upgradeMenuSizer.add(acidDamageSizer, {
-            align: "left"
-        }).layout();
+        // this.upgradeMenuSizer.add(acidClassLabel, {
+        //     align: "left"
+        // }).layout();
+        // this.upgradeMenuSizer.add(puddleDurationSizer, {
+        //     align: "left"
+        // }).layout();
+        // this.upgradeMenuSizer.add(acidDamageSizer, {
+        //     align: "left"
+        // }).layout();
     }
 
     AddEditMenuChild(scene: any, turret: any, texture: string){
@@ -1717,6 +1733,42 @@ export class PageScene extends Phaser.Scene {
             scene.rexUI.edit(vertField.getElement('text'),config);
         });
 
+        // Size TYPE UI
+        var sizeLabel = this.add.text(0,0,'Size: ').setFontSize(20);
+        var sizeField = this.rexUI.add.buttons({
+            x: 400, y: 400,
+            orientation: 'x',
+            buttons: [
+                this.createButton(this, 'Small', 20).setOrigin(0.5, 1),
+                this.createButton(this, 'Medium', 20).setOrigin(0.5, 1),
+                this.createButton(this, 'Large', 20).setOrigin(0.5, 1)
+            ],
+            space: {
+                left: 10, right: 10, top: 10, bottom: 10,
+                item: 6
+            },
+            click: {
+                mode: 'pointerup',
+                clickInterval: 500
+            }
+        })
+        .setOrigin(0.5, 1)
+        .layout()
+
+        sizeField
+            .on('button.click', function (button: any) {
+                button.scaleYoyo(500, 1.2);
+                classLabel.text = 'Size: ' + button.text;
+                if(button.text == 'Small'){
+                    turret.setScale(0.025);
+                }
+                else if(button.text == 'Medium'){
+                    turret.setScale(0.05);
+                }
+                else{
+                    turret.setScale(0.075);
+                }
+            })
 
         // CLASS TYPE UI
         var classLabel = this.add.text(0,0,'Class Type: (5 gp to Unlock)').setFontSize(20);
@@ -1767,12 +1819,12 @@ export class PageScene extends Phaser.Scene {
         child.add(vertField, {
             align: "left"
         });
-        // child.add(sizeLabel, {
-        //     align: "left"
-        // });
-        // child.add(sizeField, {
-        //     align: "left"
-        // })
+        child.add(sizeLabel, {
+            align: "left"
+        });
+        child.add(sizeField, {
+            align: "left"
+        })
         child.add(classLabel, {
             align: "left"
         });
