@@ -35,10 +35,10 @@ const map: number[][] = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0]
 ];
-const redBalloonsPerWave: number[] = [8,10,8,14,5,8,12,5,0,0,12]
-const blueBalloonsPerWave: number[] = [0,0,3,6,16,8,10,18,0,45,10]
-const greenBalloonsPerWave: number [] = [0,0,0,0,0,4,8,10,18,0,8]
-const purpleBalloonsPerWave: number [] = [0,0,0,0,0,0,0,0,0,0,0,4]
+const redBalloonsPerWave: number[] = [8,10,8,14,5,8,12,5,0,0,12,0]
+const blueBalloonsPerWave: number[] = [0,0,3,6,16,8,10,18,0,45,10,0]
+const greenBalloonsPerWave: number [] = [0,0,0,0,0,4,8,10,18,0,8,0]
+const purpleBalloonsPerWave: number [] = [0,0,0,0,0,0,0,0,0,0,0,4,100]
 
 export enum CollisionGroup {
     BULLET = -1, ENEMY = -2
